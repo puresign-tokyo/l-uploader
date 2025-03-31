@@ -1,0 +1,169 @@
+@charset "utf-8";
+
+body{
+	line-height: 1.25em;
+	color: #7B5C00;
+	background: #FFFFFF;
+	font-size: 90%;
+	_font-family: "ＭＳ Ｐゴシック", sans-serif;
+}
+
+h1{
+	font-weight: normal;
+}
+
+h2,h3,h4,h5,h6{
+	font-weight: normal;
+}
+
+h1{
+	font-size: 180%;
+	border-style: solid;
+	border-width: 0px 0px 1px 0px;
+	border-color: #C89600;
+}
+
+h2{
+	font-size: 160%;
+	padding: 3px;
+	background: #C89600;
+	color: #EFEFEF;
+}
+
+h3{
+	font-size: 120%;
+	padding: 3px 5px;
+	border-width: 1px 10px;
+	border-style: solid;
+	border-color: #C89600;
+}
+
+h4{
+	border-width: 0 0 1px 0;
+	border-style: solid;
+	border-color: #C89600;
+	margin-right: 10em;
+}
+
+a:link{ color: #C89600; }
+a:visited{ color: #999999; }
+a:active, a:hover, a:focus{
+	background: #C89600;
+	color: #FFFFFF;
+}
+
+em{
+	font-weight: bolder;
+	font-style: normal;
+}
+
+strong{
+	font-weight: bolder;
+	font-style: normal;
+	text-decoration: underline;
+}
+
+
+.title{
+}
+
+.navi{
+}
+
+.docbody{
+}
+
+.pageNavi{
+	margin: 2em 0 0 0;
+	text-align: right;
+}
+
+.note{
+	font-size: 80%;
+	color: #666666;
+}
+
+.footer{
+	text-align: right;
+	border-style: solid;
+	border-width: 1px 0px 0px 0px;
+	border-color: #C89600;
+}
+
+
+table{
+	table-layout: auto;
+	border-collapse: separate;
+	empty-cells: show;
+	font-size: 90%;
+	border-style: solid;
+	border-color: #C89600;
+	border-width: 1px 0 0 1px;
+	width: 100%;
+}
+
+th, td{
+	padding: 5px;
+}
+
+th{
+	background-color: #C89600;
+	color: #EFEFEF;
+	font-weight: bold;
+	text-align: center;
+}
+
+td{
+	border-style: solid;
+	border-color: #C89600;
+	border-width: 0 1px 1px 0;
+}
+
+
+.colRank,
+.colScore,
+.colDrop,
+.colChar,
+.colLevel,
+.colDate,
+.colName,
+.colReplay{
+	text-align: center;
+	align: center;
+}
+
+.colComment{
+	text-align: left;
+	align: left;
+	width: 35%;
+}
+
+tr.slowReplay td,
+tr.oldReplay td{
+	background: #EEEEEE;
+}
+
+
+.slowDrop,
+.oldVer {
+	color: #003999 !important;
+}
+
+.pagingLinks {
+	margin: 0.5em;
+}
+
+dl{
+	margin: 1em;
+}
+
+a img{
+	border-style: none;
+}
+
+.lang-en{
+	/*display: none;*/
+	font-size: 90%;
+}
+.lang-ja{
+}
