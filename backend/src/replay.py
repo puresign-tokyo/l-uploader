@@ -9,6 +9,8 @@ from datetime import datetime
 from typing import Annotated, BinaryIO
 import logging
 
+NOT_IDENTIFYED = -1
+
 SCORE_LIMIT = 10000000
 
 # get alco replay info.
@@ -29,7 +31,7 @@ def ensure_created_past(raw_created_at: datetime) -> datetime:
 
 
 def ensure_stage_value(raw_stage: str) -> str:
-    if raw_stage not in ["1", "1～2", "1～3", "All Clear"]:
+    if raw_stage not in ["1", "1 〜 2", "1 ～ 3", "All Clear"]:
         ValidationError("到達ステージの値がありえない値です")
     return raw_stage
 
@@ -121,7 +123,7 @@ class ReplayMetaData(BaseModel):
 
             # line7: Slow[SP]Rate[SP]{rate}\r\n
             buf = fp.readline()
-            slow_late = float(ReplayMetaData.parse_value("Slow Rate", buf))
+            slow_rate = float(ReplayMetaData.parse_value("Slow Rate", buf))
 
             # line8 and after:
             # \0USER????????(comment...)\0
@@ -142,7 +144,77 @@ class ReplayMetaData(BaseModel):
             created_at=created_at,
             stage=stage,
             score=score,
-            slow_rate=slow_late,
+            slow_rate=slow_rate,
+        )
+
+    @staticmethod
+    def new_from_input(
+        game_version: str,
+        replay_name: str,
+        created_at: datetime,
+        stage: str,
+        score: int,
+        slow_rate: float,
+    ) -> "ReplayMetaData":
+        return ReplayMetaData(
+            game_version=game_version,
+            replay_name=replay_name,
+            created_at=created_at,
+            stage=stage,
+            score=score,
+            slow_rate=slow_rate,
+        )
+
+
+class ReplayPost(BaseModel):
+    replay_id: int = NOT_IDENTIFYED
+    user_name: str = ""
+    upload_comment: str = ""
+    uploaded_at: datetime = datetime.fromtimestamp(0)
+    delete_password: str = ""
+    replay_meta_data: ReplayMetaData
+
+    @staticmethod
+    def new_from_post(
+        fp: BinaryIO, user_name: str, upload_comment: str, delete_password: str
+    ) -> "ReplayPost":
+        replay_meta_data = ReplayMetaData.new_from_file(fp)
+        return ReplayPost(
+            user_name=user_name,
+            upload_comment=upload_comment,
+            delete_password=delete_password,
+            replay_meta_data=replay_meta_data,
+        )
+
+    @staticmethod
+    def new_from_input(
+        replay_id: int,
+        user_name: str,
+        replay_name: str,
+        created_at: datetime,
+        stage: str,
+        score: int,
+        uploaded_at: datetime,
+        game_version: str,
+        slow_rate: float,
+        upload_comment: str,
+        delete_password: str,
+    ) -> "ReplayPost":
+        replay_meta_data = ReplayMetaData.new_from_input(
+            game_version=game_version,
+            replay_name=replay_name,
+            created_at=created_at,
+            stage=stage,
+            score=score,
+            slow_rate=slow_rate,
+        )
+        return ReplayPost(
+            replay_id=replay_id,
+            replay_meta_data=replay_meta_data,
+            user_name=user_name,
+            upload_comment=upload_comment,
+            uploaded_at=uploaded_at,
+            delete_password=delete_password,
         )
 
 

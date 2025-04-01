@@ -1,13 +1,14 @@
 from fastapi import FastAPI, Query, File, UploadFile, Form, HTTPException, status
 from fastapi.responses import HTMLResponse
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.responses import RedirectResponse
+from fastapi.encoders import jsonable_encoder
 
 from typing import Literal
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 from enum import StrEnum
-from datetime import datetime as dt
-
+from datetime import datetime
+import shutil
 
 import logging
 
@@ -17,7 +18,7 @@ import io
 from pathlib import Path
 import uvicorn
 
-from replay import ReplayMetaData
+from replay import ReplayMetaData, ReplayPost
 from sqls import SQLReplays
 
 host_dir = Path(__file__).parent
@@ -42,16 +43,25 @@ class PostReplays(BaseModel):
     upload_comment: str
 
 
-class Replay(BaseModel):
-    replay_id: str
+class GetReplays(BaseModel):
+    replay_file_name: str  # 数値形式である replay_id を alco_{replay_id}.rpyとして返す。0埋めせずそのまま埋め込む
     user_name: str
-    created_at: dt
-    stage: Stage
-    score: int
-    uploaded_at: dt
+    replay_name: str
+    created_at: str  # ISOフォーマットにする
+    stage: str
+    score: str  # 3桁ずつカンマを入れる
+    uploaded_at: str  # ISOフォーマットにする
     game_version: str
     slow_late: float
-    encrypted_password: str
+    upload_comment: str
+
+
+stage_mapping = {
+    "1": "Stage1",
+    "1 〜 2": "Stage2",
+    "1 ～ 3": "Stage3",
+    "All Clear": "All Clear",
+}
 
 
 logging.basicConfig(level=logging.INFO)
@@ -76,46 +86,101 @@ def get_index():
 def get_replays(
     sort: Literal["score", "uploaded_at", "created_at"] = "score",
     order: Literal["desc", "asc"] = "asc",
+    offset: int = 1,
+    limit: int = 1000,
 ):
-    try:
-        conn = psycopg.connect()
-        # conn.execute()
+    if order == "asc":
+        is_asc = True
+    else:
+        is_asc = False
+    replay_posts = SQLReplays.select_replay_sorted(
+        sort=sort, offset=offset, limit=limit, is_asc=is_asc
+    )
 
-    except Exception:
-        logger.exception("リプレイメタデータ一覧の取得に失敗しました")
+    returning = []
 
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=""
+    for replay_post in replay_posts:
+        returning.append(
+            jsonable_encoder(
+                GetReplays(
+                    replay_file_name=f"alco_{replay_post.replay_id}.rpy",
+                    user_name=replay_post.user_name,
+                    replay_name=replay_post.replay_meta_data.replay_name,
+                    created_at=replay_post.replay_meta_data.created_at.isoformat(),
+                    stage=stage_mapping[replay_post.replay_meta_data.stage],
+                    score="{:,}".format(replay_post.replay_meta_data.score),
+                    uploaded_at=replay_post.uploaded_at.isoformat(),
+                    game_version=replay_post.replay_meta_data.game_version,
+                    slow_late=replay_post.replay_meta_data.slow_rate,
+                    upload_comment=replay_post.upload_comment,
+                )
+            )
         )
 
-    return ""
+    # except Exception:
+    # logger.exception("リプレイメタデータ一覧の取得に失敗しました")
+
+    # raise HTTPException(
+    #     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=""
+    # )
+
+    return returning
 
 
 @app.get("/replays/{replay_id}")
-def get_replays_replay_id():
-    return ""
+def get_replays_replay_id(replay_id: int):
+    replay_post = SQLReplays.select_replay(replay_id)
+    returning_item = GetReplays(
+        replay_file_name=f"alco_{replay_post.replay_id}.rpy",
+        user_name=replay_post.user_name,
+        replay_name=replay_post.replay_meta_data.replay_name,
+        created_at=replay_post.replay_meta_data.created_at.isoformat(),
+        stage=stage_mapping[replay_post.replay_meta_data.stage],
+        score="{:,}".format(replay_post.replay_meta_data.score),
+        uploaded_at=replay_post.uploaded_at.isoformat(),
+        game_version=replay_post.replay_meta_data.game_version,
+        slow_late=replay_post.replay_meta_data.slow_rate,
+        upload_comment=replay_post.upload_comment,
+    )
+    return JSONResponse(content=jsonable_encoder(returning_item))
 
 
 @app.get("/replays/{replay_id}/file")
-def get_replays_replay_id_file(replay_id: str):
-    if not (replay_dir / replay_id).exists():
+def get_replays_replay_id_file(replay_id: int):
+    if not (replay_dir / str(replay_id)).exists():
         return HTTPException(detail="File not Found", status_code=404)
 
-    return FileResponse((replay_dir / replay_id), filename="alco_{replay_id}.rpy")
+    return FileResponse((replay_dir / str(replay_id)), filename=f"alco_{replay_id}.rpy")
 
 
 @app.post("/replays")
-def post_replays(replay_file: UploadFile, body: PostReplays):
-    replay_meta_data = ReplayMetaData.new_from_file(replay_file.file)
-    replay_file.file.close()
-    SQLReplays.insert_replay_meta_data(
-        replay_meta_data,
-        body.user_name,
-        body.upload_comment,
-        body.encrypted_password,
-    )
+def post_replays(
+    replay_file: UploadFile,
+    user_name=Form(),
+    upload_comment=Form(),
+    encrypted_password=Form(),
+):
+    # replay_meta_data = ReplayMetaData.new_from_file(replay_file.file)
+    try:
+        replay_post = ReplayPost.new_from_post(
+            replay_file.file,
+            user_name,
+            upload_comment,
+            encrypted_password,
+        )
+    except ValidationError as e:
+        raise HTTPException(status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
-    return ""
+    replay_id = SQLReplays.insert_replay_meta_data(replay_post)
+
+    # ReplayPost.new_from_postで最後までseekしてしまっているから
+    replay_file.file.seek(0)
+    with open(replay_dir / str(replay_id), "wb") as fp:
+        fp.write(replay_file.file.read())
+
+    replay_file.file.close()
+
+    return
 
 
 @app.delete("/replays/{replays_id}")
