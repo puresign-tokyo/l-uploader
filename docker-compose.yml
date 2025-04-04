@@ -1,0 +1,31 @@
+name: alcoscore
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5002:5001"
+    volumes:
+      - type: bind
+        source: "./backend/src"
+        target: "/app"
+      - replays:/replays/
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - HASH_PEPPER=${HASH_PEPPER}
+  db:
+    image: postgres:17
+    container_name: database
+    volumes:
+      - db_table:/var/lib/postgresql/data/
+      - ./database/init/:/docker-entrypoint-initdb.d/
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - 5432:5432
+
+volumes:
+  db_table:
+  replays:
