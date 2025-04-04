@@ -4,11 +4,14 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.responses import RedirectResponse
 from fastapi.encoders import jsonable_encoder
 
+from psycopg.errors import ConnectionFailure, ConnectionTimeout
+
 from typing import Literal
 from pydantic import BaseModel, ValidationError
 from enum import StrEnum
 from datetime import datetime
 import shutil
+import utility
 
 import logging
 
@@ -44,6 +47,7 @@ class PostReplays(BaseModel):
 
 
 class GetReplays(BaseModel):
+    replay_id: int
     replay_file_name: str  # 数値形式である replay_id を alco_{replay_id}.rpyとして返す。0埋めせずそのまま埋め込む
     user_name: str
     replay_name: str
@@ -54,14 +58,6 @@ class GetReplays(BaseModel):
     game_version: str
     slow_late: float
     upload_comment: str
-
-
-stage_mapping = {
-    "1": "Stage1",
-    "1 〜 2": "Stage2",
-    "1 ～ 3": "Stage3",
-    "All Clear": "All Clear",
-}
 
 
 logging.basicConfig(level=logging.INFO)
@@ -89,13 +85,19 @@ def get_replays(
     offset: int = 1,
     limit: int = 1000,
 ):
+    if offset < 0 or limit < 0:
+        return HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
     if order == "asc":
         is_asc = True
     else:
         is_asc = False
-    replay_posts = SQLReplays.select_replay_sorted(
-        sort=sort, offset=offset, limit=limit, is_asc=is_asc
-    )
+
+    try:
+        replay_posts = SQLReplays.select_replay_sorted(
+            sort=sort, offset=offset, limit=limit, is_asc=is_asc
+        )
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     returning = []
 
@@ -103,11 +105,12 @@ def get_replays(
         returning.append(
             jsonable_encoder(
                 GetReplays(
-                    replay_file_name=f"alco_{replay_post.replay_id}.rpy",
+                    replay_id=replay_post.replay_id,
+                    replay_file_name=f"alco_ud{utility.id_to_filename(replay_post.replay_id)}.rpy",
                     user_name=replay_post.user_name,
                     replay_name=replay_post.replay_meta_data.replay_name,
                     created_at=replay_post.replay_meta_data.created_at.isoformat(),
-                    stage=stage_mapping[replay_post.replay_meta_data.stage],
+                    stage=utility.stage_mapping[replay_post.replay_meta_data.stage],
                     score="{:,}".format(replay_post.replay_meta_data.score),
                     uploaded_at=replay_post.uploaded_at.isoformat(),
                     game_version=replay_post.replay_meta_data.game_version,
@@ -129,13 +132,21 @@ def get_replays(
 
 @app.get("/replays/{replay_id}")
 def get_replays_replay_id(replay_id: int):
-    replay_post = SQLReplays.select_replay(replay_id)
+    try:
+        replay_post = SQLReplays.select_replay(replay_id)
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="select replay not found"
+        )
+    except:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
     returning_item = GetReplays(
-        replay_file_name=f"alco_{replay_post.replay_id}.rpy",
+        replay_id=replay_post.replay_id,
+        replay_file_name=f"alco_ud{utility.id_to_filename(replay_post.replay_id)}.rpy",
         user_name=replay_post.user_name,
         replay_name=replay_post.replay_meta_data.replay_name,
         created_at=replay_post.replay_meta_data.created_at.isoformat(),
-        stage=stage_mapping[replay_post.replay_meta_data.stage],
+        stage=utility.stage_mapping[replay_post.replay_meta_data.stage],
         score="{:,}".format(replay_post.replay_meta_data.score),
         uploaded_at=replay_post.uploaded_at.isoformat(),
         game_version=replay_post.replay_meta_data.game_version,
@@ -148,7 +159,9 @@ def get_replays_replay_id(replay_id: int):
 @app.get("/replays/{replay_id}/file")
 def get_replays_replay_id_file(replay_id: int):
     if not (replay_dir / str(replay_id)).exists():
-        return HTTPException(detail="File not Found", status_code=404)
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="replay file not Found"
+        )
 
     return FileResponse((replay_dir / str(replay_id)), filename=f"alco_{replay_id}.rpy")
 
@@ -158,7 +171,7 @@ def post_replays(
     replay_file: UploadFile,
     user_name=Form(),
     upload_comment=Form(),
-    encrypted_password=Form(),
+    delete_password=Form(),
 ):
     # replay_meta_data = ReplayMetaData.new_from_file(replay_file.file)
     try:
@@ -166,12 +179,17 @@ def post_replays(
             replay_file.file,
             user_name,
             upload_comment,
-            encrypted_password,
+            delete_password,
         )
     except ValidationError as e:
-        raise HTTPException(status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
-
-    replay_id = SQLReplays.insert_replay_meta_data(replay_post)
+        raise HTTPException(
+            status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+            detail="invalid replay file",
+        )
+    try:
+        replay_id = SQLReplays.insert_replay_meta_data(replay_post)
+    except:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     # ReplayPost.new_from_postで最後までseekしてしまっているから
     replay_file.file.seek(0)
@@ -184,13 +202,54 @@ def post_replays(
 
 
 @app.delete("/replays/{replays_id}")
-def delete_replays_replay_id(replay_id: str, body: DeleteReplays):
-    return ""
+def delete_replays_replay_id(replay_id: int, delete_password=Form()):
+    try:
+        SQLReplays.delete_replay(
+            replay_id=replay_id,
+            requested_raw_delete_password=delete_password,
+        )
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="password mismatch"
+        )
+    except KeyError:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="requested replay not found"
+        )
+    return
+
+
+@app.get("/cocktail")
+def get_cocktail():
+    return RedirectResponse("/teapot")
+
+
+@app.get("/wine")
+def get_wine():
+    return RedirectResponse("/teapot")
+
+
+@app.get("/sake")
+def get_sake():
+    return RedirectResponse("/teapot")
+
+
+@app.get("/beer")
+def get_beer():
+    return RedirectResponse("/teapot")
+
+
+@app.get("/alcohol")
+def get_alcohol():
+    return RedirectResponse("/teapot")
 
 
 @app.get("/teapot")
-def teapot():
-    raise HTTPException(status_code=status.HTTP_418_IM_A_TEAPOT)
+def get_teapot():
+    raise HTTPException(
+        status_code=status.HTTP_418_IM_A_TEAPOT,
+        detail="I can't give you alcohol, because I am a little teapot.",
+    )
 
 
 if __name__ == "__main__":

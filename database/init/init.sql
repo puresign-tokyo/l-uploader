@@ -9,13 +9,8 @@ CREATE TABLE replays(
     game_version        TEXT            NOT NULL, -- DB作成時点では [1.00a] のみが入る
     slow_rate           FLOAT           NOT NULL,
     upload_comment      TEXT            ,
-    delete_password     BYTEA           NOT NULL, -- SHA-256
+    delete_password     TEXT           NOT NULL, -- SHA-256
+    salt                TEXT           NOT NULL,
 
     PRIMARY KEY(replay_id)
-);
-
-CREATE TABLE blacklist(
-    banned_address  INET            NOT NULL,
-
-    PRIMARY KEY(banned_address)
 );

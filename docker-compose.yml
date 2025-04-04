@@ -13,6 +13,7 @@ services:
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - HASH_PEPPER=${HASH_PEPPER}
   db:
     image: postgres:17
     container_name: database
