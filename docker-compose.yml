@@ -1,6 +1,16 @@
 name: alcoscore
 
 services:
+  frontend:
+    build: ./frontend
+    ports:
+      - 8080:8080
+    volumes:
+      - ./frontend/app:/app
+    tty: true
+    environment:
+      - BACKEND_HOST="http://backend:5002"
+      
   backend:
     build: ./backend
     ports:
