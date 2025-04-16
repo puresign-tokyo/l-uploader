@@ -59,6 +59,9 @@
             persistent-hint
             hint="必ず入力してください"
             required
+            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            :type="showPassword ? 'text' : 'password'"
+            @click:append="showPassword = !showPassword"
         ></v-text-field>
         </v-col>
     </v-row>
@@ -100,6 +103,8 @@
     const uploadComment = ref('')
     const deletePassword = ref('')
     const snackbar=ref(false)
+    
+    const showPassword=ref(false)
 
     const validateUserName=(value) => value.length<=30 || '30文字以内で入力してください'
     const validateUploadComment=(value) => value.length<=300 || '300文字以内で入力してください'
