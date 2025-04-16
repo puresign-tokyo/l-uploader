@@ -3,6 +3,7 @@
         <v-container>
           <v-btn to="/" block>ホーム</v-btn><br>
           <v-btn to="/NewPost" block>新規投稿</v-btn><br>
+          <v-btn to="/TermsServe" block>利用規約</v-btn><br>
         </v-container>
       </v-navigation-drawer>
   
