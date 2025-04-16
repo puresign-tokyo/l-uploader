@@ -103,7 +103,7 @@
     const uploadComment = ref('')
     const deletePassword = ref('')
     const snackbar=ref(false)
-
+    
     const showPassword=ref(false)
 
     const validateUserName=(value) => value.length<=30 || '30文字以内で入力してください'

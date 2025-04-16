@@ -34,8 +34,8 @@ def build_db_kwargs() -> str:
                 dbname={os.getenv("POSTGRES_USER")}
                 user={os.getenv("POSTGRES_USER")}
                 password={os.getenv("POSTGRES_PASSWORD")}
-                host=database
-                port=5432
+                host={os.getenv("DATABASE_HOST")}
+                port={os.getenv("DATABASE_PORT")}
             """
 
 
