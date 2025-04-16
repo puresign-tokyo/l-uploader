@@ -18,6 +18,7 @@ import logging
 
 
 import io
+import os
 
 from pathlib import Path
 import uvicorn
@@ -25,7 +26,7 @@ import uvicorn
 from replay import ReplayMetaData, ReplayPost
 from sqls import SQLReplays
 
-ALLOW_ORIGIN = "http://board02.alcostg.web.wefma.net:8080"
+ALLOW_ORIGIN = f"http://{os.getenv("FRONTEND_HOST")}:{os.getenv("FRONTEND_PORT")}"
 
 host_dir = Path(__file__).parent
 css_dir = host_dir / "css"
@@ -59,7 +60,7 @@ class GetReplays(BaseModel):
     score: str  # 3桁ずつカンマを入れる
     uploaded_at: str  # ISOフォーマットにする
     game_version: str
-    slow_late: float
+    slow_rate: float
     upload_comment: str
 
 
@@ -125,7 +126,7 @@ def get_replays(
                     score="{:,}".format(replay_post.replay_meta_data.score),
                     uploaded_at=replay_post.uploaded_at.isoformat(),
                     game_version=replay_post.replay_meta_data.game_version,
-                    slow_late=replay_post.replay_meta_data.slow_rate,
+                    slow_rate=replay_post.replay_meta_data.slow_rate,
                     upload_comment=replay_post.upload_comment,
                 )
             )
@@ -161,7 +162,7 @@ def get_replays_replay_id(replay_id: int):
         score="{:,}".format(replay_post.replay_meta_data.score),
         uploaded_at=replay_post.uploaded_at.isoformat(),
         game_version=replay_post.replay_meta_data.game_version,
-        slow_late=replay_post.replay_meta_data.slow_rate,
+        slow_rate=replay_post.replay_meta_data.slow_rate,
         upload_comment=replay_post.upload_comment,
     )
     return JSONResponse(content=jsonable_encoder(returning_item))

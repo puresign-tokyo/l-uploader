@@ -1,10 +1,12 @@
 <template>
       <v-navigation-drawer v-model="drawer">
-        <v-btn to="/">ホーム</v-btn><br>
-        <v-btn to="/NewPost">新規投稿</v-btn><br>
+        <v-container>
+          <v-btn to="/" block>ホーム</v-btn><br>
+          <v-btn to="/NewPost" block>新規投稿</v-btn><br>
+        </v-container>
       </v-navigation-drawer>
   
-      <v-app-bar>
+      <v-app-bar color="#D99B01">
         <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
   
         <v-app-bar-title>黄昏酒場スコアボード</v-app-bar-title>

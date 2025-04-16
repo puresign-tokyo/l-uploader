@@ -1,79 +1,147 @@
 <template>
 <v-main>
-    <div class="pa-4 text-center">
-      <v-dialog
-        v-model="dialog"
-        max-width="600"
-      >
-        <template v-slot:activator="{ props: activatorProps }">
-          <v-btn
-            class="text-none font-weight-regular"
-            prepend-icon="mdi-account"
-            text="Edit Profile"
-            variant="tonal"
-            v-bind="activatorProps"
-          ></v-btn>
-        </template>
-  
-        <v-card
-          prepend-icon="mdi-account"
-          title="User Profile"
-          text="削除用パスワードを入力してください"
+    <v-card-text>
+    <v-row dense>
+        <v-col
+        cols="12"
+        md="4"
+        sm="6"
         >
-          
-          <v-card-text>
-            <v-row dense>
-              <v-col
-                cols="12"
-                md="4"
-                sm="6"
-              >
-                <v-text-field
-                  label="First name*"
-                  required
-                ></v-text-field>
-              </v-col>
-  
+        <v-text-field
+            v-model="userName"
+            label="ユーザ名"
+            required
+            placeholder="ZUN"
+            :rules="[validateUserName]"
+            counter="30"
+        ></v-text-field>
+        </v-col>
+    </v-row>         
+    </v-card-text>
 
-            </v-row>
-  
-            <small class="text-caption text-medium-emphasis">*indicates required field</small>
-          </v-card-text>
-  
-          <v-divider></v-divider>
-  
-          <v-card-actions>
-            <v-spacer></v-spacer>
-  
-            <v-btn
-              text="閉じる"
-              variant="plain"
-              @click="dialog = false"
-            ></v-btn>
-  
-            <v-btn
-              color="primary"
-              text="削除"
-              variant="tonal"
-              @click="dialog = false"
-            ></v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </div>
+    <v-cart-text>
+    <v-row dense>
+        <v-col
+        cols="12"
+        md="4"
+        sm="6"
+        >
+        <v-file-input v-model="replayFile" accept=".rpy" label="リプレイファイル(*.rpy)"></v-file-input>
+        </v-col>
+    </v-row>
+    </v-cart-text>
+
+    <v-card-text>
+    <v-row dense>
+        <v-col
+        >
+        <v-text-field
+            v-model="uploadComment"
+            label="コメント"
+            placeholder="頑張って達成しました！！"
+            :rules="[validateUploadComment]"
+            counter="300"
+        ></v-text-field>
+        </v-col>
+    </v-row>
+    </v-card-text>
+
+    <v-card-text>
+    <v-row dense>
+        <v-col
+        cols="12"
+        md="4"
+        sm="6"
+        >
+        <v-text-field
+            v-model="deletePassword"
+            label="削除用パスワード"
+            persistent-hint
+            hint="必ず入力してください"
+            required
+        ></v-text-field>
+        </v-col>
+    </v-row>
+    </v-card-text>
+
+    <v-btn
+        color="primary"
+        text="送信"
+        variant="tonal"
+        @click="sendPostReplay"
+    ></v-btn>
+
+    <v-snackbar
+      v-model="snackbar"
+    >
+      送信しました
+      <template v-slot:actions>
+        <v-btn
+          color="success"
+          variant="outlined"
+          @click="snackbar = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+
 </v-main>
   </template>
   
-  <script setup>
-    import { shallowRef } from 'vue'
-  
-    const dialog = shallowRef(false)
-  </script>
-  
-  <script>
-    export default {
-      data: () => ({
-        dialog: false,
-      }),
+<script setup>
+    import { ref } from 'vue'
+    // import { FormData } from 'form-data'
+    import axios from 'axios'
+
+
+    const userName = ref('')
+    const replayFile = ref(null)
+    const uploadComment = ref('')
+    const deletePassword = ref('')
+    const snackbar=ref(false)
+
+    const validateUserName=(value) => value.length<=30 || '30文字以内で入力してください'
+    const validateUploadComment=(value) => value.length<=300 || '300文字以内で入力してください'
+
+    async function sendPostReplay() {
+      if(userName.value===""){
+        alert("ユーザ名を入力してください")
+        return
+      }
+      if(userName.value.length>30){
+        alert("ユーザ名の文字数が30文字以上です")
+        return
+      }
+      if(uploadComment.value.length>300){
+        alert("コメントの文字数が300文字以上です")
+        return
+      }
+      if(replayFile.value===null){
+        alert("リプレイファイルを指定してください")
+        return
+      }
+      if(deletePassword.value===""){
+        alert("パスワードを入力してください")
+        return
+      }
+      const formData = new FormData()
+      formData.append('user_name', userName.value)
+      formData.append('replay_file', replayFile.value)
+      formData.append('upload_comment', uploadComment.value)
+      formData.append('delete_password', deletePassword.value)
+      try{
+        await axios.post(
+          `${process.env.VUE_APP_HTTP_PROTOCOL}://${process.env.VUE_APP_BACKEND_HOST}:${process.env.VUE_APP_BACKEND_PORT}/replays`,
+          formData,
+          {headers: { 'Content-Type': 'multipart/form-data' }})
+        replayFile.value=null
+        uploadComment.value=''
+        snackbar.value=true
+      }catch(error){
+        alert(error.message)
+      }
+
     }
+
   </script>
