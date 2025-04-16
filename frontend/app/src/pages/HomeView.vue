@@ -297,4 +297,7 @@ async function sendDeleteReplay(){
     overflow-wrap: break-word;
     word-break: break-word;
   }
+  .v-data-table{
+    white-space: nowrap;
+  }
 </style>
