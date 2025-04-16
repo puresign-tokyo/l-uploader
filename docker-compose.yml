@@ -1,10 +1,22 @@
 name: alcoscore
 
 services:
+  frontend:
+    build: ./frontend
+    ports:
+      - ${FRONTEND_PORT}:8080
+    volumes:
+      - ./frontend/app:/app
+    tty: true
+    environment:
+      - VUE_APP_BACKEND_HOST=${BACKEND_HOST}
+      - VUE_APP_BACKEND_PORT=${BACKEND_PORT}
+      - VUE_APP_HTTP_PROTOCOL=http
+
   backend:
     build: ./backend
     ports:
-      - "5002:5001"
+      - "${BACKEND_PORT}:5001"
     volumes:
       - type: bind
         source: "./backend/src"
@@ -14,6 +26,11 @@ services:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - HASH_PEPPER=${HASH_PEPPER}
+      - FRONTEND_HOST=${FRONTEND_HOST}
+      - FRONTEND_PORT=${FRONTEND_PORT}
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_PORT=${DATABASE_PORT}
+
   db:
     image: postgres:17
     container_name: database
@@ -24,7 +41,7 @@ services:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     ports:
-      - 5432:5432
+      - ${DATABASE_PORT}:5432
 
 volumes:
   db_table:

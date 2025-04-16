@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.responses import RedirectResponse
 from fastapi.encoders import jsonable_encoder
+from fastapi.middleware.cors import CORSMiddleware
 
 from psycopg.errors import ConnectionFailure, ConnectionTimeout
 
@@ -17,12 +18,15 @@ import logging
 
 
 import io
+import os
 
 from pathlib import Path
 import uvicorn
 
 from replay import ReplayMetaData, ReplayPost
 from sqls import SQLReplays
+
+ALLOW_ORIGIN = f"http://{os.getenv("FRONTEND_HOST")}:{os.getenv("FRONTEND_PORT")}"
 
 host_dir = Path(__file__).parent
 css_dir = host_dir / "css"
@@ -37,7 +41,7 @@ class Stage(StrEnum):
 
 
 class DeleteReplays(BaseModel):
-    encrypted_password: str
+    delete_password: str
 
 
 class PostReplays(BaseModel):
@@ -56,7 +60,7 @@ class GetReplays(BaseModel):
     score: str  # 3桁ずつカンマを入れる
     uploaded_at: str  # ISOフォーマットにする
     game_version: str
-    slow_late: float
+    slow_rate: float
     upload_comment: str
 
 
@@ -65,6 +69,14 @@ logger = logging.getLogger("alcostg")
 logger.info("Started")
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[ALLOW_ORIGIN],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -114,7 +126,7 @@ def get_replays(
                     score="{:,}".format(replay_post.replay_meta_data.score),
                     uploaded_at=replay_post.uploaded_at.isoformat(),
                     game_version=replay_post.replay_meta_data.game_version,
-                    slow_late=replay_post.replay_meta_data.slow_rate,
+                    slow_rate=replay_post.replay_meta_data.slow_rate,
                     upload_comment=replay_post.upload_comment,
                 )
             )
@@ -150,7 +162,7 @@ def get_replays_replay_id(replay_id: int):
         score="{:,}".format(replay_post.replay_meta_data.score),
         uploaded_at=replay_post.uploaded_at.isoformat(),
         game_version=replay_post.replay_meta_data.game_version,
-        slow_late=replay_post.replay_meta_data.slow_rate,
+        slow_rate=replay_post.replay_meta_data.slow_rate,
         upload_comment=replay_post.upload_comment,
     )
     return JSONResponse(content=jsonable_encoder(returning_item))
@@ -163,7 +175,10 @@ def get_replays_replay_id_file(replay_id: int):
             status_code=status.HTTP_404_NOT_FOUND, detail="replay file not Found"
         )
 
-    return FileResponse((replay_dir / str(replay_id)), filename=f"alco_{replay_id}.rpy")
+    return FileResponse(
+        (replay_dir / str(replay_id)),
+        filename=f"alco_ud{utility.id_to_filename(replay_id)}.rpy",
+    )
 
 
 @app.post("/replays")
@@ -201,12 +216,12 @@ def post_replays(
     return
 
 
-@app.delete("/replays/{replays_id}")
-def delete_replays_replay_id(replay_id: int, delete_password=Form()):
+@app.delete("/replays/{replay_id}")
+def delete_replays_replay_id(replay_id: int, body: DeleteReplays):
     try:
         SQLReplays.delete_replay(
             replay_id=replay_id,
-            requested_raw_delete_password=delete_password,
+            requested_raw_delete_password=body.delete_password,
         )
     except ValueError:
         raise HTTPException(
