@@ -101,6 +101,9 @@
                   v-model="deletePassword"
                   label="削除用パスワード"
                   required
+                  :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                  :type="showPassword ? 'text' : 'password'"
+                  @click:append="showPassword = !showPassword"
                 ></v-text-field>
               </v-col>
   
@@ -162,6 +165,7 @@ const pendingDeleteItem=ref()
 const focusedItem=ref()
 const deletePassword=ref()
 const snackbar=ref(false)
+const showPassword=ref(false)
 const sortCategories=['支払金額', 'プレイ時刻', '投稿時刻']
 const selectedSortCategory=ref('支払金額')
 const sortCategoriesMap={'支払金額':'score', 'プレイ時刻':'created_at', '投稿時刻':'uploaded_at'}

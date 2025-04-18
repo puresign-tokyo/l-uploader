@@ -26,7 +26,7 @@ import uvicorn
 from replay import ReplayMetaData, ReplayPost
 from sqls import SQLReplays
 
-ALLOW_ORIGIN = f"http://{os.getenv("FRONTEND_HOST")}:{os.getenv("FRONTEND_PORT")}"
+ALLOW_ORIGIN = f"https://alcostg-score.wefma.net"
 
 host_dir = Path(__file__).parent
 css_dir = host_dir / "css"
@@ -231,6 +231,7 @@ def delete_replays_replay_id(replay_id: int, body: DeleteReplays):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT, detail="requested replay not found"
         )
+    os.remove(replay_dir / str(replay_id))
     return
 
 
