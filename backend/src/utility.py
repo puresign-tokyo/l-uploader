@@ -1,7 +1,7 @@
 stage_mapping = {
     "1": "Stage1",
     "1 〜 2": "Stage2",
-    "1 ～ 3": "Stage3",
+    "1 〜 3": "Stage3",
     "All Clear": "All Clear",
 }
 

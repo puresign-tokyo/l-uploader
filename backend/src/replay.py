@@ -31,7 +31,8 @@ def ensure_created_past(raw_created_at: datetime) -> datetime:
 
 
 def ensure_stage_value(raw_stage: str) -> str:
-    if raw_stage not in ["1", "1 〜 2", "1 ～ 3", "All Clear"]:
+    if raw_stage not in ["1", "1 〜 2", "1 〜 3", "All Clear"]:
+        print(raw_stage)
         ValidationError("到達ステージの値がありえない値です")
     return raw_stage
 

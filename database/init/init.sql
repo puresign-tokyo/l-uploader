@@ -3,7 +3,7 @@ CREATE TABLE replays(
     user_name           TEXT            NOT NULL,
     replay_name         TEXT            NOT NULL,
     created_at          TIMESTAMP       NOT NULL,
-    stage               TEXT            CHECK (stage IN('1', '1 〜 2', '1 ～ 3', 'All Clear')),
+    stage               TEXT            CHECK (stage IN('1', '1 〜 2', '1 〜 3', 'All Clear')),
     score               INT             NOT NULL,
     uploaded_at         TIMESTAMP       NOT NULL,
     game_version        TEXT            NOT NULL, -- DB作成時点では [1.00a] のみが入る
