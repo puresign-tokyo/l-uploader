@@ -18,6 +18,8 @@ RUN yarn global add @vue/cli
 
 COPY ./app /app
 
+RUN yarn install
+
 RUN yarn build
 
 # 本番環境
