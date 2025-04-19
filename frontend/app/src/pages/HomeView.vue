@@ -4,12 +4,14 @@
       <h1>大吞みチャンピオン一覧</h1>
     </div>
 
-    <v-select
-      :items="sortCategories"
-      v-model="selectedSortCategory"
-      label="ソート順"
-      @update:modelValue="selectSort"
-    />
+    <v-sheet class="w-50">
+      <v-select
+        :items="sortCategories"
+        v-model="selectedSortCategory"
+        label="ソート順"
+        @update:modelValue="selectSort"
+      />
+    </v-sheet>
 
     <v-data-table
         :headers="headers[sortCategoriesMap[selectedSortCategory]]"
