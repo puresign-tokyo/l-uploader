@@ -68,7 +68,10 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("alcostg")
 logger.info("Started")
 
-app = FastAPI()
+app = FastAPI(
+    docs_url=None,
+    redoc_url=None
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -77,12 +80,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.get("/", response_class=HTMLResponse)
-def get_root():
-    return RedirectResponse("/index.html")
-
 
 @app.get("/index.html", response_class=HTMLResponse)
 def get_index():
