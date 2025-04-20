@@ -29,7 +29,7 @@ ENV TZ Asia/Tokyo
 
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
-COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+COPY ./nginx/ /etc/nginx/
 
 EXPOSE 80
 
