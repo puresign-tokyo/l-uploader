@@ -28,7 +28,7 @@
           overlay-opacity="0.5"
         >
         <template v-slot:activator="{ props: activatorDetailProps }">
-          <v-btn
+          <v-icon
             icon="mdi-information-outline"
             variant="tonal"
             v-bind="activatorDetailProps"
@@ -77,14 +77,14 @@
       >
       <!-- eslint-disable-next-line vue/valid-v-slot -->
         <template v-slot:activator="{ props: activatorProps }">
-          <v-btn
+          <v-icon
             class="text-none font-weight-regular"
             icon="mdi-trash-can-outline"
             variant="tonal"
             v-bind="activatorProps"
             color="error"
             @click="openDeleteDialog(item)"
-          ></v-btn>
+          ></v-icon>
         </template>
   
         <v-card
