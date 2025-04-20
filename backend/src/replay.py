@@ -11,6 +11,10 @@ import logging
 
 NOT_IDENTIFYED = -1
 
+USER_NAME_LIMIT = 30
+UPLOAD_COMMENT_LIMIT = 300
+DELETE_PASSWORD_LIMIT = 60
+REPLAY_FILE_LIMIT = 200 * 1024
 SCORE_LIMIT = 10000000
 
 # get alco replay info.
@@ -167,18 +171,46 @@ class ReplayMetaData(BaseModel):
         )
 
 
+def ensure_user_name(raw_user_name: str) -> str:
+    if len(raw_user_name) > USER_NAME_LIMIT:
+        ValidationError("ユーザネームが{USER_NAME_LIMIT}文字以上です")
+    return raw_user_name
+
+
+def ensure_upload_comment(raw_upload_comment: str) -> str:
+    if len(raw_upload_comment) > UPLOAD_COMMENT_LIMIT:
+        ValidationError("アップロードコメントが{UPLOAD_COMMENT_LIMIT}文字以上です")
+    return raw_upload_comment
+
+
+def ensure_delete_password(raw_delete_password: str) -> str:
+    if len(raw_delete_password) > DELETE_PASSWORD_LIMIT:
+        ValidationError("削除パスワードが{DELETE_PASSWORD_LIMIT}文字以上です")
+    return raw_delete_password
+
+
+def get_binary_size(file: BinaryIO) -> int:
+    current_pos = file.tell()  # 現在の位置を覚えておく
+    file.seek(0, 2)  # ファイルの末尾へ（seek(offset, whence=2)）
+    size = file.tell()  # 現在位置 = サイズ
+    file.seek(current_pos)  # 元の位置に戻す
+    return size
+
+
 class ReplayPost(BaseModel):
     replay_id: int = NOT_IDENTIFYED
-    user_name: str = ""
-    upload_comment: str = ""
+    user_name: Annotated[str, BeforeValidator(ensure_user_name)] = ""
+    upload_comment: Annotated[str, BeforeValidator(ensure_upload_comment)] = ""
     uploaded_at: datetime = datetime.fromtimestamp(0)
-    delete_password: str = ""
+    delete_password: Annotated[str, BeforeValidator(ensure_delete_password)] = ""
     replay_meta_data: ReplayMetaData
 
     @staticmethod
     def new_from_post(
         fp: BinaryIO, user_name: str, upload_comment: str, delete_password: str
     ) -> "ReplayPost":
+        if get_binary_size(fp) > REPLAY_FILE_LIMIT:
+            ValidationError("ファイルのサイズが{REPLAY_FILE_LIMIT}バイト以上です")
         replay_meta_data = ReplayMetaData.new_from_file(fp)
         return ReplayPost(
             user_name=user_name,

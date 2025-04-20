@@ -26,7 +26,12 @@
         md="4"
         sm="6"
         >
-        <v-file-input v-model="replayFile" accept=".rpy" label="リプレイファイル(*.rpy)"></v-file-input>
+        <v-file-input
+          v-model="replayFile"
+          accept=".rpy"
+          label="リプレイファイル(*.rpy)"
+          :rules="[validateReplayFile]"
+        ></v-file-input>
         </v-col>
     </v-row>
     </v-cart-text>
@@ -59,6 +64,8 @@
             persistent-hint
             hint="必ず入力してください"
             required
+            counter="60"
+            :rules="[validateDeletePassword]"
             :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             :type="showPassword ? 'text' : 'password'"
             @click:append="showPassword = !showPassword"
@@ -108,6 +115,8 @@
 
     const validateUserName=(value) => value.length<=30 || '30文字以内で入力してください'
     const validateUploadComment=(value) => value.length<=300 || '300文字以内で入力してください'
+    const validateDeletePassword=(value) => value.length<=60 || '60文字以内で入力してください'
+    const validateReplayFile=(value) => value.size<=200*1024 || 'ファイルサイズが大きすぎます'
 
     async function sendPostReplay() {
       if(userName.value===""){
