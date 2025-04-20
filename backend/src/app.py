@@ -81,11 +81,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/index.html", response_class=HTMLResponse)
-def get_index():
-    return FileResponse(host_dir / "index.html")
-
-
 # メタデータの一覧を返す
 @app.get("/replays")
 def get_replays(
