@@ -187,7 +187,6 @@ class SQLReplays:
                     game_version=selected["game_version"],
                     slow_rate=selected["slow_rate"],
                     upload_comment=selected["upload_comment"],
-                    delete_password=selected["delete_password"],
                 )
                 if cur.fetchone() != None:
                     raise KeyError("データベースの不整合が起こっています")
@@ -268,7 +267,6 @@ class SQLReplays:
                             game_version=selected["game_version"],
                             slow_rate=selected["slow_rate"],
                             upload_comment=selected["upload_comment"],
-                            delete_password=selected["delete_password"],
                         )
                     )
                     selected = cur.fetchone()

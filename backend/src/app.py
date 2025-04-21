@@ -27,6 +27,7 @@ from replay import ReplayMetaData, ReplayPost
 from sqls import SQLReplays
 
 ALLOW_ORIGIN = f"https://alcostg-score.wefma.net"
+DELETE_PASSWORD_LIMIT = 60
 
 host_dir = Path(__file__).parent
 css_dir = host_dir / "css"
@@ -180,6 +181,23 @@ def post_replays(
     upload_comment=Form(),
     delete_password=Form(),
 ):
+    # ReplayPostはDBから持ってくるときにパスワードを取得しない為空文字を許さなければならない。
+    # よってここでパスワードのバリデーションを掛けなければいけない
+    if len(delete_password) > DELETE_PASSWORD_LIMIT:
+        logger.info(
+            "パスワードが"
+            + str(len(delete_password))
+            + "文字であり、"
+            + str(DELETE_PASSWORD_LIMIT)
+            + "文字以上です"
+        )
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    if len(delete_password) <= 0:
+        logger.info(
+            "パスワードが" + str(len(delete_password)) + "文字であり0文字以下です"
+        )
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     # replay_meta_data = ReplayMetaData.new_from_file(replay_file.file)
     try:
         replay_post = ReplayPost.new_from_post(

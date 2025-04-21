@@ -183,12 +183,6 @@ def ensure_upload_comment(raw_upload_comment: str) -> str:
     return raw_upload_comment
 
 
-def ensure_delete_password(raw_delete_password: str) -> str:
-    if len(raw_delete_password) > DELETE_PASSWORD_LIMIT:
-        ValidationError("削除パスワードが{DELETE_PASSWORD_LIMIT}文字以上です")
-    return raw_delete_password
-
-
 def get_binary_size(file: BinaryIO) -> int:
     current_pos = file.tell()  # 現在の位置を覚えておく
     file.seek(0, 2)  # ファイルの末尾へ（seek(offset, whence=2)）
@@ -231,7 +225,6 @@ class ReplayPost(BaseModel):
         game_version: str,
         slow_rate: float,
         upload_comment: str,
-        delete_password: str,
     ) -> "ReplayPost":
         replay_meta_data = ReplayMetaData.new_from_input(
             game_version=game_version,
@@ -247,7 +240,6 @@ class ReplayPost(BaseModel):
             user_name=user_name,
             upload_comment=upload_comment,
             uploaded_at=uploaded_at,
-            delete_password=delete_password,
         )
 
 
