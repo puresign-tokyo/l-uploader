@@ -26,7 +26,9 @@ import uvicorn
 from replay import ReplayMetaData, ReplayPost
 from sqls import SQLReplays
 
-ALLOW_ORIGIN = f"https://alcostg-score.wefma.net"
+ALLOW_ORIGIN = os.getenv("ALLOW_FRONTEND_ORIGIN")
+if ALLOW_ORIGIN == None:
+    raise ValidationError("ALLOW_FRONTEND_ORIGINが指定されていません")
 DELETE_PASSWORD_LIMIT = 60
 
 host_dir = Path(__file__).parent
@@ -69,10 +71,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("alcostg")
 logger.info("Started")
 
-app = FastAPI(
-    docs_url=None,
-    redoc_url=None
-)
+app = FastAPI(docs_url=None, redoc_url=None)
 
 app.add_middleware(
     CORSMiddleware,
@@ -81,6 +80,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 # メタデータの一覧を返す
 @app.get("/replays")

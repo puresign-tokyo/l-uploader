@@ -33,6 +33,7 @@ services:
       - DATABASE_HOST=${DATABASE_HOST}
       - DATABASE_PORT=${DATABASE_PORT}
       - HTTP_PROTOCOL=${HTTP_PROTOCOL}
+      - ALLOW_FRONTEND_ORIGIN=${ALLOW_FRONTEND_ORIGIN}
 
   db:
     image: postgres:17

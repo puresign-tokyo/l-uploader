@@ -21,6 +21,7 @@
     FRONTEND_HOST_EXTERNAL={外部ネットワークから見たフロントエンドが動いているホスト名}
     FRONTEND_PORT_EXTERNAL={外部ネットワークから見たフロントエンドが動いているポート}
     HTTP_PROTOCOL={http or https}
+    ALLOW_FRONTEND_ORIGIN={フロントエンドが動いているオリジン}
     ```
 
 2. `alcostg-board/backend/app.py` にて `ALLOW_ORIGIN` に外から見たバックエンドが動いているオリジンを代入する
