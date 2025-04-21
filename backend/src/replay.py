@@ -13,7 +13,6 @@ NOT_IDENTIFYED = -1
 
 USER_NAME_LIMIT = 30
 UPLOAD_COMMENT_LIMIT = 300
-DELETE_PASSWORD_LIMIT = 60
 REPLAY_FILE_LIMIT = 200 * 1024
 SCORE_LIMIT = 10000000
 
@@ -196,7 +195,7 @@ class ReplayPost(BaseModel):
     user_name: Annotated[str, BeforeValidator(ensure_user_name)] = ""
     upload_comment: Annotated[str, BeforeValidator(ensure_upload_comment)] = ""
     uploaded_at: datetime = datetime.fromtimestamp(0)
-    delete_password: Annotated[str, BeforeValidator(ensure_delete_password)] = ""
+    delete_password: str = ""
     replay_meta_data: ReplayMetaData
 
     @staticmethod
