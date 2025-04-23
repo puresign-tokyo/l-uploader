@@ -29,6 +29,8 @@ ENV TZ Asia/Tokyo
 
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
+COPY ./sitemap.xml /usr/share/nginx/html/sitemap.xml
+
 COPY ./nginx/ /etc/nginx/
 
 EXPOSE 80
