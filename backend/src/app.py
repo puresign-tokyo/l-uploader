@@ -71,7 +71,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("alcostg")
 logger.info("Started")
 
-app = FastAPI(docs_url=None, redoc_url=None)
+app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
