@@ -1,9 +1,19 @@
-from fastapi import FastAPI, Query, File, UploadFile, Form, HTTPException, status
+from fastapi import (
+    FastAPI,
+    Query,
+    File,
+    UploadFile,
+    Form,
+    HTTPException,
+    status,
+    Request,
+)
 from fastapi.responses import HTMLResponse
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.responses import RedirectResponse
 from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.exception_handlers import http_exception_handler
 
 from psycopg.errors import ConnectionFailure, ConnectionTimeout
 
@@ -15,6 +25,8 @@ import shutil
 import utility
 
 import logging
+import log.log_manager as log_manager
+from log.client_ip import client_ip_context, real_client_ip_context
 
 
 import io
@@ -28,7 +40,7 @@ from sqls import SQLReplays
 
 ALLOW_ORIGIN = os.getenv("ALLOW_FRONTEND_ORIGIN")
 if ALLOW_ORIGIN == None:
-    raise ValidationError("ALLOW_FRONTEND_ORIGINが指定されていません")
+    raise ValidationError("not set ALLOW_FRONTEND_ORIGIN")
 DELETE_PASSWORD_LIMIT = 60
 
 host_dir = Path(__file__).parent
@@ -67,10 +79,6 @@ class GetReplays(BaseModel):
     upload_comment: str
 
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("alcostg")
-logger.info("Started")
-
 app = FastAPI()
 
 app.add_middleware(
@@ -81,17 +89,80 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+log_manager.init_logger_alcostg(logging.DEBUG)
+logger = log_manager.get_logger()
+
+
+def request_detail(request: Request):
+    query_params = request.query_params
+    if not query_params:
+        return f"{request.method} {request.url.path}"
+    return f"{request.method} {request.url.path}&{request.query_params}"
+
+
+@app.middleware("http")
+async def set_ip_context(request: Request, call_next):
+
+    if os.getenv("USE_CLOUDFLARE_PROXY") != "True":
+        real_client_ip_context.set("NoCloudflareProxy")
+    elif (cf_client_ip := request.headers.get("CF-Connecting-IP")) == None:
+        client_ip_context.set("")
+        real_client_ip_context.set("")
+        logger.error("did not use cloudflare proxy")
+        return JSONResponse(
+            status_code=status.HTTP_403_FORBIDDEN,
+            content={"detail": "Forbidden: validation failed"},
+        )
+    else:
+        real_client_ip_context.set(cf_client_ip)
+
+    if os.getenv("USE_REVERSE_PROXY") != "True":
+        client_ip_context.set("NoProxy")
+    elif (client_ip := request.headers.get("X-Forwarded-For")) == None:
+        client_ip_context.set("")
+        logger.error("did not use reverse proxy")
+        return JSONResponse(
+            status_code=status.HTTP_403_FORBIDDEN,
+            content={"detail": "Forbidden: validation failed"},
+        )
+    else:
+        client_ip_context.set(client_ip)
+
+    logger.info(msg=f"Start Request: {request_detail(request)}")
+    response = await call_next(request)
+    logger.info(msg=f"End Request: {request_detail(request)}")
+    return response
+
+
+@app.exception_handler(HTTPException)
+async def custom_http_exception_handler(request: Request, exc: HTTPException):
+    logger.warning(
+        f"HTTPException: {exc.status_code} {exc.detail}: {request_detail(request)}"
+    )
+    return await http_exception_handler(request, exc)
+
 
 # メタデータの一覧を返す
 @app.get("/replays")
 def get_replays(
+    request: Request,
     sort: Literal["score", "uploaded_at", "created_at"] = "score",
     order: Literal["desc", "asc"] = "asc",
     offset: int = 1,
     limit: int = 1000,
 ):
-    if offset < 0 or limit < 0:
-        return HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+
+    if offset < 0:
+        logger.error(
+            f"Invalid offset value received: {offset}. Offset must be a non-negative integer. Request rejected."
+        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+    if limit < 0:
+        logger.error(
+            f"Invalid limit value received: {limit}. Limit must be a positive integer greater than zero. Request rejected."
+        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+
     if order == "asc":
         is_asc = True
     else:
@@ -102,6 +173,7 @@ def get_replays(
             sort=sort, offset=offset, limit=limit, is_asc=is_asc
         )
     except Exception as e:
+        logger.exception(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     returning = []
@@ -125,25 +197,25 @@ def get_replays(
             )
         )
 
-    # except Exception:
-    # logger.exception("リプレイメタデータ一覧の取得に失敗しました")
-
-    # raise HTTPException(
-    #     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=""
-    # )
-
     return returning
 
 
 @app.get("/replays/{replay_id}")
-def get_replays_replay_id(replay_id: int):
+def get_replays_replay_id(request: Request, replay_id: int):
+
+    if (client_ip := request.headers.get("X-Forwarded-For")) == None:
+        logger.info("did not use reverse proxy. Bye.")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+
     try:
         replay_post = SQLReplays.select_replay(replay_id)
-    except ValueError:
+    except ValueError as e:
+        logger.exception(e)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="select replay not found"
         )
-    except:
+    except Exception as e:
+        logger.exception(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
     returning_item = GetReplays(
         replay_id=replay_post.replay_id,
@@ -158,12 +230,14 @@ def get_replays_replay_id(replay_id: int):
         slow_rate=replay_post.replay_meta_data.slow_rate,
         upload_comment=replay_post.upload_comment,
     )
+
     return JSONResponse(content=jsonable_encoder(returning_item))
 
 
 @app.get("/replays/{replay_id}/file")
 def get_replays_replay_id_file(replay_id: int):
     if not (replay_dir / str(replay_id)).exists():
+        logger.error(f"No replay found for downloading: replay_id={replay_id}")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="replay file not Found"
         )
@@ -181,24 +255,19 @@ def post_replays(
     upload_comment=Form(),
     delete_password=Form(),
 ):
-    # ReplayPostはDBから持ってくるときにパスワードを取得しない為空文字を許さなければならない。
+    # ReplayPostはDBから持きにパスワードを取得しない為空文字を許さなければならない。
     # よってここでパスワードのバリデーションを掛けなければいけない
     if len(delete_password) > DELETE_PASSWORD_LIMIT:
-        logger.info(
-            "パスワードが"
-            + str(len(delete_password))
-            + "文字であり、"
-            + str(DELETE_PASSWORD_LIMIT)
-            + "文字以上です"
+        logger.exception(
+            f"Delete password length exceeds the maximum allowed characters. Length: {len(delete_password)}, limit: {DELETE_PASSWORD_LIMIT}. Upload rejected."
         )
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
     if len(delete_password) <= 0:
         logger.info(
-            "パスワードが" + str(len(delete_password)) + "文字であり0文字以下です"
+            "Delete password is empty. A non-empty password is required for replay deletion authentication."
         )
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    # replay_meta_data = ReplayMetaData.new_from_file(replay_file.file)
     try:
         replay_post = ReplayPost.new_from_post(
             replay_file.file,
@@ -206,14 +275,19 @@ def post_replays(
             upload_comment,
             delete_password,
         )
-    except ValidationError as e:
+    except ValueError as e:
+        logger.exception(e)
         raise HTTPException(
-            status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
-            detail="invalid replay file",
+            status_code=status.HTTP_400_BAD_REQUEST,
         )
+    except Exception as e:
+        logger.exception(e)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     try:
         replay_id = SQLReplays.insert_replay_meta_data(replay_post)
-    except:
+    except Exception as e:
+        logger.exception(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     # ReplayPost.new_from_postで最後までseekしてしまっているから
@@ -233,14 +307,20 @@ def delete_replays_replay_id(replay_id: int, body: DeleteReplays):
             replay_id=replay_id,
             requested_raw_delete_password=body.delete_password,
         )
-    except ValueError:
+    except ValueError as e:
+        logger.exception(e)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="password mismatch"
         )
-    except KeyError:
+    except KeyError as e:
+        logger.exception(e)
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT, detail="requested replay not found"
         )
+    except Exception as e:
+        logger.exception(e)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     os.remove(replay_dir / str(replay_id))
     return
 

@@ -23,6 +23,9 @@ services:
       - type: bind
         source: "./backend/src"
         target: "/app"
+      - type: bind
+        source: "/var/log"
+        target: "/var/log"
       - replays:/replays/
     environment:
       - POSTGRES_USER=${DB_USER}
@@ -34,6 +37,8 @@ services:
       - DATABASE_PORT=${DATABASE_PORT}
       - HTTP_PROTOCOL=${HTTP_PROTOCOL}
       - ALLOW_FRONTEND_ORIGIN=${ALLOW_FRONTEND_ORIGIN}
+      - USE_REVERSE_PROXY=${USE_REVERSE_PROXY}
+      - USE_CLOUDFLARE_PROXY=${USE_CLOUDFLARE_PROXY}
 
   db:
     image: postgres:17

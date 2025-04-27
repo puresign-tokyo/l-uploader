@@ -12,11 +12,15 @@ import os
 
 from datetime import datetime
 
+from log import log_manager
+
 STRETCH_NUMBER = 126990
 
 # conn = psycopg.connect()
 # cur = conn.cursor()
 # cur.execute(query)
+
+logger = log_manager.get_logger()
 
 
 def encrypt_password(raw_password: str, salt: str):
@@ -46,12 +50,14 @@ class DBClient:
     @contextmanager  # with句で返したものをyieldで返すことができるようにするデコレータ
     def connect(self):
         with psycopg.connect(build_db_kwargs()) as conn:
+            logger.info("database connected")
             yield conn
 
     @contextmanager  # with句で返したものをyieldで返すことができるようにするデコレータ
     def transactional(self):
         with self.connect() as conn:
             with conn.transaction():
+                logger.info("database transaction is started")
                 yield conn
 
 
@@ -123,7 +129,12 @@ class SQLReplays:
 
                 returning = cur.fetchone()
                 if returning == None:
-                    raise ValueError("DBにリプレイメタデータをINSERTできませんでした")
+                    raise ValueError(
+                        f"Failed to insert replay metadata into database: user_name={replay_post.user_name}"
+                    )
+                logger.info(
+                    f"Replay metadata is successfully inserted to database: replay_id={returning["replay_id"]}, user_name={replay_post.user_name}"
+                )
                 return returning["replay_id"]
 
     @staticmethod
@@ -132,22 +143,35 @@ class SQLReplays:
             with conn.cursor(row_factory=dict_row) as cur:
                 # cur.execute("DELETE FROM replays WHERE replay_id = %s;", (replay_id,))
                 cur.execute(
-                    "SELECT delete_password, salt FROM replays WHERE replay_id=%s",
+                    "SELECT user_name, delete_password, salt FROM replays WHERE replay_id=%s",
                     (replay_id,),
                 )
 
                 selected = cur.fetchone()
 
                 if selected == None:
-                    raise KeyError("DBにリプレイメタデータが存在しませんでした")
+                    raise KeyError(
+                        f"No replay found for deletion: replay_id={replay_id}"
+                    )
+                logger.info(
+                    f"Replay found for deletion: replay_id={replay_id}, user_name={selected["user_name"]}"
+                )
 
                 if (
                     encrypt_password(requested_raw_delete_password, selected["salt"])
                     != selected["delete_password"]
                 ):
-                    raise ValueError("パスワードが違います")
+                    raise ValueError(
+                        f"Password verification failed: replay_id={replay_id}, user_name{selected["user_name"]}"
+                    )
+                logger.info(
+                    f"Password verification succeeded: replay_id={replay_id}, user_name={selected["user_name"]}"
+                )
 
                 cur.execute("DELETE FROM replays WHERE replay_id=%s", (replay_id,))
+                logger.info(
+                    f"Replay metadata deleted from database: replay_id={replay_id}, user_name={selected["user_name"]}"
+                )
 
     @staticmethod
     def select_replay(replay_id: int) -> ReplayPost:
@@ -173,9 +197,13 @@ class SQLReplays:
                 )
                 selected = cur.fetchone()
                 if selected == None:
-                    raise ValueError(
-                        "リプレイファイルのメタデータを取得できませんでした"
+                    raise KeyError(
+                        f"No replay found for deletion in database: replay_id={replay_id}"
                     )
+                logger.info(
+                    f"Replay found for deletion: replay_id={replay_id}, user_name={selected["user_name"]}"
+                )
+
                 replay_post = ReplayPost.new_from_input(
                     replay_id=replay_id,
                     user_name=selected["user_name"],
@@ -189,7 +217,10 @@ class SQLReplays:
                     upload_comment=selected["upload_comment"],
                 )
                 if cur.fetchone() != None:
-                    raise KeyError("データベースの不整合が起こっています")
+                    raise KeyError(
+                        f"Data integrity error: expected one record for replay_id={replay_id}, but found multi records. "
+                        "This indicates a possible primary key violation or corruption in the replay metadata table."
+                    )  # fetchallを使って全ての件数取得すれば何件ヒットしてしまったかを検知出来そう？
                 return replay_post
 
     @staticmethod
@@ -251,7 +282,7 @@ class SQLReplays:
                 selected = cur.fetchone()
                 if selected == None:
                     raise ValueError(
-                        "リプレイファイルのメタデータを取得できませんでした"
+                        f"No replays found for the given query parameters: sort='{sort}', order='{"ASC" if is_asc else "DESC"}', offset={offset}, limit={limit}."
                     )
                 replay_posts = []
                 while True:
@@ -272,6 +303,9 @@ class SQLReplays:
                     selected = cur.fetchone()
                     if selected == None:
                         break
+                logger.info(
+                    f"Successfully retrieved {len(replay_posts)} replays sorted by '{sort}' in {"ASC" if is_asc else "DESC"} order (offset={offset}, limit={limit})."
+                )
                 return replay_posts
 
 
