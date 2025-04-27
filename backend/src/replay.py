@@ -45,7 +45,6 @@ def ensure_created_past(raw_created_at: datetime) -> datetime:
 
 def ensure_stage_value(raw_stage: str) -> str:
     if raw_stage not in ["1", "1 〜 2", "1 〜 3", "All Clear"]:
-        print(raw_stage)
         ValueError(
             f"Invalid stage reach value: '{raw_stage}' provided in replay file. Valid values are ['1', '1 〜 2', '1 〜 3', 'All Clear']. Rejecting replay registration."
         )
@@ -187,7 +186,6 @@ class ReplayMetaData(BaseModel):
 
 
 def ensure_user_name(raw_user_name: str) -> str:
-    print(raw_user_name)
     if len(raw_user_name) > USER_NAME_LIMIT:
         ValueError(
             f"User name exceeds the maximum allowed length. User name '{raw_user_name}' is too long. The maximum allowed length is {USER_NAME_LIMIT} characters. Please shorten the user name."
