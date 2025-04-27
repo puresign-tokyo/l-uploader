@@ -6,13 +6,12 @@ from functools import cache
 from logging.handlers import RotatingFileHandler
 from fastapi import Request
 
-from log.client_ip import client_ip_context, real_client_ip_context
+from log.client_ip import client_ip_context
 
 
 class ClientIpFilter(Filter):
     def filter(self, record):
         record.client_ip = client_ip_context.get()
-        record.real_client_ip = real_client_ip_context.get()
         return True
 
 
@@ -27,7 +26,7 @@ def init_logger_alcostg(level: int):
         "/var/log/alcostg.log", maxBytes=1 * 1024 * 1024, backupCount=3
     )
     formatter = Formatter(
-        "%(asctime)s - %(levelname)s - %(name)s - [%(real_client_ip)s][%(client_ip)s] %(message)s"
+        "%(asctime)s - %(levelname)s - %(name)s - [%(client_ip)s] %(message)s"
     )
     handler.setFormatter(formatter)
     logger.addHandler(handler)

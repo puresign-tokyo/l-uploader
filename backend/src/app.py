@@ -26,7 +26,7 @@ import utility
 
 import logging
 import log.log_manager as log_manager
-from log.client_ip import client_ip_context, real_client_ip_context
+from log.client_ip import client_ip_context
 
 
 import io
@@ -102,19 +102,6 @@ def request_detail(request: Request):
 
 @app.middleware("http")
 async def set_ip_context(request: Request, call_next):
-
-    if os.getenv("USE_CLOUDFLARE_PROXY") != "True":
-        real_client_ip_context.set("NoCloudflareProxy")
-    elif (cf_client_ip := request.headers.get("CF-Connecting-IP")) == None:
-        client_ip_context.set("")
-        real_client_ip_context.set("")
-        logger.error("did not use cloudflare proxy")
-        return JSONResponse(
-            status_code=status.HTTP_403_FORBIDDEN,
-            content={"detail": "Forbidden: validation failed"},
-        )
-    else:
-        real_client_ip_context.set(cf_client_ip)
 
     if os.getenv("USE_REVERSE_PROXY") != "True":
         client_ip_context.set("NoProxy")
