@@ -222,8 +222,6 @@ const detailDialog =ref(false)
 
 
 const formatDate=(isoString)=>{
-// GMT+0であるのにZがついてなかった
-const date=new Date(`${isoString}Z`)
 const formatter=new Intl.DateTimeFormat('ja-JP',{
   timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   year: 'numeric',
@@ -234,7 +232,7 @@ const formatter=new Intl.DateTimeFormat('ja-JP',{
   second: '2-digit',
   hour12: false
 })
-return formatter.format(date)
+return formatter.format(new Date(isoString))
 }
 
 function createDownloadLink(replayId){
@@ -275,7 +273,7 @@ function openFocusedDialog(item){
 async function selectSort(){
   const sortQuery=sortCategoriesMap[selectedSortCategory.value]
   loading.value=true
-  try{
+ try{
     const data=await $fetch(
       `${useRuntimeConfig().public.backend_url}/replays?sort=${sortQuery}&order=desc&offset=0&limit=1000`,{
         server: false,
@@ -293,9 +291,9 @@ async function selectSort(){
         },
       }
     )
-  }catch(error){
-    alert(`${error.statusCode};${error.statusMessage};${error.data.detail}`)
-    console.error(error)
+ }catch(error){
+   alert(`${error.statusCode};${error.statusMessage};${error.data.detail}`)
+   console.error(error)
   }
 }
 
