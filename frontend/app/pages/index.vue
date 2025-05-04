@@ -26,56 +26,13 @@
 
         <!-- 詳細表示 -->
         <template #[`item.detail`]="{item}">
-          <v-dialog
-            v-model="detailDialog"
-            max-width="600"
-            scrim="rgba(0, 0, 0, 0.2)"
-          >
-          <template v-slot:activator="{ props: activatorDetailProps }">
-            <v-icon
-              icon="mdi-information-outline"
-              variant="tonal"
-              v-bind="activatorDetailProps"
-              @click="openFocusedDialog(item)"
-            />
-          </template>
-
-          <v-card class="elevation-0">
-            
-            <v-container>
-              <v-list v-for="(item, index) in detailFields" :key="index">
-                <v-list-item-subtitle class="custom-v-list-item-subtitle">{{item.label}}</v-list-item-subtitle>
-                <v-list-item>
-                  <v-list-item-title class="custom-v-list-item-title">{{focusedItem[item.value]}}</v-list-item-title>
-                </v-list-item>
-              </v-list>
-
-              <!-- ダウンロードリンクだけリンクを付ける必要があるので直書きする -->
-              <v-list>
-                <v-list-item-subtitle class="custom-v-list-item-subtitle">ダウンロードリンク</v-list-item-subtitle>
-                <v-list-item>
-                  <v-list-item-title class="custom-v-list-item-title">
-                    <a :href="createDownloadLink(focusedItem['replay_id'])">
-                      {{focusedItem['replay_file_name']}}
-                    </a></v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-container>
-
-            <v-divider></v-divider>
-
-            <v-card-actions>
-              <v-spacer></v-spacer>
-
-              <v-btn
-                text="閉じる"
-                variant="plain"
-                @click="detailDialog = false"
-              ></v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-          </template>
+          <v-icon
+            icon="mdi-information-outline"
+            variant="tonal"
+            v-bind="activatorDetailProps"
+            @click="openFocusedDialog(item)"
+          />
+        </template>
 
           <!-- ダウンロードリンク作成 -->
           <template #[`item.download`]="{item}">
@@ -85,76 +42,103 @@
           </template>
 
           <!-- 削除フォーム作成 -->
-          <template #[`item.delete`]="{item}">
-              <v-dialog
-          v-model="dialog"
-          max-width="600"
-          scrim="rgba(0, 0, 0, 0.2)"
-        >
-          <template v-slot:activator="{ props: activatorProps }">
+          <template #[`item.delete`]="{ item }">
             <v-icon
               class="text-none font-weight-regular"
               icon="mdi-trash-can-outline"
               variant="tonal"
-              v-bind="activatorProps"
               color="error"
               @click="openDeleteDialog(item)"
-            ></v-icon>
-          </template>
-
-          <v-card
-            :title="`${pendingDeleteItem.replay_file_name}を削除する`"
-            text="削除用パスワードを入力してください"
-            class="elevation-0"
-          >
-            
-            <v-card-text>
-              <v-row dense>
-                <v-col
-                  cols="12"
-                  md="4"
-                  sm="6"
-                >
-                  <v-text-field
-                    v-model="deletePassword"
-                    label="削除用パスワード"
-                    required
-                    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                    :type="showPassword ? 'text' : 'password'"
-                    @click:append="showPassword = !showPassword"
-                  ></v-text-field>
-                </v-col>
-
-
-              </v-row>
-
-              
-            </v-card-text>
-
-            <v-divider></v-divider>
-
-            <v-card-actions>
-              <v-spacer></v-spacer>
-
-              <v-btn
-                text="閉じる"
-                variant="plain"
-                @click="dialog = false"
-              ></v-btn>
-
-              <v-btn
-                color="error"
-                text="削除"
-                variant="tonal"
-                @click="sendDeleteReplay"
-              ></v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+            />
           </template>
 
       </v-data-table>
     </v-container>
+
+    <!-- 詳細ダイアログ -->
+    <v-dialog
+      v-model="detailDialog"
+      max-width="600"
+      scrim="rgba(0, 0, 0, 0.5)"
+      attach="body"
+    >
+      <v-card class="elevation-0">
+        <v-container>
+          <v-list v-for="(item, index) in detailFields" :key="index">
+            <v-list-item-subtitle class="custom-v-list-item-subtitle">{{item.label}}</v-list-item-subtitle>
+            <v-list-item>
+              <v-list-item-title class="custom-v-list-item-title">{{focusedItem[item.value]}}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+    
+          <!-- ダウンロードリンク -->
+          <v-list>
+            <v-list-item-subtitle class="custom-v-list-item-subtitle">ダウンロードリンク</v-list-item-subtitle>
+            <v-list-item>
+              <v-list-item-title class="custom-v-list-item-title">
+                <a :href="createDownloadLink(focusedItem['replay_id'])">
+                  {{focusedItem['replay_file_name']}}
+                </a>
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-container>
+    
+        <v-divider></v-divider>
+    
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text="閉じる" variant="plain" @click="detailDialog = false"></v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- 削除ダイアログ -->
+    <v-dialog
+      v-model="dialog"
+      max-width="600"
+      scrim="rgba(0, 0, 0, 0.5)"
+      attach="body"
+    >
+      <v-card
+        :title="`${pendingDeleteItem?.replay_file_name ?? ''}を削除する`"
+        text="削除用パスワードを入力してください"
+        class="elevation-0"
+      >
+        <v-card-text>
+          <v-row dense>
+            <v-col cols="12" md="4" sm="6">
+              <v-text-field
+                v-model="deletePassword"
+                label="削除用パスワード"
+                required
+                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="showPassword ? 'text' : 'password'"
+                @click:append="showPassword = !showPassword"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            text="閉じる"
+            variant="plain"
+            @click="dialog = false"
+          ></v-btn>
+          <v-btn
+            color="error"
+            text="削除"
+            variant="tonal"
+            @click="sendDeleteReplay"
+          ></v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
   </ClientOnly>
 
 
