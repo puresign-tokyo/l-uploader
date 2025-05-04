@@ -16,130 +16,145 @@
   </v-container>
 
   <ClientOnly>
-  <v-data-table
-      :headers="headers[sortCategoriesMap[selectedSortCategory]]"
-      :items="replaysTable"
-      :loading="loading"
-      loading-text="loading..."
-  >
-
-    <!-- 詳細表示 -->
-    <template #[`item.detail`]="{item}">
-      <v-dialog
-        v-model="detailDialog"
-        max-width="600"
-        overlay-opacity="0.5"
+    <v-container>
+      <v-data-table
+          :headers="headers[sortCategoriesMap[selectedSortCategory]]"
+          :items="replaysTable"
+          :loading="loading"
+          loading-text="loading..."
       >
-      <template v-slot:activator="{ props: activatorDetailProps }">
-        <v-icon
-          icon="mdi-information-outline"
-          variant="tonal"
-          v-bind="activatorDetailProps"
-          @click="openFocusedDialog(item)"
-        />
-      </template>
 
-      <v-card>
-        
-        <v-container>
-          <v-list v-for="(item, index) in detailFields" :key="index">
-            <v-list-item-subtitle class="custom-v-list-item-subtitle">{{item.label}}</v-list-item-subtitle>
-            <v-list-item>
-              <v-list-item-title class="custom-v-list-item-title">{{focusedItem[item.value]}}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-container>
-
-        <v-divider></v-divider>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
-          <v-btn
-            text="閉じる"
-            variant="plain"
-            @click="detailDialog = false"
-          ></v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-      </template>
-
-      <!-- ダウンロードリンク作成 -->
-      <template #[`item.download`]="{item}">
-          <a
-              :href="`${createDownloadLink(item.replay_id)}`"
-          >{{item.replay_file_name}}</a>
-      </template>
-
-      <!-- 削除フォーム作成 -->
-      <template #[`item.delete`]="{item}">
+        <!-- 詳細表示 -->
+        <template #[`item.detail`]="{item}">
           <v-dialog
-      v-model="dialog"
-      max-width="600"
-    >
-      <template v-slot:activator="{ props: activatorProps }">
-        <v-icon
-          class="text-none font-weight-regular"
-          icon="mdi-trash-can-outline"
-          variant="tonal"
-          v-bind="activatorProps"
-          color="error"
-          @click="openDeleteDialog(item)"
-        ></v-icon>
-      </template>
+            v-model="detailDialog"
+            max-width="600"
+            scrim="rgba(0, 0, 0, 0.2)"
+          >
+          <template v-slot:activator="{ props: activatorDetailProps }">
+            <v-icon
+              icon="mdi-information-outline"
+              variant="tonal"
+              v-bind="activatorDetailProps"
+              @click="openFocusedDialog(item)"
+            />
+          </template>
 
-      <v-card
-        :title="`${pendingDeleteItem.replay_file_name}を削除する`"
-        text="削除用パスワードを入力してください"
-      >
-        
-        <v-card-text>
-          <v-row dense>
-            <v-col
-              cols="12"
-              md="4"
-              sm="6"
-            >
-              <v-text-field
-                v-model="deletePassword"
-                label="削除用パスワード"
-                required
-                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                :type="showPassword ? 'text' : 'password'"
-                @click:append="showPassword = !showPassword"
-              ></v-text-field>
-            </v-col>
+          <v-card class="elevation-0">
+            
+            <v-container>
+              <v-list v-for="(item, index) in detailFields" :key="index">
+                <v-list-item-subtitle class="custom-v-list-item-subtitle">{{item.label}}</v-list-item-subtitle>
+                <v-list-item>
+                  <v-list-item-title class="custom-v-list-item-title">{{focusedItem[item.value]}}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+
+              <!-- ダウンロードリンクだけリンクを付ける必要があるので直書きする -->
+              <v-list>
+                <v-list-item-subtitle class="custom-v-list-item-subtitle">ダウンロードリンク</v-list-item-subtitle>
+                <v-list-item>
+                  <v-list-item-title class="custom-v-list-item-title">
+                    <a :href="createDownloadLink(focusedItem['replay_id'])">
+                      {{focusedItem['replay_file_name']}}
+                    </a></v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-container>
+
+            <v-divider></v-divider>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+
+              <v-btn
+                text="閉じる"
+                variant="plain"
+                @click="detailDialog = false"
+              ></v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+          </template>
+
+          <!-- ダウンロードリンク作成 -->
+          <template #[`item.download`]="{item}">
+              <a
+                  :href="`${createDownloadLink(item.replay_id)}`"
+              >{{item.replay_file_name}}</a>
+          </template>
+
+          <!-- 削除フォーム作成 -->
+          <template #[`item.delete`]="{item}">
+              <v-dialog
+          v-model="dialog"
+          max-width="600"
+          scrim="rgba(0, 0, 0, 0.2)"
+        >
+          <template v-slot:activator="{ props: activatorProps }">
+            <v-icon
+              class="text-none font-weight-regular"
+              icon="mdi-trash-can-outline"
+              variant="tonal"
+              v-bind="activatorProps"
+              color="error"
+              @click="openDeleteDialog(item)"
+            ></v-icon>
+          </template>
+
+          <v-card
+            :title="`${pendingDeleteItem.replay_file_name}を削除する`"
+            text="削除用パスワードを入力してください"
+            class="elevation-0"
+          >
+            
+            <v-card-text>
+              <v-row dense>
+                <v-col
+                  cols="12"
+                  md="4"
+                  sm="6"
+                >
+                  <v-text-field
+                    v-model="deletePassword"
+                    label="削除用パスワード"
+                    required
+                    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    :type="showPassword ? 'text' : 'password'"
+                    @click:append="showPassword = !showPassword"
+                  ></v-text-field>
+                </v-col>
 
 
-          </v-row>
+              </v-row>
 
-          
-        </v-card-text>
+              
+            </v-card-text>
 
-        <v-divider></v-divider>
+            <v-divider></v-divider>
 
-        <v-card-actions>
-          <v-spacer></v-spacer>
+            <v-card-actions>
+              <v-spacer></v-spacer>
 
-          <v-btn
-            text="閉じる"
-            variant="plain"
-            @click="dialog = false"
-          ></v-btn>
+              <v-btn
+                text="閉じる"
+                variant="plain"
+                @click="dialog = false"
+              ></v-btn>
 
-          <v-btn
-            color="error"
-            text="削除"
-            variant="tonal"
-            @click="sendDeleteReplay"
-          ></v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-      </template>
+              <v-btn
+                color="error"
+                text="削除"
+                variant="tonal"
+                @click="sendDeleteReplay"
+              ></v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+          </template>
 
-  </v-data-table>
+      </v-data-table>
+    </v-container>
   </ClientOnly>
 
 
@@ -181,6 +196,7 @@ const headers={
     {title: '順位', key: 'rank', sortable: false},
     {title: '支払い金額(円)', key: 'score', sortable: false},
     {title: 'ユーザ名', key: 'user_name', sortable: false},
+    {title: 'プレイ時刻', key: 'created_at', sortable: false},
     {title: 'ダウンロード', key: 'download', sortable: false},
     {title: '', key: 'detail', sortable: false},
     {title: '', key: 'delete', sortable: false}
@@ -197,6 +213,7 @@ const headers={
     {title: '投稿時刻', key: 'uploaded_at', sortable: false},
     {title: '支払い金額(円)', key: 'score', sortable: false},
     {title: 'ユーザ名', key: 'user_name', sortable: false},
+    {title: 'プレイ時刻', key: 'created_at', sortable: false},
     {title: 'ダウンロード', key: 'download', sortable: false},
     {title: '', key: 'detail', sortable: false},
     {title: '', key: 'delete', sortable: false}
@@ -204,16 +221,15 @@ const headers={
 }
 
 const detailFields=[
-{label: 'リプレイファイル名', value: 'replay_file_name'},
-{label: 'ユーザ名', value: 'user_name'},
-{label: 'リプレイ名', value: 'replay_name'},
-{label: '支払金額', value: 'score'},
-{label: 'ステージ', value: 'stage'},
-{label: '処理落ち率', value: 'slow_rate'},
-{label: 'ゲームバージョン', value: 'game_version'},
-{label: 'プレイ日付', value: 'created_at'},
-{label: '投稿日付', value: 'uploaded_at'},
-{label: 'コメント', value: 'upload_comment'}
+  {label: 'ユーザ名', value: 'user_name'},
+  {label: 'リプレイ名', value: 'replay_name'},
+  {label: '支払金額', value: 'score'},
+  {label: 'ステージ', value: 'stage'},
+  {label: '処理落ち率', value: 'slow_rate'},
+  {label: 'ゲームバージョン', value: 'game_version'},
+  {label: 'プレイ日付', value: 'created_at'},
+  {label: '投稿日付', value: 'uploaded_at'},
+  {label: 'コメント', value: 'upload_comment'}
 ]
 
 const dialog = ref(false)
