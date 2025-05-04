@@ -256,6 +256,7 @@ def post_replays(
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     try:
+        # このreplay_postはreplay_idのみ入っていない(DBに登録して始めてreplay_idが付与される為)
         replay_post = ReplayPost.new_from_post(
             replay_file.file,
             user_name,
@@ -284,7 +285,21 @@ def post_replays(
 
     replay_file.file.close()
 
-    return
+    returning_item = GetReplays(
+        replay_id=replay_id,
+        replay_file_name=f"alco_ud{utility.id_to_filename(replay_id)}.rpy",
+        user_name=replay_post.user_name,
+        replay_name=replay_post.replay_meta_data.replay_name,
+        created_at=replay_post.replay_meta_data.created_at.isoformat(),
+        stage=utility.stage_mapping[replay_post.replay_meta_data.stage],
+        score="{:,}".format(replay_post.replay_meta_data.score),
+        uploaded_at=replay_post.uploaded_at.isoformat(),
+        game_version=replay_post.replay_meta_data.game_version,
+        slow_rate=replay_post.replay_meta_data.slow_rate,
+        upload_comment=replay_post.upload_comment,
+    )
+
+    return returning_item
 
 
 @app.delete("/replays/{replay_id}")

@@ -83,33 +83,54 @@
           </v-card-actions>
         </v-card-text>
       </v-card>
-      <v-snackbar
-        v-model="snackbar"
+
+
+      <ClientOnly>
+      <v-dialog
+        v-model="dialogSuccessPost"
+        max-width="600"
+        scrim="rgba(0, 0, 0, 0.5)"
       >
-        送信しました
-        <template v-slot:actions>
-          <v-btn
-            color="success"
-            variant="outlined"
-            @click="snackbar = false"
-          >
-            Close
-          </v-btn>
-        </template>
-      </v-snackbar>
+        <v-card
+          class="elevation-0"
+        >
+          <v-card-title>リプレイを投稿しました</v-card-title>
+          <v-container class="d-flex justify-center">
+            <v-btn
+              prepend-icon="mdi-twitter"
+              color="blue darken-1"
+              max-width="200"
+              @click="shareToTweet"
+            >Twitterでシェアする</v-btn>
+          </v-container>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              text="閉じる"
+              variant="plain"
+              @click="dialogSuccessPost = false"
+            />
+            
+          </v-card-actions>
+
+        </v-card>
+
+      </v-dialog>
+      </ClientOnly>
     
     </v-main>
       </template>
       
     <script setup>
+        import { ClientOnly } from '#components'
         import { ref } from 'vue'
     
         const userName = ref('')
         const replayFile = ref(null)
         const uploadComment = ref('')
         const deletePassword = ref('')
-        const snackbar=ref(false)
-        
+        const dialogSuccessPost=ref(false)
+        const pendingTweetText=ref('')
         const showPassword=ref(false)
     
         const validateUserName=(value) => value.length<=30 || '30文字以内で入力してください'
@@ -153,16 +174,32 @@
                   if(200<=response.status && response.status<300){
                     replayFile.value=null
                     uploadComment.value=''
-                    snackbar.value=true
+                    pendingTweetText.value=`
+#黄昏酒場スコアボード に
+支払金額が${response._data["score"]}円の
+ファイル名が${response._data["replay_file_name"]}のリプレイを
+投稿しました！
+
+リプレイのダウンロードはこちらから！
+${useRuntimeConfig().public.backend_url}/replays/${response._data["replay_id"]}/file
+
+`
+                    dialogSuccessPost.value=true
                   }
                 }
               }
-
             )
-          }catch(error){
-            alert(`${error.statusCode};${error.statusMessage};${error.data.detail}`)
-          }
+           }catch(error){
+             alert(`${error.statusCode};${error.statusMessage};${error.data.detail}`)
+           }
     
+        }
+
+        const shareToTweet=()=>{
+          const text=encodeURIComponent(pendingTweetText.value)
+          const url=encodeURIComponent(`${window.location.origin}/`)
+          window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`)
+          dialogSuccessPost.value=false
         }
     
       </script>
