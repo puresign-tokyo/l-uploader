@@ -14,7 +14,7 @@
             <section class="mb-4">
               <h3 class="text-subtitle-2 font-weight-medium">第1条（適用）</h3>
               <ol class="pl-6">
-                <li>本規約は，ユーザーと管理者との間の本サービスの利用に関わる一切の関係に適用されるものとします。</li>
+                <li>本規約は，ユーザーと管理者との間の本サービスの利用に係る一切の関係に適用されるものとします。</li>
               </ol>
             </section>
             <section class="mb-4">
