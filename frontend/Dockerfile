@@ -1,38 +1,41 @@
-# ビルド環境
-
-FROM node:18.12.0-buster as build-stage
-
-ENV TZ Asia/Tokyo
+FROM node:23.11.0-bullseye-slim as build-stage
 
 WORKDIR /app
-
-ARG VUE_APP_BACKEND_HOST
-ARG VUE_APP_BACKEND_PORT
-ARG VUE_APP_HTTP_PROTOCOL
-
-ENV VUE_APP_BACKEND_HOST=$VUE_APP_BACKEND_HOST
-ENV VUE_APP_BACKEND_PORT=$VUE_APP_BACKEND_PORT
-ENV VUE_APP_HTTP_PROTOCOL=$VUE_APP_HTTP_PROTOCOL
-
-RUN yarn global add @vue/cli
+ENV LANG=C.UTF-8 \
+    TZ=Asia/Tokyo
 
 COPY ./app /app
 
-RUN yarn install
+RUN yarn install && yarn cache clean
+
+ARG NUXT_PUBLIC_HTTP_PROTOCOL
+ARG NUXT_PUBLIC_BACKEND_HOST
+ARG NUXT_PUBLIC_BACKEND_PORT
+ARG NUXT_PUBLIC_FRONTEND_HOST
+ARG NUXT_PUBLIC_FRONTEND_PORT
+
+ENV NUXT_PUBLIC_HTTP_PROTOCOL=$NUXT_PUBLIC_HTTP_PROTOCOL
+ENV NUXT_PUBLIC_BACKEND_HOST=$NUXT_PUBLIC_BACKEND_HOST
+ENV NUXT_PUBLIC_BACKEND_PORT=$NUXT_PUBLIC_BACKEND_PORT
+ENV NUXT_PUBLIC_FRONTEND_HOST=$NUXT_PUBLIC_FRONTEND_HOST
+ENV NUXT_PUBLIC_FRONTEND_PORT=$NUXT_PUBLIC_FRONTEND_PORT
+
+# CMD [ "yarn", "run", "dev" ]
 
 RUN yarn build
 
-# 本番環境
-FROM nginx as production-stage
+FROM node:23.11.0-bullseye-slim
 
-ENV TZ Asia/Tokyo
+WORKDIR /app
 
-COPY --from=build-stage /app/dist /usr/share/nginx/html
+ENV LANG=C.UTF-8 \
+    TZ=Asia/Tokyo
 
-COPY ./sitemap.xml /usr/share/nginx/html/sitemap.xml
+COPY --from=build-stage /app/.output .output
+COPY --from=build-stage /app/package.json ./package.json
 
-COPY ./nginx/ /etc/nginx/
+ENV NODE_ENV=production
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["node", ".output/server/index.mjs"]
