@@ -222,9 +222,19 @@ const detailDialog =ref(false)
 
 
 const formatDate=(isoString)=>{
-const date=new Date(isoString)
-const pad = (n) => n.toString().padStart(2,'0')
-return `${date.getFullYear()}年 ${pad(date.getMonth()+1)}月 ${pad(date.getDate())}日 ${pad(date.getHours())}時 ${pad(date.getMinutes())}分 ${pad(date.getSeconds())}秒`
+// GMT+0であるのにZがついてなかった
+const date=new Date(`${isoString}Z`)
+const formatter=new Intl.DateTimeFormat('ja-JP',{
+  timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: false
+})
+return formatter.format(date)
 }
 
 function createDownloadLink(replayId){
