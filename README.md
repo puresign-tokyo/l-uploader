@@ -1,10 +1,11 @@
-# alcostg-board
-黄昏酒場スコアボード
+# th-uploader
+
+東方リプレイアップローダ
 
 
 ## 使用方法
 
-1. `alcostg-board/.env` ファイルを作成し、以下のようなファイル内容にする
+1. `th-uploader/.env` ファイルを作成し、以下のようなファイル内容にする
 
     ```
     DB_USER={DBのユーザ名}
@@ -24,6 +25,6 @@
     ALLOW_FRONTEND_ORIGIN={フロントエンドが動いているオリジン}
     ```
 
-2. `alcostg-board/backend/app.py` にて `ALLOW_ORIGIN` に外から見たバックエンドが動いているオリジンを代入する
+2. `th-uploader/backend/app.py` にて `ALLOW_ORIGIN` に外から見たバックエンドが動いているオリジンを代入する
 
 3. `sudo docker compose up --build`
