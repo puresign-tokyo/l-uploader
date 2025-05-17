@@ -3,10 +3,31 @@ import math
 from parsers.py_code import th14, th_modern
 from parsers.base_parser import BaseParser
 import tsadecode as td
-from games.th14.th14_replay_info import th14ReplayInfo, th14StageDetails
+from games.th14.th14_replay_info import TH14ReplayInfo, TH14StageDetail
 
-class Th14Parser(BaseParser):
-    
+
+class TH14Parser(BaseParser):
+
+    def can_parse(self, rep_raw: bytes) -> bool:
+
+        # th13とth14のファイルのマジック値はどちらも t13r というバグがある
+        # よってマジックを確認するだけではth13とth14のどちらのリプレイファイルか分からない
+        # リプレイファイルの末尾に平文で
+        # `東方[神霊廟 | 輝針城][SP]リプレイファイル情報`
+        # と書かれている項があり、それをもとに判定することができる
+
+        # 重いパースをしなくてもth14リプレイファイルでないとわかるなら即返す
+        if rep_raw[:4] != b"t13r":
+            return False
+
+        header = th_modern.ThModern.from_bytes(rep_raw)
+
+        # [0x90, 0xC9] はshift-jisで `城`
+        if header.userdata.user_desc[4] in [0x8B, 0xBB]:
+            return True
+
+        return False
+
     def parse(self, rep_raw: bytes):
         header = th_modern.ThModern.from_bytes(rep_raw)
         comp_data = bytearray(header.main.comp_data)
@@ -19,8 +40,8 @@ class Th14Parser(BaseParser):
         rep_stages = []
 
         if replay.header.spell_practice_id != 0xFFFFFFFF:
-            return th14ReplayInfo(
-                shot=shot_types[replay.header.shot * 2 + replay.header.subshot],
+            return TH14ReplayInfo(
+                shot_type=shot_types[replay.header.shot * 2 + replay.header.subshot],
                 difficulty=replay.header.difficulty,
                 total_score=replay.header.score * 10,
                 timestamp=datetime.fromtimestamp(
@@ -30,13 +51,13 @@ class Th14Parser(BaseParser):
                 slowdown=replay.header.slowdown,
                 replay_type="spell_card",
                 spell_card_id=replay.header.spell_practice_id,
-                stage_details=[]
+                stage_details=[],
             )
 
         for current_stage_start_data, next_stage_start_data in zip(
             replay.stages, replay.stages[1:] + [None]
         ):
-            s = th14StageDetails(
+            s = TH14StageDetail(
                 stage=current_stage_start_data.stage_num,
             )
             if next_stage_start_data is not None:
@@ -57,13 +78,11 @@ class Th14Parser(BaseParser):
         if len(rep_stages) == 1 and replay.header.difficulty != 4:
             replay_type = "stage_practice"
 
-        r = th14ReplayInfo(
+        r = TH14ReplayInfo(
             shot_type=shot_types[replay.header.shot * 2 + replay.header.subshot],
             difficulty=replay.header.difficulty,
             total_score=replay.header.score * 10,
-            timestamp=datetime.fromtimestamp(
-                replay.header.timestamp, tz=timezone.utc
-            ),
+            timestamp=datetime.fromtimestamp(replay.header.timestamp, tz=timezone.utc),
             name=replay.header.name.replace("\x00", ""),
             slowdown=replay.header.slowdown,
             replay_type=replay_type,
@@ -72,3 +91,6 @@ class Th14Parser(BaseParser):
         )
 
         return r
+
+
+TH14Parser()

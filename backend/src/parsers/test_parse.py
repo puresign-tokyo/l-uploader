@@ -1,7 +1,8 @@
 from parsers.base_parser import BaseParser
+from pathlib import Path
 import json
 
-def test_parse_replay(parser: BaseParser,filename: str):
+def test_parse_replay(parser: BaseParser, filename: Path):
     with open(filename,"rb") as f:
         rep=f.read()
         rep_parse=parser.parse(rep)

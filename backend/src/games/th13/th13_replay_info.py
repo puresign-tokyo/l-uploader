@@ -1,21 +1,22 @@
-from replay_info import ReplayInfo, StageDetails
+from replay_info import ReplayInfo, StageDetail
 from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
 
-class th13StageDetails(StageDetails, BaseModel):
-    stage: Optional[int]=None
-    score: Optional[int]=None
-    power: Optional[int]=None
-    piv: Optional[int]=None
-    lives: Optional[int]=None
-    life_pieces: Optional[int]=None
-    bombs: Optional[int]=None
-    bomb_pieces: Optional[int]=None
-    graze: Optional[int]=None
-    trance: Optional[int]=None
-    extends: Optional[int]=None
-    
+
+class TH13StageDetail(BaseModel, StageDetail):
+    stage: Optional[int] = None
+    score: Optional[int] = None
+    power: Optional[int] = None
+    piv: Optional[int] = None
+    lives: Optional[int] = None
+    life_pieces: Optional[int] = None
+    bombs: Optional[int] = None
+    bomb_pieces: Optional[int] = None
+    graze: Optional[int] = None
+    trance: Optional[int] = None
+    extends: Optional[int] = None
+
     def convert_to_dict(self):
         return {
             "stage": self.stage,
@@ -28,10 +29,11 @@ class th13StageDetails(StageDetails, BaseModel):
             "bomb_pieces": self.bomb_pieces,
             "graze": self.graze,
             "trance": self.trance,
-            "extends": self.extends
+            "extends": self.extends,
         }
 
-class th13ReplayInfo(ReplayInfo, BaseModel):
+
+class TH13ReplayInfo(BaseModel, ReplayInfo):
     name: str = ""
     shot_type: str = ""
     difficulty: int = -1
@@ -39,11 +41,11 @@ class th13ReplayInfo(ReplayInfo, BaseModel):
     timestamp: datetime
     slowdown: float = Field(..., ge=0, le=100)
     spell_card_id: int
-    
+
     replay_type: str = ""
-    
+
     stage_details: list
-    
+
     def convert_to_dict(self):
         return {
             "name": self.name,
@@ -54,5 +56,7 @@ class th13ReplayInfo(ReplayInfo, BaseModel):
             "replay_type": self.replay_type,
             "slow_down": self.slowdown,
             "spell_card_id": self.spell_card_id,
-            "stage_details": [stage_detail.convert_to_dict() for stage_detail in self.stage_details]
+            "stage_details": [
+                stage_detail.convert_to_dict() for stage_detail in self.stage_details
+            ],
         }

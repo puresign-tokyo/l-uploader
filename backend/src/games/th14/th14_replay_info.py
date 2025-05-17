@@ -1,19 +1,20 @@
-from replay_info import ReplayInfo, StageDetails
+from replay_info import ReplayInfo, StageDetail
 from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
 
-class th14StageDetails(StageDetails, BaseModel):
-    stage: Optional[int]=None
-    score: Optional[int]=None
-    power: Optional[int]=None
-    piv: Optional[int]=None
-    lives: Optional[int]=None
-    life_pieces: Optional[int]=None
-    bombs: Optional[int]=None
-    bomb_pieces: Optional[int]=None
-    graze: Optional[int]=None
-    
+
+class TH14StageDetail(BaseModel, StageDetail):
+    stage: Optional[int] = None
+    score: Optional[int] = None
+    power: Optional[int] = None
+    piv: Optional[int] = None
+    lives: Optional[int] = None
+    life_pieces: Optional[int] = None
+    bombs: Optional[int] = None
+    bomb_pieces: Optional[int] = None
+    graze: Optional[int] = None
+
     def convert_to_dict(self):
         return {
             "stage": self.stage,
@@ -27,7 +28,8 @@ class th14StageDetails(StageDetails, BaseModel):
             "graze": self.graze,
         }
 
-class th14ReplayInfo(ReplayInfo, BaseModel):
+
+class TH14ReplayInfo(BaseModel, ReplayInfo):
     name: str = ""
     shot_type: str = ""
     difficulty: int = -1
@@ -35,11 +37,11 @@ class th14ReplayInfo(ReplayInfo, BaseModel):
     timestamp: datetime
     slowdown: float = Field(..., ge=0, le=100)
     spell_card_id: int
-    
+
     replay_type: str = ""
-    
+
     stage_details: list
-    
+
     def convert_to_dict(self):
         return {
             "name": self.name,
@@ -50,5 +52,7 @@ class th14ReplayInfo(ReplayInfo, BaseModel):
             "replay_type": self.replay_type,
             "slow_down": self.slowdown,
             "spell_card_id": self.spell_card_id,
-            "stage_details": [stage_detail.convert_to_dict() for stage_detail in self.stage_details]
+            "stage_details": [
+                stage_detail.convert_to_dict() for stage_detail in self.stage_details
+            ],
         }

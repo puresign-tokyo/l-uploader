@@ -3,10 +3,14 @@ import math
 from parsers.py_code import th15, th_modern
 from parsers.base_parser import BaseParser
 import tsadecode as td
-from games.th15.th15_replay_info import th15ReplayInfo, th15StageDetail
+from games.th15.th15_replay_info import TH15ReplayInfo, TH15StageDetail
 
-class Th15Parser(BaseParser):
-    
+
+class TH15Parser(BaseParser):
+
+    def can_parse(self, rep_raw: bytes) -> bool:
+        return rep_raw[:4] == b"t15r"
+
     def parse(self, rep_raw: bytes):
         header = th_modern.ThModern.from_bytes(rep_raw)
         comp_data = bytearray(header.main.comp_data)
@@ -21,7 +25,7 @@ class Th15Parser(BaseParser):
         for current_stage_start_data, next_stage_start_data in zip(
             replay.stages, replay.stages[1:] + [None]
         ):
-            s = th15StageDetail(
+            s = TH15StageDetail(
                 stage=current_stage_start_data.stage_num,
             )
             if next_stage_start_data is not None:
@@ -42,13 +46,11 @@ class Th15Parser(BaseParser):
         if len(rep_stages) == 1 and replay.header.difficulty != 4:
             r_type = "stage_practice"
 
-        r = th15ReplayInfo(
+        r = TH15ReplayInfo(
             shot_type=shot_types[replay.header.shot],
             difficulty=replay.header.difficulty,
             total_score=replay.header.score * 10,
-            timestamp=datetime.fromtimestamp(
-                replay.header.timestamp, tz=timezone.utc
-            ),
+            timestamp=datetime.fromtimestamp(replay.header.timestamp, tz=timezone.utc),
             name=replay.header.name.replace("\x00", ""),
             slowdown=replay.header.slowdown,
             replay_type=r_type,
@@ -56,3 +58,6 @@ class Th15Parser(BaseParser):
         )
 
         return r
+
+
+TH15Parser()

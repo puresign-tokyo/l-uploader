@@ -1,12 +1,15 @@
 from datetime import datetime
-from parsers import base_parser;
 from parsers.py_code import th08, th08_userdata
 from parsers.base_parser import BaseParser
 import tsadecode as td
-from games.th08.th08_replay_info import th08ReplayInfo, th08StageDetails
+from games.th08.th08_replay_info import TH08ReplayInfo, TH08StageDetail
 
-class Th08Parser(BaseParser):
-    
+
+class TH08Parser(BaseParser):
+
+    def can_parse(self, rep_raw: bytes) -> bool:
+        return rep_raw[:4] == b"T8RP"
+
     def parse(self, rep_raw: bytes):
         comp_data_size = int.from_bytes(rep_raw[12:16], byteorder="little") - 24
         comp_data = bytearray(rep_raw[24:comp_data_size])
@@ -38,29 +41,32 @@ class Th08Parser(BaseParser):
         ]
 
         rep_stages = []
-        
+
         if replay.header.spell_card_id != 65535:  # FF FF
-            return th08ReplayInfo(
-                name=replay.header.name.replace("\x00",""),
+            return TH08ReplayInfo(
+                name=replay.header.name.replace("\x00", ""),
                 shot_type=shot_types[replay.header.shot],
                 difficulty=replay.header.difficulty,
-                total_score=replay.header.score*10,
+                total_score=replay.header.score * 10,
                 slowdown=replay.header.slowdown,
-                timestamp=datetime.strptime(user.userdata.date.value, "%Y/%m/%d %H:%M:%S"),
-                
+                timestamp=datetime.strptime(
+                    (
+                        user.userdata.date.value
+                        if user.userdata is not None
+                        else "1970/01/01 00:00:00"
+                    ),
+                    "%Y/%m/%d %H:%M:%S",
+                ),
                 route="",
-                
                 replay_type="spell_card",
-                
                 spell_card_id=replay.header.spell_card_id,
-                
-                stage_details=[]
+                stage_details=[],
             )
 
         #   else full run
 
         # TH08 stores stage data values from the start of the stage but score from the end
-        route=""
+        route = ""
 
         enumerated_non_dummy_stages = [
             (i, _pointer.body)
@@ -69,9 +75,10 @@ class Th08Parser(BaseParser):
         ]
 
         for (i, current_stage), (j, next_stage) in zip(
-            enumerated_non_dummy_stages, enumerated_non_dummy_stages[1:] + [(None, None)]
+            enumerated_non_dummy_stages,
+            enumerated_non_dummy_stages[1:] + [(None, None)],
         ):
-            s = th08StageDetails(
+            s = TH08StageDetail(
                 stage=i + 1,
                 score=current_stage.score * 10,
             )
@@ -94,21 +101,27 @@ class Th08Parser(BaseParser):
         if len(rep_stages) == 1 and replay.header.difficulty != 4:
             replay_type = "stage_practice"
 
-        r = th08ReplayInfo(
-                name=replay.header.name.replace("\x00",""),
-                shot_type=shot_types[replay.header.shot],
-                difficulty=replay.header.difficulty,
-                total_score=replay.header.score*10,
-                slowdown=replay.header.slowdown,
-                timestamp=datetime.strptime(user.userdata.date.value, "%Y/%m/%d %H:%M:%S"),
-                
-                route=route,
-                
-                replay_type=replay_type,
-                
-                spell_card_id=replay.header.spell_card_id,
-                
-                stage_details=rep_stages
+        r = TH08ReplayInfo(
+            name=replay.header.name.replace("\x00", ""),
+            shot_type=shot_types[replay.header.shot],
+            difficulty=replay.header.difficulty,
+            total_score=replay.header.score * 10,
+            slowdown=replay.header.slowdown,
+            timestamp=datetime.strptime(
+                (
+                    user.userdata.date.value
+                    if user.userdata is not None
+                    else "1970/01/01 00:00:00"
+                ),
+                "%Y/%m/%d %H:%M:%S",
+            ),
+            route=route,
+            replay_type=replay_type,
+            spell_card_id=replay.header.spell_card_id,
+            stage_details=rep_stages,
         )
 
         return r
+
+
+TH08Parser()

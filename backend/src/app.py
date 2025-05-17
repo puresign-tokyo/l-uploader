@@ -38,10 +38,13 @@ import uvicorn
 from replay import ReplayMetaData, ReplayPost
 from sqls import SQLReplays
 
+import post_replay
+
 ALLOW_ORIGIN = os.getenv("ALLOW_FRONTEND_ORIGIN")
 if ALLOW_ORIGIN == None:
     raise ValidationError("not set ALLOW_FRONTEND_ORIGIN")
 DELETE_PASSWORD_LIMIT = 60
+
 
 host_dir = Path(__file__).parent
 css_dir = host_dir / "css"
@@ -89,7 +92,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-log_manager.init_logger_alcostg(logging.DEBUG)
+log_manager.init_logger_alcostg(logging.INFO)
 logger = log_manager.get_logger()
 
 
@@ -129,110 +132,110 @@ async def custom_http_exception_handler(request: Request, exc: HTTPException):
     return await http_exception_handler(request, exc)
 
 
-# メタデータの一覧を返す
-@app.get("/replays")
-def get_replays(
-    request: Request,
-    sort: Literal["score", "uploaded_at", "created_at"] = "score",
-    order: Literal["desc", "asc"] = "asc",
-    offset: int = 1,
-    limit: int = 1000,
-):
+# # メタデータの一覧を返す
+# @app.get("/replays")
+# def get_replays(
+#     request: Request,
+#     sort: Literal["score", "uploaded_at", "created_at"] = "score",
+#     order: Literal["desc", "asc"] = "asc",
+#     offset: int = 1,
+#     limit: int = 1000,
+# ):
 
-    if offset < 0:
-        logger.error(
-            f"Invalid offset value received: {offset}. Offset must be a non-negative integer. Request rejected."
-        )
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
-    if limit < 0:
-        logger.error(
-            f"Invalid limit value received: {limit}. Limit must be a positive integer greater than zero. Request rejected."
-        )
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+#     if offset < 0:
+#         logger.error(
+#             f"Invalid offset value received: {offset}. Offset must be a non-negative integer. Request rejected."
+#         )
+#         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+#     if limit < 0:
+#         logger.error(
+#             f"Invalid limit value received: {limit}. Limit must be a positive integer greater than zero. Request rejected."
+#         )
+#         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 
-    if order == "asc":
-        is_asc = True
-    else:
-        is_asc = False
+#     if order == "asc":
+#         is_asc = True
+#     else:
+#         is_asc = False
 
-    try:
-        replay_posts = SQLReplays.select_replay_sorted(
-            sort=sort, offset=offset, limit=limit, is_asc=is_asc
-        )
-    except Exception as e:
-        logger.exception(e)
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+#     try:
+#         replay_posts = SQLReplays.select_replay_sorted(
+#             sort=sort, offset=offset, limit=limit, is_asc=is_asc
+#         )
+#     except Exception as e:
+#         logger.exception(e)
+#         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    returning = []
+#     returning = []
 
-    for replay_post in replay_posts:
-        returning.append(
-            jsonable_encoder(
-                GetReplays(
-                    replay_id=replay_post.replay_id,
-                    replay_file_name=f"alco_ud{utility.id_to_filename(replay_post.replay_id)}.rpy",
-                    user_name=replay_post.user_name,
-                    replay_name=replay_post.replay_meta_data.replay_name,
-                    created_at=replay_post.replay_meta_data.created_at.isoformat(),
-                    stage=utility.stage_mapping[replay_post.replay_meta_data.stage],
-                    score="{:,}".format(replay_post.replay_meta_data.score),
-                    uploaded_at=replay_post.uploaded_at.isoformat() + "Z",
-                    game_version=replay_post.replay_meta_data.game_version,
-                    slow_rate=replay_post.replay_meta_data.slow_rate,
-                    upload_comment=replay_post.upload_comment,
-                )
-            )
-        )
+#     for replay_post in replay_posts:
+#         returning.append(
+#             jsonable_encoder(
+#                 GetReplays(
+#                     replay_id=replay_post.replay_id,
+#                     replay_file_name=f"alco_ud{utility.id_to_filename(replay_post.replay_id)}.rpy",
+#                     user_name=replay_post.user_name,
+#                     replay_name=replay_post.replay_meta_data.replay_name,
+#                     created_at=replay_post.replay_meta_data.created_at.isoformat(),
+#                     stage=utility.stage_mapping[replay_post.replay_meta_data.stage],
+#                     score="{:,}".format(replay_post.replay_meta_data.score),
+#                     uploaded_at=replay_post.uploaded_at.isoformat() + "Z",
+#                     game_version=replay_post.replay_meta_data.game_version,
+#                     slow_rate=replay_post.replay_meta_data.slow_rate,
+#                     upload_comment=replay_post.upload_comment,
+#                 )
+#             )
+#         )
 
-    return returning
-
-
-@app.get("/replays/{replay_id}")
-def get_replays_replay_id(request: Request, replay_id: int):
-
-    if (client_ip := request.headers.get("X-Forwarded-For")) == None:
-        logger.info("did not use reverse proxy. Bye.")
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
-
-    try:
-        replay_post = SQLReplays.select_replay(replay_id)
-    except ValueError as e:
-        logger.exception(e)
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="select replay not found"
-        )
-    except Exception as e:
-        logger.exception(e)
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    returning_item = GetReplays(
-        replay_id=replay_post.replay_id,
-        replay_file_name=f"alco_ud{utility.id_to_filename(replay_post.replay_id)}.rpy",
-        user_name=replay_post.user_name,
-        replay_name=replay_post.replay_meta_data.replay_name,
-        created_at=replay_post.replay_meta_data.created_at.isoformat(),
-        stage=utility.stage_mapping[replay_post.replay_meta_data.stage],
-        score="{:,}".format(replay_post.replay_meta_data.score),
-        uploaded_at=replay_post.uploaded_at.isoformat() + "Z",
-        game_version=replay_post.replay_meta_data.game_version,
-        slow_rate=replay_post.replay_meta_data.slow_rate,
-        upload_comment=replay_post.upload_comment,
-    )
-
-    return JSONResponse(content=jsonable_encoder(returning_item))
+#     return returning
 
 
-@app.get("/replays/{replay_id}/file")
-def get_replays_replay_id_file(replay_id: int):
-    if not (replay_dir / str(replay_id)).exists():
-        logger.error(f"No replay found for downloading: replay_id={replay_id}")
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="replay file not Found"
-        )
+# @app.get("/replays/{replay_id}")
+# def get_replays_replay_id(request: Request, replay_id: int):
 
-    return FileResponse(
-        (replay_dir / str(replay_id)),
-        filename=f"alco_ud{utility.id_to_filename(replay_id)}.rpy",
-    )
+#     if (client_ip := request.headers.get("X-Forwarded-For")) == None:
+#         logger.info("did not use reverse proxy. Bye.")
+#         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+
+#     try:
+#         replay_post = SQLReplays.select_replay(replay_id)
+#     except ValueError as e:
+#         logger.exception(e)
+#         raise HTTPException(
+#             status_code=status.HTTP_400_BAD_REQUEST, detail="select replay not found"
+#         )
+#     except Exception as e:
+#         logger.exception(e)
+#         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+#     returning_item = GetReplays(
+#         replay_id=replay_post.replay_id,
+#         replay_file_name=f"alco_ud{utility.id_to_filename(replay_post.replay_id)}.rpy",
+#         user_name=replay_post.user_name,
+#         replay_name=replay_post.replay_meta_data.replay_name,
+#         created_at=replay_post.replay_meta_data.created_at.isoformat(),
+#         stage=utility.stage_mapping[replay_post.replay_meta_data.stage],
+#         score="{:,}".format(replay_post.replay_meta_data.score),
+#         uploaded_at=replay_post.uploaded_at.isoformat() + "Z",
+#         game_version=replay_post.replay_meta_data.game_version,
+#         slow_rate=replay_post.replay_meta_data.slow_rate,
+#         upload_comment=replay_post.upload_comment,
+#     )
+
+#     return JSONResponse(content=jsonable_encoder(returning_item))
+
+
+# @app.get("/replays/{replay_id}/file")
+# def get_replays_replay_id_file(replay_id: int):
+#     if not (replay_dir / str(replay_id)).exists():
+#         logger.error(f"No replay found for downloading: replay_id={replay_id}")
+#         raise HTTPException(
+#             status_code=status.HTTP_404_NOT_FOUND, detail="replay file not Found"
+#         )
+
+#     return FileResponse(
+#         (replay_dir / str(replay_id)),
+#         filename=f"alco_ud{utility.id_to_filename(replay_id)}.rpy",
+#     )
 
 
 @app.post("/replays")
@@ -255,76 +258,81 @@ def post_replays(
         )
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    try:
-        # このreplay_postはreplay_idのみ入っていない(DBに登録して始めてreplay_idが付与される為)
-        replay_post = ReplayPost.new_from_post(
-            replay_file.file,
-            user_name,
-            upload_comment,
-            delete_password,
-        )
-    except ValueError as e:
-        logger.exception(e)
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-        )
-    except Exception as e:
-        logger.exception(e)
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    try:
-        replay_id = SQLReplays.insert_replay_meta_data(replay_post)
-    except Exception as e:
-        logger.exception(e)
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    # ReplayPost.new_from_postで最後までseekしてしまっているから
+    rep_raw = replay_file.file.read()
     replay_file.file.seek(0)
-    with open(replay_dir / str(replay_id), "wb") as fp:
-        fp.write(replay_file.file.read())
 
-    replay_file.file.close()
+    post_replay.post_replay(rep_raw)
 
-    returning_item = GetReplays(
-        replay_id=replay_id,
-        replay_file_name=f"alco_ud{utility.id_to_filename(replay_id)}.rpy",
-        user_name=replay_post.user_name,
-        replay_name=replay_post.replay_meta_data.replay_name,
-        created_at=replay_post.replay_meta_data.created_at.isoformat(),
-        stage=utility.stage_mapping[replay_post.replay_meta_data.stage],
-        score="{:,}".format(replay_post.replay_meta_data.score),
-        uploaded_at=replay_post.uploaded_at.isoformat() + "Z",
-        game_version=replay_post.replay_meta_data.game_version,
-        slow_rate=replay_post.replay_meta_data.slow_rate,
-        upload_comment=replay_post.upload_comment,
-    )
+    # try:
+    #     # このreplay_postはreplay_idのみ入っていない(DBに登録して始めてreplay_idが付与される為)
+    #     replay_post = ReplayPost.new_from_post(
+    #         replay_file.file,
+    #         user_name,
+    #         upload_comment,
+    #         delete_password,
+    #     )
+    # except ValueError as e:
+    #     logger.exception(e)
+    #     raise HTTPException(
+    #         status_code=status.HTTP_400_BAD_REQUEST,
+    #     )
+    # except Exception as e:
+    #     logger.exception(e)
+    #     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    return returning_item
+    # try:
+    #     replay_id = SQLReplays.insert_replay_meta_data(replay_post)
+    # except Exception as e:
+    #     logger.exception(e)
+    #     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # # ReplayPost.new_from_postで最後までseekしてしまっているから
+    # replay_file.file.seek(0)
+    # with open(replay_dir / str(replay_id), "wb") as fp:
+    #     fp.write(replay_file.file.read())
+
+    # replay_file.file.close()
+
+    # returning_item = GetReplays(
+    #     replay_id=replay_id,
+    #     replay_file_name=f"alco_ud{utility.id_to_filename(replay_id)}.rpy",
+    #     user_name=replay_post.user_name,
+    #     replay_name=replay_post.replay_meta_data.replay_name,
+    #     created_at=replay_post.replay_meta_data.created_at.isoformat(),
+    #     stage=utility.stage_mapping[replay_post.replay_meta_data.stage],
+    #     score="{:,}".format(replay_post.replay_meta_data.score),
+    #     uploaded_at=replay_post.uploaded_at.isoformat() + "Z",
+    #     game_version=replay_post.replay_meta_data.game_version,
+    #     slow_rate=replay_post.replay_meta_data.slow_rate,
+    #     upload_comment=replay_post.upload_comment,
+    # )
+
+    # return returning_item
 
 
-@app.delete("/replays/{replay_id}")
-def delete_replays_replay_id(replay_id: int, body: DeleteReplays):
-    try:
-        SQLReplays.delete_replay(
-            replay_id=replay_id,
-            requested_raw_delete_password=body.delete_password,
-        )
-    except ValueError as e:
-        logger.exception(e)
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="password mismatch"
-        )
-    except KeyError as e:
-        logger.exception(e)
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT, detail="requested replay not found"
-        )
-    except Exception as e:
-        logger.exception(e)
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+# @app.delete("/replays/{replay_id}")
+# def delete_replays_replay_id(replay_id: int, body: DeleteReplays):
+#     try:
+#         SQLReplays.delete_replay(
+#             replay_id=replay_id,
+#             requested_raw_delete_password=body.delete_password,
+#         )
+#     except ValueError as e:
+#         logger.exception(e)
+#         raise HTTPException(
+#             status_code=status.HTTP_400_BAD_REQUEST, detail="password mismatch"
+#         )
+#     except KeyError as e:
+#         logger.exception(e)
+#         raise HTTPException(
+#             status_code=status.HTTP_409_CONFLICT, detail="requested replay not found"
+#         )
+#     except Exception as e:
+#         logger.exception(e)
+#         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    os.remove(replay_dir / str(replay_id))
-    return
+#     os.remove(replay_dir / str(replay_id))
+#     return
 
 
 @app.get("/cocktail")

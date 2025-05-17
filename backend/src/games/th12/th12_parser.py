@@ -3,10 +3,14 @@ import math
 from parsers.py_code import th12, th_modern
 from parsers.base_parser import BaseParser
 import tsadecode as td
-from games.th12.th12_replay_info import th12ReplayInfo, th12StageDetails
+from games.th12.th12_replay_info import TH12ReplayInfo, TH12StageDetail
 
-class Th12Parser(BaseParser):
-    
+
+class TH12Parser(BaseParser):
+
+    def can_parse(self, rep_raw: bytes) -> bool:
+        return rep_raw[:4] == b"t12r"
+
     def parse(self, rep_raw: bytes):
         header = th_modern.ThModern.from_bytes(rep_raw)
         comp_data = bytearray(header.main.comp_data)
@@ -22,7 +26,7 @@ class Th12Parser(BaseParser):
         for current_stage_start_data, next_stage_start_data in zip(
             replay.stages, replay.stages[1:] + [None]
         ):
-            s = th12StageDetails(
+            s = TH12StageDetail(
                 stage=current_stage_start_data.stage_num,
             )
             if next_stage_start_data is not None:
@@ -32,7 +36,7 @@ class Th12Parser(BaseParser):
                 s.lives = next_stage_start_data.lives
                 s.life_pieces = next_stage_start_data.life_pieces
                 #   fix zun fuckery
-                if s.life_pieces > 0:
+                if s.life_pieces is not None and s.life_pieces > 0:
                     s.life_pieces -= 1
                 s.bombs = next_stage_start_data.bombs
                 s.bomb_pieces = next_stage_start_data.bomb_pieces
@@ -46,13 +50,11 @@ class Th12Parser(BaseParser):
         if len(rep_stages) == 1 and replay.header.difficulty != 4:
             replay_type = "stage_practice"
 
-        r = th12ReplayInfo(
+        r = TH12ReplayInfo(
             shot_type=shot_types[replay.header.shot * 2 + replay.header.subshot],
             difficulty=replay.header.difficulty,
             total_score=replay.header.score * 10,
-            timestamp=datetime.fromtimestamp(
-                replay.header.timestamp, tz=timezone.utc
-            ),
+            timestamp=datetime.fromtimestamp(replay.header.timestamp, tz=timezone.utc),
             name=replay.header.name.replace("\x00", ""),
             slowdown=replay.header.slowdown,
             replay_type=replay_type,
@@ -60,3 +62,6 @@ class Th12Parser(BaseParser):
         )
 
         return r
+
+
+TH12Parser()

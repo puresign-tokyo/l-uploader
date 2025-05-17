@@ -3,10 +3,14 @@ import math
 from parsers.py_code import th16, th_modern
 from parsers.base_parser import BaseParser
 import tsadecode as td
-from games.th16.th16_replay_info import th16ReplayInfo, th16StageDetail
+from games.th16.th16_replay_info import TH16ReplayInfo, TH16StageDetail
 
-class Th16Parser(BaseParser):
-    
+
+class TH16Parser(BaseParser):
+
+    def can_parse(self, rep_raw: bytes) -> bool:
+        return rep_raw[:4] == b"t16r"
+
     def parse(self, rep_raw: bytes):
         header = th_modern.ThModern.from_bytes(rep_raw)
         comp_data = bytearray(header.main.comp_data)
@@ -21,8 +25,8 @@ class Th16Parser(BaseParser):
             return shot_types[shot_id] + seasons[season_id]
 
         if replay.header.spell_practice_id != 0xFFFFFFFF:
-            return th16ReplayInfo(
-                shot=get_shot(replay.header.shot, replay.header.season),
+            return TH16ReplayInfo(
+                shot_type=get_shot(replay.header.shot, replay.header.season),
                 difficulty=replay.header.difficulty,
                 total_score=replay.header.score * 10,
                 timestamp=datetime.fromtimestamp(
@@ -32,7 +36,7 @@ class Th16Parser(BaseParser):
                 slowdown=replay.header.slowdown,
                 replay_type="spell_card",
                 spell_card_id=replay.header.spell_practice_id,
-                stage_details=[]
+                stage_details=[],
             )
 
         rep_stages = []
@@ -40,7 +44,7 @@ class Th16Parser(BaseParser):
         for current_stage_start_data, next_stage_start_data in zip(
             replay.stages, replay.stages[1:] + [None]
         ):
-            s = th16StageDetail(
+            s = TH16StageDetail(
                 stage=current_stage_start_data.stage_num,
             )
             if next_stage_start_data is not None:
@@ -62,13 +66,11 @@ class Th16Parser(BaseParser):
         if len(rep_stages) == 1 and replay.header.difficulty != 4:
             r_type = "stage_practice"
 
-        r = th16ReplayInfo(
+        r = TH16ReplayInfo(
             shot_type=get_shot(replay.header.shot, replay.header.season),
             difficulty=replay.header.difficulty,
             total_score=replay.header.score * 10,
-            timestamp=datetime.fromtimestamp(
-                replay.header.timestamp, tz=timezone.utc
-            ),
+            timestamp=datetime.fromtimestamp(replay.header.timestamp, tz=timezone.utc),
             name=replay.header.name.replace("\x00", ""),
             slowdown=replay.header.slowdown,
             replay_type=r_type,
@@ -77,3 +79,6 @@ class Th16Parser(BaseParser):
         )
 
         return r
+
+
+TH16Parser()

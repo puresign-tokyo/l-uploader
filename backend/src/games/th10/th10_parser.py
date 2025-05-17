@@ -2,10 +2,14 @@ from datetime import datetime, timezone
 from parsers.py_code import th10, th_modern
 from parsers.base_parser import BaseParser
 import tsadecode as td
-from games.th10.th10_replay_info import th10ReplayInfo, th10StageDetails
+from games.th10.th10_replay_info import TH10ReplayInfo, TH10StageDetail
 
-class Th10Parser(BaseParser):
-    
+
+class TH10Parser(BaseParser):
+
+    def can_parse(self, rep_raw: bytes) -> bool:
+        return rep_raw[:4] == b"t10r"
+
     def parse(self, rep_raw: bytes):
         header = th_modern.ThModern.from_bytes(rep_raw)
         comp_data = bytearray(header.main.comp_data)
@@ -21,7 +25,7 @@ class Th10Parser(BaseParser):
         for current_stage_start_data, next_stage_start_data in zip(
             replay.stages, replay.stages[1:] + [None]
         ):
-            s = th10StageDetails(
+            s = TH10StageDetail(
                 stage=current_stage_start_data.stage_num,
             )
             if next_stage_start_data is not None:
@@ -38,13 +42,11 @@ class Th10Parser(BaseParser):
         if len(rep_stages) == 1 and replay.header.difficulty != 4:
             replay_type = "stage_practice"
 
-        r = th10ReplayInfo(
+        r = TH10ReplayInfo(
             shot_type=shot_types[replay.header.shot * 3 + replay.header.subshot],
             difficulty=replay.header.difficulty,
             total_score=replay.header.score * 10,
-            timestamp=datetime.fromtimestamp(
-                replay.header.timestamp, tz=timezone.utc
-            ),
+            timestamp=datetime.fromtimestamp(replay.header.timestamp, tz=timezone.utc),
             name=replay.header.name.replace("\x00", ""),
             slowdown=replay.header.slowdown,
             replay_type=replay_type,
@@ -52,3 +54,6 @@ class Th10Parser(BaseParser):
         )
 
         return r
+
+
+TH10Parser()

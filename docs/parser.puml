@@ -1,0 +1,169 @@
+@startuml
+
+class ReplayDispatcher{
+    マジックナンバーを見て各ゲーム固有のパーサに振り分け
+}
+
+note as N1
+各ゲームに固有なクラスはバイナリ上のマジックナンバーを用いて命名する
+例: t06rReplayInfo
+end note
+
+class BaseReplayInfo{
+    +convert_to_json()
+}
+
+class tXXrReplayInfo{
+
+}
+
+class BaseReplayParser {
+    +parse()
+}
+
+class tXXrReplayParser{
+    +parse()
+}
+
+class BaseDatabasehandler{
+    +insert()
+    +delete()
+    +select()    
+}
+
+class tXXrDatabaseHandler{
+    +insert()
+    +delete()
+    +select()
+}
+
+ReplayDispatcher  --> BaseReplayParser
+ReplayDispatcher  --> tXXrReplayParser
+ReplayDispatcher  --> BaseReplayInfo
+ReplayDispatcher  --> BaseDatabasehandler
+ReplayDispatcher  --> tXXrDatabaseHandler
+
+BaseReplayParser <|-- tXXrReplayParser
+tXXrReplayParser  --> tXXrReplayInfo
+
+BaseReplayInfo   <|-- tXXrReplayInfo
+
+BaseDatabasehandler <|-- tXXrDatabaseHandler
+
+@enduml
+
+@startuml
+skinparam style strictuml
+
+package "エンティティ層" {
+  class ReplayInfo {
+    +convert_to_json()
+  }
+
+  class ReplaySummary {
+    +id: string
+    +date: datetime
+    +game_id: string
+  }
+}
+
+package "ユースケース層" {
+  interface IReplayParser {
+    +parse(binary): ReplayInfo
+  }
+
+  interface IDatabaseHandler {
+    +insert(ReplayInfo)
+    +delete(id)
+    +select(id): ReplayInfo
+  }
+
+  interface IDatabaseHandlerFactory {
+    +get_handler(game_id): IDatabaseHandler
+  }
+
+  interface IReplayMetadataHandler {
+    +fetch_recent(n): List<ReplaySummary>
+  }
+
+  class UploadReplayUseCase {
+    
+parser: IReplayParser
+dbHandlerFactory: IDatabaseHandlerFactory+execute(binary)
+}
+
+  class ParseReplayUseCase {
+    
+parser: IReplayParser+execute(binary): ReplayInfo}
+
+  class FetchRecentReplaysUseCase {
+    
+metaHandler: IReplayMetadataHandler
+handlerFactory: IDatabaseHandlerFactory+execute(n): List<ReplayInfo>
+}
+}
+
+package "インターフェースアダプタ層" {
+  class ReplayDispatcher {
+    +dispatch(binary)
+  }
+
+  class ReplayJsonPresenter {
+    +present(ReplayInfo): json
+  }
+
+  class ReplaySummaryPresenter {
+    +present(List<ReplayInfo>): json
+  }
+
+  class ReplayParserFactory {
+    +get_parser(game_id): IReplayParser
+  }
+
+  class DatabaseHandlerFactory {
+    +get_handler(game_id): IDatabaseHandler
+  }
+}
+
+package "インフラ層" {
+  class t06rReplayParser {
+    +parse(binary): ReplayInfo
+  }
+
+  class t06rDatabaseHandler {
+    +insert(ReplayInfo)
+    +delete(id)
+    +select(id): ReplayInfo
+  }
+
+  class ReplayMetadataDatabaseHandler {
+    +fetch_recent(n): List<ReplaySummary>
+  }
+}
+
+ReplayDispatcher --> UploadReplayUseCase
+ReplayDispatcher --> ParseReplayUseCase
+ReplayDispatcher --> FetchRecentReplaysUseCase
+
+ReplayDispatcher --> ReplayParserFactory
+
+ReplayParserFactory --> IReplayParser
+DatabaseHandlerFactory --> IDatabaseHandler
+
+ParseReplayUseCase --> IReplayParser
+UploadReplayUseCase --> IReplayParser
+UploadReplayUseCase --> IDatabaseHandlerFactory
+FetchRecentReplaysUseCase --> IDatabaseHandlerFactory
+FetchRecentReplaysUseCase --> IReplayMetadataHandler
+FetchRecentReplaysUseCase --> ReplaySummary
+
+IReplayParser <|.. t06rReplayParser
+IDatabaseHandler <|.. t06rDatabaseHandler
+IReplayMetadataHandler <|.. ReplayMetadataDatabaseHandler
+
+ParseReplayUseCase --> ReplayInfo
+UploadReplayUseCase --> ReplayInfo
+ReplayJsonPresenter --> ReplayInfo
+ReplaySummaryPresenter --> ReplayInfo
+
+@enduml

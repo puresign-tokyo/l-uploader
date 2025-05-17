@@ -2,10 +2,14 @@ from datetime import datetime
 from parsers.py_code import th07
 from parsers.base_parser import BaseParser
 import tsadecode as td
-from games.th07.th07_replay_info import th07ReplayInfo, th07StageDetails
+from games.th07.th07_replay_info import TH07ReplayInfo, TH07StageDetail
 
-class Th07Parser(BaseParser):
-    
+
+class TH07Parser(BaseParser):
+
+    def can_parse(self, rep_raw: bytes) -> bool:
+        return rep_raw[:4] == b"T7RP"
+
     def parse(self, rep_raw: bytes):
         comp_data = bytearray(rep_raw[16:])
         td.decrypt06(comp_data, rep_raw[13])
@@ -34,9 +38,10 @@ class Th07Parser(BaseParser):
 
         # TH07 stores stage data values from the start of the stage but score from the end
         for (i, current_stage), (j, next_stage) in zip(
-            enumerated_non_dummy_stages, enumerated_non_dummy_stages[1:] + [(None, None)]
+            enumerated_non_dummy_stages,
+            enumerated_non_dummy_stages[1:] + [(None, None)],
         ):
-            s = th07StageDetails(
+            s = TH07StageDetail(
                 stage=i + 2 if is_phantasm(replay.header.difficulty) else i + 1,
                 score=current_stage.score * 10,
             )
@@ -59,9 +64,11 @@ class Th07Parser(BaseParser):
         # Touhou 7 does not store the year of the replay, but datetimes requires one.
         # Therefore we set one. It must be a leap year in order for Feb 29 to be valid.
         arbitrary_leap_year = 1904
-        timestamp = datetime.strptime(f"{replay.header.date}/{arbitrary_leap_year}", "%m/%d/%Y")
+        timestamp = datetime.strptime(
+            f"{replay.header.date}/{arbitrary_leap_year}", "%m/%d/%Y"
+        )
 
-        r = th07ReplayInfo(
+        r = TH07ReplayInfo(
             name=replay.header.name.replace("\x00", ""),
             shot_type=shot_types[replay.header.shot],
             difficulty=replay.header.difficulty,
@@ -73,3 +80,6 @@ class Th07Parser(BaseParser):
         )
 
         return r
+
+
+TH07Parser()

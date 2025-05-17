@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 
-class StageDetails(ABC):
+class StageDetail(ABC):
     @abstractmethod
     def convert_to_dict(self) -> dict:
-        pass
+        ...
 
 class ReplayInfo(ABC):
     @abstractmethod
     def convert_to_dict(self) -> dict:
-        pass
+        ...

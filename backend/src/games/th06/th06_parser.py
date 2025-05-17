@@ -2,10 +2,14 @@ from datetime import datetime
 from parsers.py_code import th06
 from parsers.base_parser import BaseParser
 import tsadecode as td
-from games.th06.th06_replay_info import th06ReplayInfo, th06StageDetails
+from games.th06.th06_replay_info import TH06ReplayInfo, TH06StageDetail
 
-class Th06Parser(BaseParser):
-    
+
+class TH06Parser(BaseParser):
+
+    def can_parse(self, rep_raw: bytes) -> bool:
+        return rep_raw[:4] == b"T6RP"
+
     def parse(self, rep_raw: bytes):
         cryptdata = bytearray(rep_raw[15:])
         td.decrypt06(cryptdata, rep_raw[14])
@@ -22,9 +26,10 @@ class Th06Parser(BaseParser):
         ]
         # TH06 stores stage data values from the start of the stage but score from the end
         for (i, current_stage), (j, next_stage) in zip(
-            enumerated_non_dummy_stages, enumerated_non_dummy_stages[1:] + [(None, None)]
+            enumerated_non_dummy_stages,
+            enumerated_non_dummy_stages[1:] + [(None, None)],
         ):
-            s = th06StageDetails(stage=i + 1, score=current_stage.score)
+            s = TH06StageDetail(stage=i + 1, score=current_stage.score)
             if next_stage is not None:
                 s.power = next_stage.power
                 s.lives = next_stage.lives
@@ -37,7 +42,7 @@ class Th06Parser(BaseParser):
         if len(rep_stages) == 1 and rep_raw[7] != 4:
             replay_type = "stage_practice"
 
-        r = th06ReplayInfo(
+        r = TH06ReplayInfo(
             shot_type=shot_types[rep_raw[6]],
             difficulty=rep_raw[7],
             total_score=replay.file_header.score,
@@ -49,3 +54,6 @@ class Th06Parser(BaseParser):
         )
 
         return r
+
+
+TH06Parser()

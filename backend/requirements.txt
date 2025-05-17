@@ -3,3 +3,6 @@ uvicorn
 jinja2
 python-multipart
 psycopg
+kaitaistruct
+tsadecode
+setuptools

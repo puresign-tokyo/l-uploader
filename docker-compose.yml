@@ -1,18 +1,18 @@
-name: alcoscore
+name: th-uploader
 
 services:
-  frontend:
-    build:
-      context: ./frontend
-      args:
-        - NUXT_PUBLIC_FRONTEND_HOST=${FRONTEND_HOST_EXTERNAL}
-        - NUXT_PUBLIC_FRONTEND_PORT=${FRONTEND_PORT_EXTERNAL}
-        - NUXT_PUBLIC_BACKEND_HOST=${BACKEND_HOST_EXTERNAL}
-        - NUXT_PUBLIC_BACKEND_PORT=${BACKEND_PORT_EXTERNAL}
-        - NUXT_PUBLIC_HTTP_PROTOCOL=${HTTP_PROTOCOL}
-    ports:
-      # nuxt3の本番環境で動くnitroのデフォルトポートは3000
-      - ${FRONTEND_PORT_INTERNAL}:3000
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     args:
+  #       - NUXT_PUBLIC_FRONTEND_HOST=${FRONTEND_HOST_EXTERNAL}
+  #       - NUXT_PUBLIC_FRONTEND_PORT=${FRONTEND_PORT_EXTERNAL}
+  #       - NUXT_PUBLIC_BACKEND_HOST=${BACKEND_HOST_EXTERNAL}
+  #       - NUXT_PUBLIC_BACKEND_PORT=${BACKEND_PORT_EXTERNAL}
+  #       - NUXT_PUBLIC_HTTP_PROTOCOL=${HTTP_PROTOCOL}
+  #   ports:
+  #     # nuxt3の本番環境で動くnitroのデフォルトポートは3000
+  #     - ${FRONTEND_PORT_INTERNAL}:3000
 
   backend:
     build: ./backend
@@ -20,8 +20,8 @@ services:
       - "${BACKEND_PORT_INTERNAL}:5001"
     volumes:
       - type: bind
-        source: "./backend/src"
-        target: "/app"
+        source: "./backend/bind_for_test"
+        target: "/app/bind_for_test"
       - type: bind
         source: "/var/log"
         target: "/var/log"
@@ -37,6 +37,8 @@ services:
       - HTTP_PROTOCOL=${HTTP_PROTOCOL}
       - ALLOW_FRONTEND_ORIGIN=${ALLOW_FRONTEND_ORIGIN}
       - USE_REVERSE_PROXY=${USE_REVERSE_PROXY}
+      - PYTHONPATH=/app
+    tty: true
 
   db:
     image: postgres:17
