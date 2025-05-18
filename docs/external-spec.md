@@ -68,6 +68,9 @@
   - `other`
 - `optional_tag`
   - 英数字のみ、1つだけ設定可
+- 応答
+  - `JSON`
+    - 当てはまるリプレイについて `JSONリプレイメタデータ` の配列が返る
 
 ### `GET /replays/count`
 
@@ -86,6 +89,10 @@
   optional_tag={optional_tag}
   ```
 - 基本的に `GET /replays` リクエストと同じ
+- 応答
+  - `JSON`
+    - `count`
+    - フィルタ内容に当てはまるリプレイの個数が数値で返る
 
 ### `GET /replays/{replay_id}`
 
@@ -93,6 +100,9 @@
   GET /replays/{replay_id}
   ```
 - 1個のリプレイファイルのメタデータを返す
+- 応答
+  - `JSON`
+    - 対応するリプレイの `JSONリプレイメタデータ` が返る
 
 ### `GET /replays/{replay_id}/file`
 
@@ -100,6 +110,8 @@
   GET /replays/{replay_id}/file
   ```
 - リプレイファイルを返す
+- 応答
+  - ファイル応答
 
 ### `POST /replays`
 
@@ -125,6 +137,9 @@
     - 100文字以下
   - replay_file
     - 200KB以下
+- 応答
+  - `JSON`
+    - 投稿したリプレイに対応する `JSONリプレイメタデータ`
 
 ### `DELETE /replays/{replay_id}`
 
@@ -134,6 +149,8 @@
 - リクエストボディ
   - delete_password
     - 100文字以下
+- 応答
+  - 成功応答だけを返す
 
 
 ### `DELETE /internal/replays/{replay_id}`
@@ -142,6 +159,8 @@
   DELETE /internal/replays/{replay_id}
   ```
 - 削除パスワード無しでリプレイ削除できる
+- 応答
+  - 成功応答だけを返す
 
 ### `GET /alcohol`
 
@@ -151,3 +170,13 @@
 - `418 I'm a teapot` を返す
 - detail は `I can't give you alcohol, because I am a little teapot.`
 - `cooktail` `wine` `sake` `beer` も同じ挙動を取る
+
+## JSONリプレイメタデータ
+- `game_id` と `stage_details` というキーを含んでいるJSONデータ
+  - `game_id` は `thXX` 等から始まるゲーム識別子
+  - `stage_details` は各面の詳細データが辞書形式で詰まった配列
+    - スペルカードのリプレイや、小数作品でそもそも面の概念がない場合は空のリストが入る
+    - 通しプレイであっても最終面はスコアやステージ以外のメタデータが存在しない。その場合は存在しない項目について `null` で返す
+    - 各作品毎に任意のキーが入るのでクライアント側で良しなに解釈する
+- `game_id` と `stage_details` 以外は各作品によって入るキーが異なる。
+  - クライアント側で良しなに解釈する
