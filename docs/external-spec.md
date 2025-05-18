@@ -21,10 +21,10 @@
   GET /replays?
   sort={sort_kind}&
   order={order_kind}&
-  min_uploaded_at={min_uploaded_at}&
-  max_uploaded_at={max_uploaded_at}&
-  min_created_at={min_created_at}&
-  max_created_at={max_created_at}&
+  uploaded_date_since={uploaded_date_since}&
+  uploaded_date_until={uploaded_date_until}&
+  created_date_since={created_date_since}&
+  created_date_until={created_date_until}&
   offset={offset_num}&
   limit={limit_num}&
   game_id={game_id}&
@@ -39,7 +39,8 @@
 - `order_kind`
   - `asc` (デフォルト)
   - `desc`
-- `[min | max]_[created_at | uploaded_at]`
+- `[created | uploaded]_date_[since | until]`
+  - 日付指定
   - 以上、以下を使用する
 - `offset`
   - 0始まり開始数値
