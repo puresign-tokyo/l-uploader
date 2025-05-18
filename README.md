@@ -11,6 +11,7 @@
     DB_USER={DBのユーザ名}
     DB_PASSWORD={DBのパスワード}
     HASH_PEPPER={ハッシュのペッパー}
+    STRETCH_NUMBER={パスワード暗号化用ストレッチング回数}
     DATABASE_HOST={DBが動いているホスト名}
     DATABASE_PORT={DBが動いているポート}
     BACKEND_HOST_INTERNAL={内部ネットワークから見たバックエンドが動いているホスト名}
