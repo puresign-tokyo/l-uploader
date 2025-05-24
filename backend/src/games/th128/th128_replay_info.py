@@ -37,6 +37,7 @@ class TH128ReplayInfo(BaseModel, ReplayInfo):
 
     def convert_to_dict(self):
         return {
+            "game_id": "th128",
             "name": self.name,
             "difficulty": self.difficulty,
             "route": self.route,

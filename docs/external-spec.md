@@ -27,7 +27,7 @@
   created_date_until={created_date_until}&
   offset={offset_num}&
   limit={limit_num}&
-  game_id={game_id}&
+  <!-- game_id={game_id}& -->
   mode={mode}&
   shot_type={shot_type}&
   category={category}&
@@ -181,3 +181,11 @@
     - 各作品毎に任意のキーが入るのでクライアント側で良しなに解釈する
 - `game_id` と `stage_details` 以外は各作品によって入るキーが異なる。
   - クライアント側で良しなに解釈する
+
+
+## フロントエンドの概要
+
+- 投稿一覧ページの仕様
+  - 作品ごちゃまぜ
+  - ゲーム毎
+    - 機体

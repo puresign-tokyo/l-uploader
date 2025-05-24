@@ -8,6 +8,9 @@ from games.th16.th16_replay_info import TH16ReplayInfo, TH16StageDetail
 
 class TH16Parser(BaseParser):
 
+    def get_supported_game_id(self) -> str:
+        return "th16"
+
     def can_parse(self, rep_raw: bytes) -> bool:
         return rep_raw[:4] == b"t16r"
 

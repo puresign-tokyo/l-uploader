@@ -8,18 +8,19 @@ class BaseParser(ABC):
 
     def __init_subclass__(cls):
         # 循環参照をなくすため
-        from parsers.parser_registry import ParserRegistry
+        from game_registry import GameRegistry
 
-        ParserRegistry.add_parser(cls)
+        GameRegistry.add_parser(cls)
 
-        def singleton_new(subcls, *args, **kwargs):
-            if subcls not in BaseParser._instances:
-                BaseParser._instances[subcls] = super(BaseParser, subcls).__new__(
-                    subcls
-                )
-            return BaseParser._instances[subcls]
+        def singleton_new(cls, *args, **kwargs):
+            if cls not in BaseParser._instances:
+                BaseParser._instances[cls] = super(BaseParser, cls).__new__(cls)
+            return BaseParser._instances[cls]
 
         cls.__new__ = singleton_new
+
+    @abstractmethod
+    def get_supported_game_id(self) -> str: ...
 
     @abstractmethod
     def can_parse(self, rep_raw: bytes) -> bool: ...

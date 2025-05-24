@@ -8,6 +8,9 @@ from games.th15.th15_replay_info import TH15ReplayInfo, TH15StageDetail
 
 class TH15Parser(BaseParser):
 
+    def get_supported_game_id(self) -> str:
+        return "th15"
+
     def can_parse(self, rep_raw: bytes) -> bool:
         return rep_raw[:4] == b"t15r"
 

@@ -8,6 +8,9 @@ from games.th128.th128_replay_info import TH128ReplayInfo, TH128StageDetail
 
 class TH128Parser(BaseParser):
 
+    def get_supported_game_id(self) -> str:
+        return "th128"
+
     def can_parse(self, rep_raw: bytes) -> bool:
         return rep_raw[:4] == b"128r"
 

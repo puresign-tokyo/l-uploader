@@ -7,6 +7,9 @@ from games.th10.th10_replay_info import TH10ReplayInfo, TH10StageDetail
 
 class TH10Parser(BaseParser):
 
+    def get_supported_game_id(self) -> str:
+        return "th10"
+
     def can_parse(self, rep_raw: bytes) -> bool:
         return rep_raw[:4] == b"t10r"
 

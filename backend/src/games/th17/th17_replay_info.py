@@ -45,6 +45,7 @@ class TH17ReplayInfo(BaseModel, ReplayInfo):
 
     def convert_to_dict(self):
         return {
+            "game_id": "th17",
             "name": self.name,
             "shot_type": self.shot_type,
             "difficulty": self.difficulty,

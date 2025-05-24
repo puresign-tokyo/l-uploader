@@ -1,4 +1,4 @@
-from parsers.parser_registry import ParserRegistry
+from game_registry import GameRegistry
 
 # TODO いつか個々の作品を import するのをなくしたい
 from games.th06.th06_parser import TH06Parser
@@ -21,6 +21,7 @@ import json
 
 
 def post_replay(rep_raw: bytes):
-    parser = ParserRegistry.identify_parser(rep_raw)
-    rep_info = parser.parse(rep_raw)
+    print(GameRegistry._games)
+    game = GameRegistry.identify_with_replayfile(rep_raw)
+    rep_info = game["parser"].parse(rep_raw)
     print(json.dumps(rep_info.convert_to_dict(), indent=2))

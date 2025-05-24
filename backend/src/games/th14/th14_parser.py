@@ -8,6 +8,9 @@ from games.th14.th14_replay_info import TH14ReplayInfo, TH14StageDetail
 
 class TH14Parser(BaseParser):
 
+    def get_supported_game_id(self) -> str:
+        return "th14"
+
     def can_parse(self, rep_raw: bytes) -> bool:
 
         # th13とth14のファイルのマジック値はどちらも t13r というバグがある

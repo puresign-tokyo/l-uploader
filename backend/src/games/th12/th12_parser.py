@@ -8,6 +8,9 @@ from games.th12.th12_replay_info import TH12ReplayInfo, TH12StageDetail
 
 class TH12Parser(BaseParser):
 
+    def get_supported_game_id(self) -> str:
+        return "th12"
+
     def can_parse(self, rep_raw: bytes) -> bool:
         return rep_raw[:4] == b"t12r"
 

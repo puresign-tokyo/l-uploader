@@ -4,10 +4,12 @@ from parsers.py_code import th17, th_modern
 from parsers.base_parser import BaseParser
 import tsadecode as td
 from games.th17.th17_replay_info import TH17ReplayInfo, TH17StageDetail
-from parsers import parser_registry
 
 
 class TH17Parser(BaseParser):
+
+    def get_supported_game_id(self) -> str:
+        return "th17"
 
     def can_parse(self, rep_raw: bytes) -> bool:
         return rep_raw[:4] == b"t17r"

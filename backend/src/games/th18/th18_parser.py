@@ -8,6 +8,9 @@ from games.th18.th18_replay_info import TH18ReplayInfo, TH18StageDetail
 
 class TH18Parser(BaseParser):
 
+    def get_supported_game_id(self) -> str:
+        return "th18"
+
     def can_parse(self, rep_raw: bytes) -> bool:
         return rep_raw[:4] == b"t18r"
 
