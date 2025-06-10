@@ -21,6 +21,7 @@ from typing import Literal
 from pydantic import BaseModel, ValidationError
 from enum import StrEnum
 from datetime import datetime
+from zoneinfo import ZoneInfo
 import shutil
 import utility
 
@@ -35,19 +36,41 @@ import os
 from pathlib import Path
 import uvicorn
 
-from replay import ReplayMetaData, ReplayPost
-from sqls import SQLReplays
 
-import post_replay
+# TODO いつか個々の作品を import するのをなくしたい
+from games.th06.th06_parser import TH06Parser
+from games.th07.th07_parser import TH07Parser
+from games.th08.th08_parser import TH08Parser
+from games.th09.th09_parser import TH09Parser
+from games.th10.th10_parser import TH10Parser
+from games.th11.th11_parser import TH11Parser
+from games.th12.th12_parser import TH12Parser
+from games.th13.th13_parser import TH13Parser
+from games.th14.th14_parser import TH14Parser
+from games.th15.th15_parser import TH15Parser
+from games.th16.th16_parser import TH16Parser
+from games.th17.th17_parser import TH17Parser
+from games.th18.th18_parser import TH18Parser
+from games.th95.th95_parser import TH95Parser
+from games.th125.th125_parser import TH125Parser
+from games.th128.th128_parser import TH128Parser
+
+# TODO
+# from games.th143.th143_parser import TH143Parser
+# from games.th165.th165_parser import TH165Parser
+
+from game_registry import GameRegistry
+
+from usecase import Usecase, AdminUsecase
 
 ALLOW_ORIGIN = os.getenv("ALLOW_FRONTEND_ORIGIN")
 if ALLOW_ORIGIN == None:
     raise ValidationError("not set ALLOW_FRONTEND_ORIGIN")
+FETCH_REPLAY_LIMIT = 1000
 DELETE_PASSWORD_LIMIT = 60
+MAX_REPLAY_SIZE = 200 * 1024
 
 
-host_dir = Path(__file__).parent
-css_dir = host_dir / "css"
 replay_dir = Path("/replays")
 
 
@@ -132,62 +155,54 @@ async def custom_http_exception_handler(request: Request, exc: HTTPException):
     return await http_exception_handler(request, exc)
 
 
-# # メタデータの一覧を返す
-# @app.get("/replays")
-# def get_replays(
-#     request: Request,
-#     sort: Literal["score", "uploaded_at", "created_at"] = "score",
-#     order: Literal["desc", "asc"] = "asc",
-#     offset: int = 1,
-#     limit: int = 1000,
-# ):
+# メタデータの一覧を返す
+@app.get("/replays")
+def get_replays(
+    request: Request,
+    game_id: str = "all",
+    category: Literal[
+        "all", "score_run", "no_bomb", "no_miss", "clear", "others"
+    ] = "all",
+    optional_tag: str = "",
+    order: Literal["desc", "asc"] = "asc",
+    upload_date_since: datetime = Query(
+        default=datetime(1970, 1, 1, tzinfo=ZoneInfo("Asia/Tokyo"))
+    ),
+    upload_date_until: datetime = Query(default=datetime.now(ZoneInfo("Asia/Tokyo"))),
+    offset: int = 0,
+    limit: int = 1000,
+):
+    if game_id != "all" and game_id not in GameRegistry.supported_game_ids():
+        logger.info(f"Received replay request with invalid game_id: {game_id}")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 
-#     if offset < 0:
-#         logger.error(
-#             f"Invalid offset value received: {offset}. Offset must be a non-negative integer. Request rejected."
-#         )
-#         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
-#     if limit < 0:
-#         logger.error(
-#             f"Invalid limit value received: {limit}. Limit must be a positive integer greater than zero. Request rejected."
-#         )
-#         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+    if offset < 0:
+        logger.info(f"Invalid offset: negative value {offset} is not allowed.")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 
-#     if order == "asc":
-#         is_asc = True
-#     else:
-#         is_asc = False
+    if limit < 0:
+        logger.info(f"Invalid limit parameter: negative value {limit} is not allowed.")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 
-#     try:
-#         replay_posts = SQLReplays.select_replay_sorted(
-#             sort=sort, offset=offset, limit=limit, is_asc=is_asc
-#         )
-#     except Exception as e:
-#         logger.exception(e)
-#         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    if limit > FETCH_REPLAY_LIMIT:
+        logger.info(
+            f"Invalid limit parameter: received {limit}, but maximum allowed is {FETCH_REPLAY_LIMIT}."
+        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 
-#     returning = []
+    try:
+        result = Usecase.select_replays(
+            upload_date_since=upload_date_since,
+            upload_date_until=upload_date_until,
+            game_id=game_id,
+            category=category,
+            optional_tag=optional_tag,
+        )
+    except Exception as e:
+        logger.exception(e)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-#     for replay_post in replay_posts:
-#         returning.append(
-#             jsonable_encoder(
-#                 GetReplays(
-#                     replay_id=replay_post.replay_id,
-#                     replay_file_name=f"alco_ud{utility.id_to_filename(replay_post.replay_id)}.rpy",
-#                     user_name=replay_post.user_name,
-#                     replay_name=replay_post.replay_meta_data.replay_name,
-#                     created_at=replay_post.replay_meta_data.created_at.isoformat(),
-#                     stage=utility.stage_mapping[replay_post.replay_meta_data.stage],
-#                     score="{:,}".format(replay_post.replay_meta_data.score),
-#                     uploaded_at=replay_post.uploaded_at.isoformat() + "Z",
-#                     game_version=replay_post.replay_meta_data.game_version,
-#                     slow_rate=replay_post.replay_meta_data.slow_rate,
-#                     upload_comment=replay_post.upload_comment,
-#                 )
-#             )
-#         )
-
-#     return returning
+    return JSONResponse(content=result)
 
 
 # @app.get("/replays/{replay_id}")
@@ -224,18 +239,30 @@ async def custom_http_exception_handler(request: Request, exc: HTTPException):
 #     return JSONResponse(content=jsonable_encoder(returning_item))
 
 
-# @app.get("/replays/{replay_id}/file")
-# def get_replays_replay_id_file(replay_id: int):
-#     if not (replay_dir / str(replay_id)).exists():
-#         logger.error(f"No replay found for downloading: replay_id={replay_id}")
-#         raise HTTPException(
-#             status_code=status.HTTP_404_NOT_FOUND, detail="replay file not Found"
-#         )
+@app.get("/replays/{replay_id}/file")
+def get_replays_replay_id_file(replay_id: int):
+    try:
+        result = Usecase.download_replay(replay_id)
+    except Exception as e:
+        logger.exception(e)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-#     return FileResponse(
-#         (replay_dir / str(replay_id)),
-#         filename=f"alco_ud{utility.id_to_filename(replay_id)}.rpy",
-#     )
+    if result["state"] == "replay_not_found_in_postgres":
+        logger.info(f"replay_id {replay_id} is not found in postgres")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="replay is not found"
+        )
+
+    if result["state"] == "replay_not_found_in_directory":
+        logger.info(f"replay_id {replay_id} is not found in directory")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="replay is not found"
+        )
+
+    return FileResponse(
+        result["path"],
+        filename=result["filename"],
+    )
 
 
 @app.post("/replays")
@@ -244,6 +271,10 @@ def post_replays(
     user_name=Form(),
     upload_comment=Form(),
     delete_password=Form(),
+    category: Literal["score_run", "no_bomb", "no_miss", "clear", "others"] = Form(
+        "others"
+    ),
+    optional_tag=Form(),
 ):
     # ReplayPostはDBから持きにパスワードを取得しない為空文字を許さなければならない。
     # よってここでパスワードのバリデーションを掛けなければいけない
@@ -251,88 +282,93 @@ def post_replays(
         logger.exception(
             f"Delete password length exceeds the maximum allowed characters. Length: {len(delete_password)}, limit: {DELETE_PASSWORD_LIMIT}. Upload rejected."
         )
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Delete password length exceeds the maximum allowed characters",
+        )
     if len(delete_password) <= 0:
         logger.info(
             "Delete password is empty. A non-empty password is required for replay deletion authentication."
         )
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Delete password is empty. A non-empty password is required for replay deletion authentication.",
+        )
 
     rep_raw = replay_file.file.read()
-    replay_file.file.seek(0)
+    replay_file.file.close()
+    if (replay_file_length := len(rep_raw)) > MAX_REPLAY_SIZE:
+        logger.info(
+            f"Replay file is too large (received {replay_file_length} bytes / {replay_file_length/1024} KB, limit is {MAX_REPLAY_SIZE} bytes / {MAX_REPLAY_SIZE/1024} KB.)"
+        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="")
 
-    post_replay.post_replay(rep_raw)
+    try:
+        result = Usecase.post_replay(
+            rep_raw,
+            user_name=user_name,
+            category=category,
+            optional_tag=optional_tag,
+            upload_comment=upload_comment,
+            uploaded_at=datetime.now(ZoneInfo("Asia/Tokyo")),
+            raw_delete_password=delete_password,
+        )
+    except Exception as e:
+        logger.exception(e)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    # try:
-    #     # このreplay_postはreplay_idのみ入っていない(DBに登録して始めてreplay_idが付与される為)
-    #     replay_post = ReplayPost.new_from_post(
-    #         replay_file.file,
-    #         user_name,
-    #         upload_comment,
-    #         delete_password,
-    #     )
-    # except ValueError as e:
-    #     logger.exception(e)
-    #     raise HTTPException(
-    #         status_code=status.HTTP_400_BAD_REQUEST,
-    #     )
-    # except Exception as e:
-    #     logger.exception(e)
-    #     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    if result["state"] == "duplicate":
+        return JSONResponse(
+            status_code=status.HTTP_409_CONFLICT,
+            content={"replay_id": result["replay_id"]},
+        )
 
-    # try:
-    #     replay_id = SQLReplays.insert_replay_meta_data(replay_post)
-    # except Exception as e:
-    #     logger.exception(e)
-    #     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    # # ReplayPost.new_from_postで最後までseekしてしまっているから
-    # replay_file.file.seek(0)
-    # with open(replay_dir / str(replay_id), "wb") as fp:
-    #     fp.write(replay_file.file.read())
-
-    # replay_file.file.close()
-
-    # returning_item = GetReplays(
-    #     replay_id=replay_id,
-    #     replay_file_name=f"alco_ud{utility.id_to_filename(replay_id)}.rpy",
-    #     user_name=replay_post.user_name,
-    #     replay_name=replay_post.replay_meta_data.replay_name,
-    #     created_at=replay_post.replay_meta_data.created_at.isoformat(),
-    #     stage=utility.stage_mapping[replay_post.replay_meta_data.stage],
-    #     score="{:,}".format(replay_post.replay_meta_data.score),
-    #     uploaded_at=replay_post.uploaded_at.isoformat() + "Z",
-    #     game_version=replay_post.replay_meta_data.game_version,
-    #     slow_rate=replay_post.replay_meta_data.slow_rate,
-    #     upload_comment=replay_post.upload_comment,
-    # )
-
-    # return returning_item
+    return JSONResponse(
+        status_code=status.HTTP_200_OK, content={"replay_id": result["replay_id"]}
+    )
 
 
-# @app.delete("/replays/{replay_id}")
-# def delete_replays_replay_id(replay_id: int, body: DeleteReplays):
-#     try:
-#         SQLReplays.delete_replay(
-#             replay_id=replay_id,
-#             requested_raw_delete_password=body.delete_password,
-#         )
-#     except ValueError as e:
-#         logger.exception(e)
-#         raise HTTPException(
-#             status_code=status.HTTP_400_BAD_REQUEST, detail="password mismatch"
-#         )
-#     except KeyError as e:
-#         logger.exception(e)
-#         raise HTTPException(
-#             status_code=status.HTTP_409_CONFLICT, detail="requested replay not found"
-#         )
-#     except Exception as e:
-#         logger.exception(e)
-#         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+@app.delete("/replays/{replay_id}")
+def delete_replays_replay_id(replay_id: int, body: DeleteReplays):
+    try:
+        result = Usecase.delete_replay(
+            replay_id=replay_id, raw_delete_password=body.delete_password
+        )
 
-#     os.remove(replay_dir / str(replay_id))
-#     return
+    except Exception as e:
+        logger.exception(e)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    if result["state"] == "invalid_password":
+        logger.info(
+            f"Replay deletion denied: Invalid password for replay_id={replay_id}"
+        )
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="password mismatch"
+        )
+
+    if result["state"] == "replay_not_found_postgres":
+        logger.info(f"Delete request received for non-existent replay_id={replay_id}")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="replay not found"
+        )
+
+    return
+
+
+@app.get("/internal/integrity_sync")
+def integrity_sync():
+    AdminUsecase.integrity_sync()
+
+
+@app.delete("/internal/replays/{replay_id}")
+def delete_replay_without_pass(replay_id: int):
+    AdminUsecase.delete_replay_without_pass(replay_id=replay_id)
+
+
+@app.delete("/internal/replays")
+def delete_replays_until(uploaded_until: datetime):
+    AdminUsecase.delete_replays_until(uploaded_until=uploaded_until)
 
 
 @app.get("/cocktail")

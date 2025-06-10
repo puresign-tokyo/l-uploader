@@ -6,3 +6,4 @@ psycopg
 kaitaistruct
 tsadecode
 setuptools
+pymongo

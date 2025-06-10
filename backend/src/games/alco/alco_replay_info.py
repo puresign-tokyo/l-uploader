@@ -19,4 +19,5 @@ class AlcoReplayInfo(BaseModel, ReplayInfo):
             "total_score": self.total_score,
             "slow_down": self.slowdown,
             "stage_details": [],
+            "parser_version": 1,
         }

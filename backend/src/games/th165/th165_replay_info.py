@@ -21,4 +21,5 @@ class TH165ReplayInfo(BaseModel, ReplayInfo):
             "timestamp": self.timestamp.isoformat(),
             "slow_down": self.slowdown,
             "stage_details": [],
+            "parser_version": 1,
         }

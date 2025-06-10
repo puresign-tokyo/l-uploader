@@ -50,4 +50,5 @@ class TH11ReplayInfo(BaseModel, ReplayInfo):
             "stage_details": [
                 stage_detail.convert_to_dict() for stage_detail in self.stage_details
             ],
+            "parser_version": 1,
         }

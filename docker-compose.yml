@@ -1,5 +1,3 @@
-name: th-uploader
-
 services:
   frontend:
     build:
@@ -20,38 +18,57 @@ services:
       - "${BACKEND_PORT_INTERNAL}:5001"
     volumes:
       - type: bind
-        source: "./backend/bind_for_test"
-        target: "/app/bind_for_test"
-      - type: bind
         source: "/var/log"
         target: "/var/log"
       - replays:/replays/
     environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASS=${POSTGRES_PASS}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${PPOSTGRES_PORT}
       - HASH_PEPPER=${HASH_PEPPER}
       - FRONTEND_HOST=${FRONTEND_HOST_EXTERNAL}
       - FRONTEND_PORT=${FRONTEND_PORT_EXTERNAL}
-      - DATABASE_HOST=${DATABASE_HOST}
-      - DATABASE_PORT=${DATABASE_PORT}
+      - ALLOW_DUPLICATE_POSTS=${ALLOW_DUPLICATE_POSTS}
+      - MONGO_HOST=${MONGO_HOST}
+      - MONGO_PORT=${MONGO_PORT}
+      - MONGO_APP_USER=${MONGO_ROOT_USER}
+      - MONGO_APP_PASS=${MONGO_ROOT_PASS}
+      - MONGO_DATABASE=${MONGO_DATABASE}
       - HTTP_PROTOCOL=${HTTP_PROTOCOL}
       - ALLOW_FRONTEND_ORIGIN=${ALLOW_FRONTEND_ORIGIN}
       - USE_REVERSE_PROXY=${USE_REVERSE_PROXY}
       - PYTHONPATH=/app
     tty: true
 
-  db:
+  postgresql:
     image: postgres:17
-    container_name: database
+    container_name: ${POSTGRES_HOST}
     volumes:
-      - db_table:/var/lib/postgresql/data/
-      - ./database/init/:/docker-entrypoint-initdb.d/
+      - postgresql_table:/var/lib/postgresql/data/
+      - ./postgresql/init/:/docker-entrypoint-initdb.d/
     environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASS}
     ports:
-      - ${DATABASE_PORT}:5432
+      - ${POSTGRES_PORT}:5432
+
+  mongodb:
+    image: mongo:8.0.9
+    container_name: ${MONGO_HOST}
+    volumes:
+      - mongodb_table:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=${MONGO_DATABASE}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASS}
+      - MONGO_APP_USER=${MONGO_APP_USER}
+      - MONGO_APP_PASS=${MONGO_APP_PASS}
+      - MONGO_DATABASE=${MONGO_DATABASE}
+    ports:
+      - ${MONGO_PORT}:27017
 
 volumes:
-  db_table:
+  postgresql_table:
+  mongodb_table:
   replays:
