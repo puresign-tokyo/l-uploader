@@ -20,7 +20,7 @@ from psycopg.errors import ConnectionFailure, ConnectionTimeout
 from typing import Literal
 from pydantic import BaseModel, ValidationError
 from enum import StrEnum
-from datetime import datetime
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 import shutil
 import utility
@@ -54,10 +54,10 @@ from games.th18.th18_parser import TH18Parser
 from games.th95.th95_parser import TH95Parser
 from games.th125.th125_parser import TH125Parser
 from games.th128.th128_parser import TH128Parser
+from games.th143.th143_parser import TH143Parser
+from games.th165.th165_parser import TH165Parser
+from games.alco.alco_parser import AlcoParser
 
-# TODO
-# from games.th143.th143_parser import TH143Parser
-# from games.th165.th165_parser import TH165Parser
 
 from game_registry import GameRegistry
 
@@ -356,7 +356,7 @@ def delete_replays_replay_id(replay_id: int, body: DeleteReplays):
     return
 
 
-@app.get("/internal/integrity_sync")
+@app.post("/internal/integrity_sync")
 def integrity_sync():
     AdminUsecase.integrity_sync()
 
@@ -367,7 +367,11 @@ def delete_replay_without_pass(replay_id: int):
 
 
 @app.delete("/internal/replays")
-def delete_replays_until(uploaded_until: datetime):
+def delete_replays_until(
+    uploaded_until: datetime = Query(
+        default=datetime.now(ZoneInfo("Asia/Tokyo")) - timedelta(days=365)
+    ),
+):
     AdminUsecase.delete_replays_until(uploaded_until=uploaded_until)
 
 

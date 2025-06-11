@@ -3,20 +3,21 @@ from pydantic import BaseModel, Field
 from datetime import datetime
 
 
-class TH165ReplayInfo(BaseModel, ReplayInfo):
+class TH143ReplayInfo(BaseModel, ReplayInfo):
     name: str = ""
     level: int = -1
     scene: int = -1
     timestamp: datetime
+    total_score: int = Field(..., ge=0, le=10000000000)
     slow_down: float = Field(..., ge=0, le=100)
 
-    def convert_to_dict(self):
+    def convert_to_dict(self) -> dict:
         return {
-            "game_id": "th165",
+            "game_id": "th143",
             "name": self.name,
             "level": self.level,
             "scene": self.scene,
-            "total_score": 0,
+            "total_score": self.total_score,
             "timestamp": self.timestamp.isoformat(),
             "slow_down": self.slow_down,
             "stage_details": [],

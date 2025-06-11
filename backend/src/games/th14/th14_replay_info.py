@@ -33,7 +33,7 @@ class TH14ReplayInfo(BaseModel, ReplayInfo):
     name: str = ""
     shot_type: str = ""
     difficulty: int = -1
-    total_score: int = Field(..., ge=0, le=10000000000)
+    total_score: int = Field(..., ge=0, le=5000000000)
     timestamp: datetime
     slowdown: float = Field(..., ge=0, le=100)
     spell_card_id: int

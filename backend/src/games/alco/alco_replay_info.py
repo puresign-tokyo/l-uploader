@@ -7,7 +7,7 @@ class AlcoReplayInfo(BaseModel, ReplayInfo):
     name: str = ""
     timestamp: datetime
     stage: str = ""
-    total_score: int = Field(..., ge=0, le=10000000000)
+    total_score: int = Field(..., ge=0, le=1000000000)
     slowdown: float = Field(..., ge=0, le=100)
 
     def convert_to_dict(self):
