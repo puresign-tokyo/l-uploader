@@ -20,5 +20,8 @@
     "vue-router": "^4.5.0",
     "vuetify": "^3.8.0-beta.0",
     "webfontloader": "^1.6.28"
+  },
+  "devDependencies": {
+    "@nuxtjs/i18n": "^9.5.5"
   }
 }

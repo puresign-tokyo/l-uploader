@@ -35,7 +35,6 @@
   <v-app-bar color="#D99B01">
     <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-    <v-app-bar-title>黄昏酒場スコアボード</v-app-bar-title>
   </v-app-bar>
   
 </template>
