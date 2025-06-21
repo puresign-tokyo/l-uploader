@@ -52,7 +52,7 @@ class TH18ReplayInfo(BaseModel, ReplayInfo):
             "total_score": self.total_score,
             "timestamp": self.timestamp.isoformat(),
             "replay_type": self.replay_type,
-            "slow_down": self.slowdown,
+            "slowdown": self.slowdown,
             "spell_card_id": self.spell_card_id,
             "stage_details": [
                 stage_detail.convert_to_dict() for stage_detail in self.stage_details

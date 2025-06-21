@@ -49,6 +49,7 @@
     {path: "/NewPost", label: "新規投稿"},
     {path: "/PageLinks", label: "外部リンク一覧"},
     {path: "/TermsServe", label: "利用規約"},
+    {path: "/Credits", label: "スタッフ紹介"},
     {path: "/ReleaseNote", label: "リリースノート"}
   ]
 </script>

@@ -71,6 +71,16 @@ class Usecase:
         return result["posts"]
 
     @staticmethod
+    def select_replay(replay_id: int):
+        result = SQLReplays.select_replay(replay_id)
+        if result["state"] != "success":
+            return result
+        result["post"][
+            "filename"
+        ] = f"{result["post"]["game_id"]}_ud{utility.id_to_filename(result["post"]["replay_id"])}.rpy"
+        return result
+
+    @staticmethod
     def download_replay(replay_id: int):
         result_sql = SQLReplays.select_replay_game_id(replay_id=replay_id)
         if result_sql["state"] != "success":

@@ -18,7 +18,7 @@ class TH165ReplayInfo(BaseModel, ReplayInfo):
             "scene": self.scene,
             "total_score": 0,
             "timestamp": self.timestamp.isoformat(),
-            "slow_down": self.slow_down,
+            "slowdown": self.slow_down,
             "stage_details": [],
             "parser_version": 1,
         }

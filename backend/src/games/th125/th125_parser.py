@@ -40,12 +40,13 @@ class TH125Parser(BaseParser):
         if replay.userdata.slowdown.value is None:
             raise ValueError("th125 replay file cannot be found slowdown")
 
-        spell_level = int(replay.userdata.level)
+        spell_level = replay.userdata.level
         spell_scene = int(replay.userdata.scene.value)
 
         return TH125ReplayInfo(
             total_score=int(replay.userdata.score.value),
-            shot_type=replay.userdata.shot.value,
+            # 機体名の末尾にスペースがついている
+            shot_type=replay.userdata.shot.value.rstrip(),
             timestamp=datetime.strptime(replay.userdata.date.value, "%y/%m/%d %H:%M"),
             name=replay.userdata.name.value,
             level=spell_level,

@@ -100,6 +100,21 @@ class MongoHandler:
         return returning_docs
 
     @staticmethod
+    def read_replay(replay_id: str):
+        with mongo.start_session() as session:
+            collection = mongo.select_collection()
+            docs = list(collection.find({"_id": replay_id}))
+
+            if len(docs) > 1:
+                logger.warning(
+                    f"Warning: Multiple documents found with same {replay_id}!"
+                )
+            elif len(docs) == 0:
+                logger.error(f"{replay_id} is not found")
+
+            return docs[0]
+
+    @staticmethod
     def update_replays(replay_id: str, data: dict):
         # 運用者のみが使用し、システムは使用してはならない
         with mongo.start_session() as session:

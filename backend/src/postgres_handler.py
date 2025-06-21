@@ -347,6 +347,51 @@ class SQLReplays:
                 return {"state": "success", "posts": returning}
 
     @staticmethod
+    def select_replay(replay_id: int) -> dict:
+        with postgres.transactional() as conn:
+            with conn.cursor(row_factory=dict_row) as cur:
+                cur.execute(
+                    """
+                    SELECT
+                        replay_id,
+                        game_id,
+                        user_name,
+                        uploaded_at,
+                        upload_comment,
+                        category,
+                        optional_tag
+                    FROM posts
+                    WHERE
+                        replay_id=%(replay_id)s
+                    """,
+                    {"replay_id": replay_id},
+                )
+                rows = cur.fetchall()
+                if len(rows) == 0:
+                    return {"state": "replay_not_found_in_postgres"}
+
+                if len(rows) != 1:
+                    raise RuntimeError(
+                        f"Primary Key Violation — Multiple records found for replay_id {replay_id}"
+                    )
+
+                replay_meta = MongoHandler.read_replay(replay_id=str(replay_id))
+
+                return {
+                    "state": "success",
+                    "post": {
+                        "replay_meta": replay_meta,
+                        "replay_id": replay_id,
+                        "game_id": rows[0]["game_id"],
+                        "user_name": rows[0]["user_name"],
+                        "uploaded_at": rows[0]["uploaded_at"].isoformat(),
+                        "upload_comment": rows[0]["upload_comment"],
+                        "category": rows[0]["category"],
+                        "optional_tag": rows[0]["optional_tag"],
+                    },
+                }
+
+    @staticmethod
     def integrity_sync():
         with postgres.transactional() as conn:
             with conn.cursor(row_factory=dict_row) as cur:

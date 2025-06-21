@@ -5,7 +5,7 @@ from datetime import datetime
 
 class TH95ReplayInfo(BaseModel, ReplayInfo):
     name: str = ""
-    level: int = -1
+    level: str = ""
     scene: int = -1
     timestamp: datetime
     total_score: int = Field(..., ge=0, le=10000000000)
@@ -19,7 +19,7 @@ class TH95ReplayInfo(BaseModel, ReplayInfo):
             "scene": self.scene,
             "total_score": self.total_score,
             "timestamp": self.timestamp.isoformat(),
-            "slow_down": self.slowdown,
+            "slowdown": self.slowdown,
             "stage_details": [],
             "parser_version": 1,
         }

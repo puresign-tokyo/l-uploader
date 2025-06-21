@@ -11,52 +11,24 @@
     </v-container>
 
     <ClientOnly>
-      <v-container>
+      <v-container v-if="!loading">
         <component
           v-for="replay in replays"
           :key="replay.replay_id"
-          :is="getComponentForReplayTable(replay.game_id)"
-          :replay="replay"
-          @delete="openDeleteDialog"
-          @detail="openFocusedDialog"
+          :is="ReplayTable"
+          :replayTable="getReplayTable(replay.game_id)(replay)"
+          @showDetail="openDetailDialog"
+          @confirmDelete="openDeleteDialog"
+          @confirmShare="openShareDialog"
         />
       </v-container>
 
-      <!-- 詳細ダイアログ -->
-      <v-dialog v-model="detailDialog" max-width="600" scrim="rgba(0, 0, 0, 0.5)" attach="body">
-        <v-card class="elevation-0">
-          <v-container>
-            <v-list v-for="(item, index) in detailFields" :key="index">
-              <v-list-item-subtitle class="custom-v-list-item-subtitle">{{ item.label }}</v-list-item-subtitle>
-              <v-list-item>
-                <v-list-item-title class="custom-v-list-item-title">{{ focusedItem[item.value] }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
 
-            <v-list>
-              <v-list-item-subtitle class="custom-v-list-item-subtitle">ダウンロードリンク</v-list-item-subtitle>
-              <v-list-item>
-                <v-list-item-title class="custom-v-list-item-title">
-                  <a :href="createDownloadLink(focusedItem.replay_id)">
-                    {{ focusedItem.replay_file_name }}
-                  </a>
-                </v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-container>
-
-          <v-divider />
-          <v-card-actions>
-            <v-spacer />
-            <v-btn text="閉じる" variant="plain" @click="detailDialog = false" />
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
 
       <!-- 削除ダイアログ -->
-      <v-dialog v-model="dialog" max-width="600" scrim="rgba(0, 0, 0, 0.5)" attach="body">
+      <v-dialog v-model="deleteDialog" max-width="600" scrim="rgba(0, 0, 0, 0.5)" attach="body">
         <v-card
-          :title="`${pendingDeleteItem?.replay_file_name ?? ''}を削除する`"
+          :title="`${pendingDeleteItem.filename}を削除する`"
           text="削除用パスワードを入力してください"
           class="elevation-0"
         >
@@ -79,16 +51,50 @@
 
           <v-card-actions>
             <v-spacer />
-            <v-btn text="閉じる" variant="plain" @click="dialog = false" />
+            <v-btn text="閉じる" variant="plain" @click="deleteDialog = false" />
             <v-btn color="error" text="削除" variant="tonal" @click="sendDeleteReplay" />
           </v-card-actions>
         </v-card>
       </v-dialog>
+
+      <v-dialog v-model="shareDialog" max-width="600" scrim="rgba(0, 0, 0, 0.5)" attach="body">
+        <v-card
+          :title="`${pendingShareItem.filename}をシェアする`"
+          text="どこでシェアしますか？"
+          class="elevation-0"
+        >
+
+          <v-icon
+            icon="mdi-link"
+            @click="shareToCopy"
+          />
+
+          <v-icon
+            icon="mdi-twitter"
+            @clink="shareToTweet"
+          />
+        
+          <v-divider />
+
+          <v-card-actions>
+            <v-spacer />
+            <v-btn text="閉じる" variant="plain" @click="shareDialog = false" />
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+
     </ClientOnly>
 
     <!-- スナックバー -->
-    <v-snackbar v-model="snackbar">
+    <v-snackbar v-model="deleteSnackbar">
       削除しました
+      <template #actions>
+        <v-btn color="success" variant="outlined" @click="snackbar = false">閉じる</v-btn>
+      </template>
+    </v-snackbar>
+    <v-snackbar v-model="clipboardSnackbar">
+      クリップボードにコピーしました
       <template #actions>
         <v-btn color="success" variant="outlined" @click="snackbar = false">閉じる</v-btn>
       </template>
@@ -99,29 +105,47 @@
 <script setup>
 import { ref, shallowRef } from 'vue'
 import { ClientOnly } from '#components'
+import { CommonUtils } from '~/composables/CommonUtils'
 
-// コンポーネント
-import Th06Table from '~/components/ReplayTables/th06Table.vue'
-// import Th13Table from '~/components/ReplayTables/th13Table.vue'
-// import Th14Table from '~/components/ReplayTables/th14Table.vue'
+
+import ReplayTable from '~/components/ReplayTable.vue'
+
+import { ErrorTable } from '~/composables/Games/Error'
+import { Th06Table } from '~/composables/Games/Th06'
+import { Th07Table } from '~/composables/Games/Th07'
+import { Th08Table } from '~/composables/Games/Th08'
+import { Th09Table } from '~/composables/Games/Th09'
+import { Th10Table } from '~/composables/Games/Th10'
+import { Th11Table } from '~/composables/Games/Th11'
+import { Th12Table } from '~/composables/Games/Th12'
+import { Th13Table } from '~/composables/Games/Th13'
+import { Th14Table } from '~/composables/Games/Th14'
+import { Th15Table } from '~/composables/Games/Th15'
+import { Th16Table } from '~/composables/Games/Th16'
+import { Th17Table } from '~/composables/Games/Th17'
+import { Th18Table } from '~/composables/Games/Th18'
+
+import { Th95Table } from '~/composables/Games/Th95'
+import { Th125Table } from '~/composables/Games/Th125'
+import { Th128Table } from '~/composables/Games/Th128'
+import { Th143Table } from '~/composables/Games/Th143'
+
 
 const replays = ref([])
 const loading = ref(true)
-const snackbar = ref(false)
-const dialog = ref(false)
+const clipboardSnackbar = ref(false)
+const deleteSnackbar = ref(false)
 const detailDialog = ref(false)
-const pendingDeleteItem = ref(null)
-const focusedItem = ref({})
+const deleteDialog = ref(false)
+const shareDialog = ref(false)
+
+const showDetailItem = ref({})
+const pendingDeleteItem = ref({})
+const pendingShareItem = ref({})
+
 const deletePassword = ref('')
 const showPassword = ref(false)
 
-// フィールドラベル設定（仮置き）
-const detailFields = [
-  { label: 'プレイヤー', value: 'player_name' },
-  { label: 'キャラ', value: 'character' },
-  { label: 'スコア', value: 'score' },
-  // 必要に応じて拡張
-]
 
 // 日付整形
 const formatDate = (iso) =>
@@ -134,17 +158,32 @@ const formatDate = (iso) =>
 // コンポーネントの取得
 const tableComponents = {
   th06: Th06Table,
-}
-const getComponentForReplayTable = (gameId) => tableComponents[gameId] || Th13Table
+  th07: Th07Table,
+  th08: Th08Table,
+  th09: Th09Table,
+  th10: Th10Table,
+  th11: Th11Table,
+  th12: Th12Table,
+  th13: Th13Table,
+  th14: Th14Table,
+  th15: Th15Table,
+  th16: Th16Table,
+  th17: Th17Table,
+  th18: Th18Table,
 
-const createDownloadLink = (replayId) =>
-  `${useRuntimeConfig().public.backend_url}/replays/${replayId}/file`
+  th95: Th95Table,
+  th125: Th125Table,
+  th128: Th128Table,
+  th143: Th143Table
+}
+const getReplayTable = (gameId) => {
+  return tableComponents[gameId] ?? ErrorTable
+}
 
 // リプレイ取得
 await useFetch(`${useRuntimeConfig().public.backend_url}/replays?order=desc&offset=0&limit=1000`, {
   server: false,
   onResponse({ response }) {
-    console.log("API response:",response)
     const rawData = response._data
     replays.value = rawData.map((item, i) => ({
       ...item,
@@ -160,14 +199,21 @@ await useFetch(`${useRuntimeConfig().public.backend_url}/replays?order=desc&offs
 })
 
 // ダイアログ操作
-function openDeleteDialog(item) {
-  pendingDeleteItem.value = item
-  dialog.value = true
-}
-function openFocusedDialog(item) {
-  focusedItem.value = item
+function openDetailDialog(item) {
+  showDetailItem.value = item
   detailDialog.value = true
 }
+
+function openDeleteDialog(item) {
+  pendingDeleteItem.value = item
+  deleteDialog.value = true
+}
+
+function openShareDialog(item){
+  pendingShareItem.value = item
+  shareDialog.value = true
+}
+
 
 // 削除リクエスト
 async function sendDeleteReplay() {
@@ -192,6 +238,24 @@ async function sendDeleteReplay() {
     alert(msg)
   }
 }
+
+const shareToCopy = async()=>{
+  try {
+    await navigator.clipboard.writeText(text)
+    clipboardSnackbar.value = true
+  } catch (err) {
+    console.error(err)
+    alert('コピーに失敗しました')
+  }
+}
+
+const shareToTweet=()=>{
+  const text=encodeURIComponent(`${CommonUtils().convertGameId(pendingShareItem.value.game_id)}のリプレイをアップロードしました！\n詳細はこちら！`)
+  const url=encodeURIComponent(`${window.location.origin}/replays/${pendingShareItem.value.replay_id}`)
+  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`)
+  dialogSuccessPost.value=false
+}
+
 </script>
 
 <style scoped>

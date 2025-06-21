@@ -29,10 +29,10 @@ class TH08Parser(BaseParser):
         )
 
         shot_types = [
-            "Reimu & Yukari",
-            "Marisa & Alice",
-            "Sakuya & Remilia",
-            "Youmu & Yuyuko",
+            "Reimu_and_Yukari",
+            "Marisa_and_Alice",
+            "Sakuya_and_Remilia",
+            "Youmu_and_Yuyuko",
             "Reimu",
             "Yukari",
             "Marisa",
@@ -94,9 +94,9 @@ class TH08Parser(BaseParser):
                 s.point_items = next_stage.point_items
 
             if i == 6:
-                route = "Final A"
+                route = "Final_A"
             elif i == 7:
-                route = "Final B"
+                route = "Final_B"
 
             rep_stages.append(s)
 

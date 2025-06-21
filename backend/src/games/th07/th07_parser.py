@@ -64,8 +64,8 @@ class TH07Parser(BaseParser):
         if len(rep_stages) == 1 and replay.header.difficulty not in [4, 5]:
             replay_type = "stage_practice"
 
-        # Touhou 7 does not store the year of the replay, but datetimes requires one.
-        # Therefore we set one. It must be a leap year in order for Feb 29 to be valid.
+        # 妖々夢のリプレイには年の情報が入っていない。
+        # 仮で1904を入れるがこの情報を使用してはならない。
         arbitrary_leap_year = 1904
         timestamp = datetime.strptime(
             f"{replay.header.date}/{arbitrary_leap_year}", "%m/%d/%Y"

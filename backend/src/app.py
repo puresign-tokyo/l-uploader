@@ -205,38 +205,20 @@ def get_replays(
     return JSONResponse(content=result)
 
 
-# @app.get("/replays/{replay_id}")
-# def get_replays_replay_id(request: Request, replay_id: int):
+@app.get("/replays/{replay_id}")
+def get_replays_replay_id(request: Request, replay_id: int):
 
-#     if (client_ip := request.headers.get("X-Forwarded-For")) == None:
-#         logger.info("did not use reverse proxy. Bye.")
-#         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
-
-#     try:
-#         replay_post = SQLReplays.select_replay(replay_id)
-#     except ValueError as e:
-#         logger.exception(e)
-#         raise HTTPException(
-#             status_code=status.HTTP_400_BAD_REQUEST, detail="select replay not found"
-#         )
-#     except Exception as e:
-#         logger.exception(e)
-#         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
-#     returning_item = GetReplays(
-#         replay_id=replay_post.replay_id,
-#         replay_file_name=f"alco_ud{utility.id_to_filename(replay_post.replay_id)}.rpy",
-#         user_name=replay_post.user_name,
-#         replay_name=replay_post.replay_meta_data.replay_name,
-#         created_at=replay_post.replay_meta_data.created_at.isoformat(),
-#         stage=utility.stage_mapping[replay_post.replay_meta_data.stage],
-#         score="{:,}".format(replay_post.replay_meta_data.score),
-#         uploaded_at=replay_post.uploaded_at.isoformat() + "Z",
-#         game_version=replay_post.replay_meta_data.game_version,
-#         slow_rate=replay_post.replay_meta_data.slow_rate,
-#         upload_comment=replay_post.upload_comment,
-#     )
-
-#     return JSONResponse(content=jsonable_encoder(returning_item))
+    try:
+        result = Usecase.select_replay(replay_id)
+        if result["state"] == "replay_not_found_in_postgres":
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        logger.exception(e)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="select replay not found"
+        )
+    print(result["post"])
+    return JSONResponse(content=result["post"])
 
 
 @app.get("/replays/{replay_id}/file")
