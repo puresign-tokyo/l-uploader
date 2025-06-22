@@ -44,16 +44,15 @@ class Usecase:
         return result_sql
 
     @staticmethod
-    def select_one_replay():
-        pass
-
-    @staticmethod
     def select_replays(
         upload_date_since: date,
         upload_date_until: date,
         game_id: str,
         category: str,
         optional_tag: str,
+        order: str,
+        offset: int,
+        limit: int,
     ):
         result = SQLReplays.select_replay_sorted(
             uploaded_date_since=upload_date_since,
@@ -61,6 +60,9 @@ class Usecase:
             game_id=game_id,
             category=category,
             optional_tag=optional_tag,
+            order=order,
+            offset=offset,
+            limit=limit,
         )
 
         for post in result["posts"]:
@@ -69,6 +71,22 @@ class Usecase:
             )
 
         return result["posts"]
+
+    @staticmethod
+    def count_replays(
+        game_id: str,
+        category: str,
+        optional_tag: str,
+        uploaded_date_since: datetime,
+        uploaded_date_until: datetime,
+    ) -> dict:
+        return SQLReplays.count_replays(
+            game_id=game_id,
+            category=category,
+            optional_tag=optional_tag,
+            uploaded_date_since=uploaded_date_since,
+            uploaded_date_until=uploaded_date_until,
+        )
 
     @staticmethod
     def select_replay(replay_id: int):

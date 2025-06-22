@@ -288,6 +288,9 @@ class SQLReplays:
         game_id: str,
         category: str,
         optional_tag: str,
+        order: str,
+        offset: int,
+        limit: int,
     ):
         with postgres.transactional() as conn:
             with conn.cursor(row_factory=dict_row) as cur:
@@ -306,20 +309,33 @@ class SQLReplays:
                             AND uploaded_at::date < %(uploaded_date_before)s
                     """
 
-                params: dict[str, Union[str, date]] = {
+                params: dict[str, Union[int, str, date]] = {
                     "uploaded_date_since": uploaded_date_since,
                     "uploaded_date_before": uploaded_date_until + timedelta(days=1),
                 }
 
                 if game_id != "all":
-                    query += "AND game_id = %(game_id)s"
+                    query += " AND game_id = %(game_id)s"
                     params["game_id"] = game_id
                 if category != "all":
-                    query += "AND category = %(category)"
+                    query += " AND category = %(category)"
                     params["category"] = category
                 if optional_tag != "":
-                    query += "AND optional_tag = %(optional_tag)s"
+                    query += " AND optional_tag = %(optional_tag)s"
                     params["optional_tag"] = optional_tag
+
+                if order == "asc":
+                    query += " ORDER BY uploaded_at ASC"
+                elif order == "desc":
+                    query += " ORDER BY uploaded_at DESC"
+                else:
+                    raise RuntimeError(f"order is not asc or desc. order is {order}")
+
+                query += " LIMIT %(limit)s"
+                params["limit"] = limit
+
+                query += " OFFSET %(offset)s"
+                params["offset"] = offset
 
                 cur.execute(
                     query,
@@ -345,6 +361,53 @@ class SQLReplays:
                         post["optional_tag"] = row["optional_tag"]
                         returning.append(post)
                 return {"state": "success", "posts": returning}
+
+    @staticmethod
+    def count_replays(
+        game_id: str,
+        category: str,
+        optional_tag: str,
+        uploaded_date_since: datetime,
+        uploaded_date_until: datetime,
+    ) -> dict:
+        with postgres.transactional() as conn:
+            with conn.cursor(row_factory=dict_row) as cur:
+                query = """
+                        SELECT
+                            COUNT(*)
+                        FROM posts
+                        WHERE
+                            %(uploaded_date_since)s <= uploaded_at::date
+                            AND uploaded_at::date < %(uploaded_date_before)s
+                    """
+
+                params: dict[str, Union[str, date]] = {
+                    "uploaded_date_since": uploaded_date_since,
+                    "uploaded_date_before": uploaded_date_until + timedelta(days=1),
+                }
+
+                if game_id != "all":
+                    query += " AND game_id = %(game_id)s"
+                    params["game_id"] = game_id
+                if category != "all":
+                    query += " AND category = %(category)"
+                    params["category"] = category
+                if optional_tag != "":
+                    query += " AND optional_tag = %(optional_tag)s"
+                    params["optional_tag"] = optional_tag
+
+                cur.execute(
+                    query,
+                    params,
+                )
+                rows = cur.fetchall()
+
+                if len(rows) != 1:
+                    raise RuntimeError(
+                        f"Multi result in sql count request: game_id={game_id}, category={category}, optional_tag={optional_tag}, uploaded_date_since={uploaded_date_since}, uploaded_date_until={uploaded_date_until}"
+                    )
+
+                return {"state": "success", "count": rows[0]["count"]}
 
     @staticmethod
     def select_replay(replay_id: int) -> dict:

@@ -1,28 +1,76 @@
 <template>
   <v-main>
     <v-container>
-      <p>
-        このページは
-        <a href="https://www16.big.or.jp/~zun/" target="_blank" rel="noopener noreferrer">
-          上海アリス幻樂団
-        </a>
-        が作成した東方Projectシリーズのリプレイアップローダです。
-      </p>
+        <v-card
+          class="d-flex flex-column my-8"
+          elevation="4"
+          :style="{
+            borderLeft: '8px solid var(--border-color)',
+            alignItems: 'stretch',
+            minHeight: '170px',
+            minWidth: '0'
+          }"
+        >
+          <p>
+            このページは
+            <a href="https://www16.big.or.jp/~zun/" target="_blank" rel="noopener noreferrer">
+              上海アリス幻樂団
+            </a>
+            が作成した東方Projectシリーズのリプレイアップローダです。
+          </p>
+        </v-card>
+      
+    </v-container>
+    <ClientOnly>
+    <v-container>
+      <v-card
+        class="d-flex flex-column my-8"
+        elevation="4"
+        :style="{
+          borderLeft: '8px solid var(--border-color)',
+          alignItems: 'stretch',
+          minWidth: '0'
+        }"
+      >
+        <v-pagination
+          v-model="replayPagination"
+          :length="replayPaginationLimit"
+          rounded="circle"
+        ></v-pagination>
+      </v-card>
     </v-container>
 
-    <ClientOnly>
-      <v-container v-if="!loading">
-        <component
-          v-for="replay in replays"
-          :key="replay.replay_id"
-          :is="ReplayTable"
-          :replayTable="getReplayTable(replay.game_id)(replay)"
-          @showDetail="openDetailDialog"
-          @confirmDelete="openDeleteDialog"
-          @confirmShare="openShareDialog"
-        />
-      </v-container>
+    <v-container v-if="!loading">
+      <component
+        v-for="replay in replays"
+        :key="replay.replay_id"
+        :is="ReplayTable"
+        :replayTable="getReplayTable(replay.game_id)(replay)"
+        @showDetail="openDetailDialog"
+        @confirmDelete="openDeleteDialog"
+        @confirmShare="openShareDialog"
+      />
+    </v-container>
 
+    <v-container>
+      <v-card
+        class="d-flex flex-column my-8"
+        elevation="4"
+        :style="{
+          borderLeft: '8px solid var(--border-color)',
+          alignItems: 'stretch',
+          minWidth: '0'
+        }"
+      >
+        <v-pagination
+          v-model="replayPagination"
+          :length="replayPaginationLimit"
+          rounded="circle"
+        ></v-pagination>
+      </v-card>
+    </v-container>
+
+    </ClientOnly>
 
 
       <!-- 削除ダイアログ -->
@@ -83,9 +131,6 @@
         </v-card>
       </v-dialog>
 
-
-    </ClientOnly>
-
     <!-- スナックバー -->
     <v-snackbar v-model="deleteSnackbar">
       削除しました
@@ -103,7 +148,7 @@
 </template>
 
 <script setup>
-import { ref, shallowRef } from 'vue'
+import { ref, watch } from 'vue'
 import { ClientOnly } from '#components'
 import { CommonUtils } from '~/composables/CommonUtils'
 
@@ -146,6 +191,8 @@ const pendingShareItem = ref({})
 const deletePassword = ref('')
 const showPassword = ref(false)
 
+const replayPagination = ref(1)
+const replayPaginationLimit = ref(1)
 
 // 日付整形
 const formatDate = (iso) =>
@@ -180,8 +227,20 @@ const getReplayTable = (gameId) => {
   return tableComponents[gameId] ?? ErrorTable
 }
 
+await useFetch(`${useRuntimeConfig().public.backend_url}/replays/count`, {
+  server: false,
+  onResponse({ response }) {
+    const rawData = response._data
+    replayPaginationLimit.value = Math.floor(Number(rawData.count) / useRuntimeConfig().public.pagination_size) + 1
+  },
+  onResponseError({ error }) {
+    console.error(error)
+    replayPagination.value = 1
+  },
+})
+
 // リプレイ取得
-await useFetch(`${useRuntimeConfig().public.backend_url}/replays?order=desc&offset=0&limit=1000`, {
+await useFetch(`${useRuntimeConfig().public.backend_url}/replays?order=asc&offset=0&limit=${useRuntimeConfig().public.pagination_size}`, {
   server: false,
   onResponse({ response }) {
     const rawData = response._data
@@ -196,6 +255,30 @@ await useFetch(`${useRuntimeConfig().public.backend_url}/replays?order=desc&offs
     replays.value = []
     loading.value = false
   },
+})
+
+const onPageChanged= async (newPage)=>{
+  try {
+    await $fetch(`${useRuntimeConfig().public.backend_url}/replays?order=asc&offset=${useRuntimeConfig().public.pagination_size * (replayPagination.value - 1)}&limit=${useRuntimeConfig().public.pagination_size}`, {
+      method: 'get',
+      server: false,
+      onResponse({ response }) {
+        if (response.status >= 200 && response.status < 300) {
+          const rawData = response._data
+          replays.value = rawData.map((item, i) => ({
+            ...item,
+            uploaded_at: formatDate(item.uploaded_at),
+          }))
+        }
+      }
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+watch(replayPagination, (newPage)=>{
+  onPageChanged(newPage)
 })
 
 // ダイアログ操作

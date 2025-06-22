@@ -32,6 +32,9 @@ export default defineNuxtConfig({
       const omitPort = (protocol === 'http' && port === '80') || (protocol === 'https' && port === '443')
       return `${protocol}://${host}${omitPort ? '' : `:${port}`}`
     })(),
+    pagination_size: (() => {
+        return process.env.NUXT_PUBLIC_PAGINATION_LIMIT
+    })(),
     public: {
       backend_url: (() => {
         const protocol = process.env.NUXT_PUBLIC_HTTP_PROTOCOL || 'http'
@@ -40,6 +43,9 @@ export default defineNuxtConfig({
 
         const omitPort = (protocol === 'http' && port === '80') || (protocol === 'https' && port === '443')
         return `${protocol}://${host}${omitPort ? '' : `:${port}`}`
+      })(),
+      pagination_size: (() => {
+        return process.env.NUXT_PUBLIC_PAGINATION_LIMIT
       })()
     }
   },

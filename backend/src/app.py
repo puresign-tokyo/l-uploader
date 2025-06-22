@@ -197,12 +197,42 @@ def get_replays(
             game_id=game_id,
             category=category,
             optional_tag=optional_tag,
+            order=order,
+            offset=offset,
+            limit=limit,
         )
     except Exception as e:
         logger.exception(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return JSONResponse(content=result)
+
+
+@app.get("/replays/count")
+def count_replays(
+    game_id: str = "all",
+    category: Literal[
+        "all", "score_run", "no_bomb", "no_miss", "clear", "others"
+    ] = "all",
+    optional_tag: str = "",
+    uploaded_date_since: datetime = Query(
+        default=datetime(1970, 1, 1, tzinfo=ZoneInfo("Asia/Tokyo"))
+    ),
+    uploaded_date_until: datetime = Query(default=datetime.now(ZoneInfo("Asia/Tokyo"))),
+):
+    if game_id != "all" and game_id not in GameRegistry.supported_game_ids():
+        logger.info(f"Received replay request with invalid game_id: {game_id}")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        result = Usecase.count_replays(
+            game_id, category, optional_tag, uploaded_date_since, uploaded_date_until
+        )
+    except Exception as e:
+        logger.exception(e)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    return JSONResponse(content={"count": result["count"]})
 
 
 @app.get("/replays/{replay_id}")
