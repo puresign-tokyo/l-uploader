@@ -128,7 +128,8 @@
           
           <v-row dense>
             <v-col cols="12" class="d-flex justify-center mt-8">
-              <div class="g-recaptcha" :data-sitekey="config.recaptcha_sitekey"/>
+              <div v-if="config.recaptcha_enabled"
+              class="g-recaptcha" :data-sitekey="config.recaptcha_sitekey"/>
             </v-col>
           </v-row>
           <v-row dense>
@@ -250,10 +251,15 @@
       return
     }
 
-    const response = window.grecaptcha?.getResponse()
-    if (!response) {
+    let response = ""
+    if (config.recaptcha_enabled && !response) {
       alert('reCAPTCHAを確認してください')
       return
+    }
+    if (config.recaptcha_enabled){
+      response = window.grecaptcha?.getResponse()
+    }else{
+      response = ""
     }
 
     console.log(response)

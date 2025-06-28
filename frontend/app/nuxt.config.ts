@@ -1,5 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
+import { el } from "vuetify/locale"
+
 // const backend_url = `${process.env.VITE_APP_HTTP_PROTOCOL}://${process.env.VITE_APP_BACKEND_HOST}:${process.env.VITE_APP_BACKEND_PORT}`
 // console.log(process.env.VITE_APP_HTTP_PROTOCOL)
 export default defineNuxtConfig({
@@ -64,6 +66,13 @@ export default defineNuxtConfig({
       })(),
       recaptcha_sitekey: (() => {
         return process.env.NUXT_PUBLIC_RECAPTCHA_SITEKEY
+      })(),
+      recaptcha_enabled: (() => {
+        if (process.env.NUXT_PUBLIC_RECAPTCHA_ENABLED==="True"){
+          return true
+        }else{
+          return false
+        }
       })(),
     }
   },

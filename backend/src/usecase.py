@@ -12,8 +12,17 @@ import os
 
 logger = log_manager.get_logger()
 
-if (RECAPTCHA_SECRET := os.getenv("RECAPTCHA_SECRET")) is None:
-    raise ValueError("RECAPTCHA_SECRET is not defineded")
+
+RECAPTCHA_ENABLED = os.getenv("RECAPTCHA_ENABLED")
+
+if RECAPTCHA_ENABLED == "True":
+    RECAPTCHA_ENABLED = True
+elif RECAPTCHA_ENABLED == "False":
+    RECAPTCHA_ENABLED = False
+else:
+    raise ValueError(
+        f"RECAPTCHA_ENABLED is not True or False, value is {RECAPTCHA_ENABLED}"
+    )
 
 
 class Usecase:
@@ -30,7 +39,9 @@ class Usecase:
         recaptcha_token: str,
     ):
 
-        if not (http_requester.is_verified_recaptcha_token(recaptcha_token)):
+        if RECAPTCHA_ENABLED and not (
+            http_requester.is_verified_recaptcha_token(recaptcha_token)
+        ):
             logger.info("recaptcha authz failed")
             return {"state": "recaptcha_failed"}
         logger.info("recaptcha authz success")
