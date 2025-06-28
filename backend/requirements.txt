@@ -7,3 +7,4 @@ kaitaistruct
 tsadecode
 setuptools
 pymongo
+requests

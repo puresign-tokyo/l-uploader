@@ -23,6 +23,33 @@
     </v-container>
     <ClientOnly>
     <v-container>
+
+        <!-- <v-card
+          class="d-flex flex-column my-8"
+          elevation="4"
+          :style="{
+            borderLeft: '8px solid var(--border-color)',
+            alignItems: 'stretch',
+            minHeight: '170px',
+            minWidth: '0'
+          }"
+        >
+          <v-select
+            v-model="selectedGame"
+            :items="Object.keys(dropMenuGame)"
+            label="作品を選択"
+            outlined
+          />
+
+          <v-select
+            v-model="selectedOrder"
+            :items="Object.keys(dropMenuOrder)"
+            label="表示順"
+            outlined
+          />
+          
+        </v-card> -->
+
       <v-card
         class="d-flex flex-column my-8"
         elevation="4"
@@ -174,6 +201,7 @@ import { Th95Table } from '~/composables/Games/Th95'
 import { Th125Table } from '~/composables/Games/Th125'
 import { Th128Table } from '~/composables/Games/Th128'
 import { Th143Table } from '~/composables/Games/Th143'
+import { Th165Table } from '~/composables/Games/Th165'
 
 
 const replays = ref([])
@@ -194,6 +222,11 @@ const showPassword = ref(false)
 const replayPagination = ref(1)
 const replayPaginationLimit = ref(1)
 
+const config = useRuntimeConfig().public
+
+const selectedGame=ref('全作品')
+const selectedOrder=ref('新しい順')
+
 // 日付整形
 const formatDate = (iso) =>
   new Intl.DateTimeFormat('ja-JP', {
@@ -201,6 +234,34 @@ const formatDate = (iso) =>
     hour: '2-digit', minute: '2-digit', second: '2-digit',
     hour12: false, timeZone: 'Asia/Tokyo'
   }).format(new Date(iso))
+
+// const dropMenuGame={  
+//   '全作品':     all,
+//   '東方紅魔郷': th06,
+//   '東方妖々夢': th07,
+//   '東方永夜抄': th08,
+//   '東方花映塚': th09,
+//   '東方文花帖': th95,
+//   '東方風神録': th10,
+//   '黄昏酒場':   alco,
+//   '東方地霊殿': th11,
+//   '東方星蓮船': th12,
+//   'ダブルスポイラー': th125,
+//   '妖精大戦争': th128,
+//   '東方神霊廟': th13,
+//   '東方輝針城': th14,
+//   '弾幕アマノジャク': th143,
+//   '東方紺珠伝': th15,
+//   '東方天空璋': th16,
+//   '秘封ナイトメアダイアリー': th165,
+//   '東方鬼形獣': th17,
+//   '東方虹龍洞': th18,
+// }
+
+// const dropMenuOrder={
+//   '新しい順': 'desc',
+//   '古い順': 'asc'
+// }
 
 // コンポーネントの取得
 const tableComponents = {
@@ -221,17 +282,19 @@ const tableComponents = {
   th95: Th95Table,
   th125: Th125Table,
   th128: Th128Table,
-  th143: Th143Table
+  th143: Th143Table,
+  th165: Th165Table
+  // 黄昏酒場とナイトメアダイアリーが作れていない
 }
 const getReplayTable = (gameId) => {
   return tableComponents[gameId] ?? ErrorTable
 }
 
-await useFetch(`${useRuntimeConfig().public.backend_url}/replays/count`, {
+await useFetch(`${config.backend_url}/replays/count`, {
   server: false,
   onResponse({ response }) {
-    const rawData = response._data
-    replayPaginationLimit.value = Math.floor(Number(rawData.count) / useRuntimeConfig().public.pagination_size) + 1
+    const countData = response._data
+    replayPaginationLimit.value = Math.max(1, Math.floor((Number(countData.count) - 1) / config.pagination_size) + 1)
   },
   onResponseError({ error }) {
     console.error(error)
@@ -240,7 +303,7 @@ await useFetch(`${useRuntimeConfig().public.backend_url}/replays/count`, {
 })
 
 // リプレイ取得
-await useFetch(`${useRuntimeConfig().public.backend_url}/replays?order=asc&offset=0&limit=${useRuntimeConfig().public.pagination_size}`, {
+await useFetch(`${config.backend_url}/replays?order=desc&offset=0&limit=${config.pagination_size}`, {
   server: false,
   onResponse({ response }) {
     const rawData = response._data
@@ -259,21 +322,30 @@ await useFetch(`${useRuntimeConfig().public.backend_url}/replays?order=asc&offse
 
 const onPageChanged= async (newPage)=>{
   try {
-    await $fetch(`${useRuntimeConfig().public.backend_url}/replays?order=asc&offset=${useRuntimeConfig().public.pagination_size * (replayPagination.value - 1)}&limit=${useRuntimeConfig().public.pagination_size}`, {
+    const countData = await $fetch(`${config.backend_url}/replays/count`, {
       method: 'get',
-      server: false,
-      onResponse({ response }) {
-        if (response.status >= 200 && response.status < 300) {
-          const rawData = response._data
-          replays.value = rawData.map((item, i) => ({
-            ...item,
-            uploaded_at: formatDate(item.uploaded_at),
-          }))
-        }
-      }
+      server: false
     })
+
+    replayPaginationLimit.value = Math.max(1, Math.floor((Number(countData.count) - 1) / config.pagination_size) + 1)
+
+    if (replayPagination.value > replayPaginationLimit.value) {
+      replayPagination.value = replayPaginationLimit.value
+      await onPageChanged(replayPagination.value)
+      return
+    }
+
+    const replaysData = await $fetch(`${config.backend_url}/replays?order=desc&offset=${config.pagination_size * (replayPagination.value - 1)}&limit=${config.pagination_size}`, {
+      method: 'get',
+      server: false
+    })
+
+    replays.value = replaysData.map((item) => ({
+      ...item,
+      uploaded_at: formatDate(item.uploaded_at),
+    }))
   } catch (error) {
-    console.log(error)
+    console.error(error)
   }
 }
 
@@ -301,7 +373,7 @@ function openShareDialog(item){
 // 削除リクエスト
 async function sendDeleteReplay() {
   try {
-    await $fetch(`${useRuntimeConfig().public.backend_url}/replays/${pendingDeleteItem.value.replay_id}`, {
+    await $fetch(`${config.backend_url}/replays/${pendingDeleteItem.value.replay_id}`, {
       method: 'delete',
       body: { delete_password: deletePassword.value },
       headers: { 'Content-Type': 'application/json' },

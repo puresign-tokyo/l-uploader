@@ -35,7 +35,11 @@ class TH95Parser(BaseParser):
         if replay.userdata.slowdown.value is None:
             raise ValueError("th95 replay file cannot be found slowdown")
 
-        spell_level = replay.userdata.level.value
+        try:
+            # 数字の前の空白を消すため
+            spell_level = str(int(replay.userdata.level.value))
+        except ValueError:
+            spell_level = replay.userdata.level.value
 
         spell_scene = int(replay.userdata.scene.value)
 

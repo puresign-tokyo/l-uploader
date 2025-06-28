@@ -40,7 +40,12 @@ class TH125Parser(BaseParser):
         if replay.userdata.slowdown.value is None:
             raise ValueError("th125 replay file cannot be found slowdown")
 
-        spell_level = replay.userdata.level
+        try:
+            # 数字の前の空白を消すため
+            spell_level = str(int(replay.userdata.level))
+        except ValueError:
+            spell_level = replay.userdata.level
+
         spell_scene = int(replay.userdata.scene.value)
 
         return TH125ReplayInfo(

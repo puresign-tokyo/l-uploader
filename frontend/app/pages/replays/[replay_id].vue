@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import Th06Detail from '~/components/Games/Th06/Th06Detail.vue'
+// import Th06Detail from '~/components/Games/Th06/Th06Detail.vue'
 
 const route = useRoute()
 const loading = ref(true)
@@ -31,10 +31,10 @@ const errorResponse=ref(false)
 const replay=ref<{filename: string, }>({filename:""})
 
 const detailComponents = {
-  th06: Th06Detail,
+  // th06: Th06Detail,
 }
 
-const getComponentForReplayDetail = (gameId)=>detailComponents[gameId] || Th06Detail
+// const getComponentForReplayDetail = (gameId)=>detailComponents[gameId] || Th06Detail
 
 await useFetch(`${useRuntimeConfig().public.backend_url}/replays/${route.params.replay_id}`, {
   server: false,

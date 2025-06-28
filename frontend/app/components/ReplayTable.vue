@@ -28,7 +28,7 @@
 
   <v-col class="pa-2 d-flex justify-space-between align-start" style="flex: 1 1 auto;min-width: 0;">
     <v-card-text class="pa-0" elevation="0" style="min-width: 0;">
-      <v-row no-gutters style="min-width: 0;">
+      <v-row no-gutters align="baseline" style="min-width: 0;">
         <!-- テキスト + アイコン sm以下は改行する-->
         <v-col cols="12" v-if="display.smAndDown.value">
           <div style="height: 25px;"></div>

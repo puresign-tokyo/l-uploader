@@ -1,3 +1,4 @@
+import http_requester as http_requester
 from log import log_manager
 from postgres_handler import SQLReplays
 from datetime import date
@@ -7,8 +8,12 @@ from game_registry import GameRegistry
 from datetime import datetime, date
 from hashlib import sha256
 import utility
+import os
 
 logger = log_manager.get_logger()
+
+if (RECAPTCHA_SECRET := os.getenv("RECAPTCHA_SECRET")) is None:
+    raise ValueError("RECAPTCHA_SECRET is not defineded")
 
 
 class Usecase:
@@ -22,7 +27,14 @@ class Usecase:
         upload_comment: str,
         uploaded_at: datetime,
         raw_delete_password: str,
+        recaptcha_token: str,
     ):
+
+        if not (http_requester.is_verified_recaptcha_token(recaptcha_token)):
+            logger.info("recaptcha authz failed")
+            return {"state": "recaptcha_failed"}
+        logger.info("recaptcha authz success")
+
         game = GameRegistry.identify_with_replayfile(rep_raw)
         replay_info = game["parser"].parse(rep_raw)
         logger.info(f"replay_parsed: {replay_info.convert_to_dict()}")

@@ -1,14 +1,41 @@
 <template>
-    <v-main>
-      <v-card>
+  <v-main>
+    <v-container class="d-flex justify-center">
+      <v-card
+        class="w-100"
+        max-width="600"
+        elevation="4"
+        style="align-items: stretch; min-height: 170px;"
+      >
         <v-card-title>新規投稿</v-card-title>
-        <v-divider></v-divider>
-        <v-card-text>
+        <v-divider/>
+        <v-card-text class="pa-4">
+
+          <div class="text-subtitle-1 font-weight-medium text-grey-darken-3 mb-4 mt-6 d-flex align-center">
+            <v-icon icon="mdi-file-outline"/>リプレイファイル
+          </div>
+
           <v-row dense>
             <v-col
-              cols="12"
-              md="4"
-              sm="6"
+            cols="11"
+            >
+            <v-file-input
+              v-model="replayFile"
+              accept=".rpy"
+              label="リプレイファイル(*.rpy)"
+              :rules="[validateReplayFile]"
+            ></v-file-input>
+            </v-col>
+          </v-row>
+
+
+          <div class="text-subtitle-1 font-weight-medium text-grey-darken-3 mb-4 mt-6 d-flex align-center">
+            <v-icon icon="mdi-information-outline"/>詳細情報
+          </div>
+
+          <v-row dense>
+            <v-col
+              cols="11"
             >
             <v-text-field
               v-model="userName"
@@ -16,76 +43,111 @@
               required
               placeholder="ZUN"
               :rules="[validateUserName]"
-              counter="30"
+              :counter="config.username_length_limit"
             ></v-text-field>
             </v-col>
           </v-row>         
-      
+
           <v-row dense>
-              <v-col
-              cols="12"
-              md="4"
-              sm="6"
-              >
-              <v-file-input
-                v-model="replayFile"
-                accept=".rpy"
-                label="リプレイファイル(*.rpy)"
-                :rules="[validateReplayFile]"
-              ></v-file-input>
-              </v-col>
+            <v-col
+              cols="11"
+            >
+              <v-select
+                label="プレイスタイル"
+                v-model="categoryTag"
+                :items="Object.keys(categoryTags)"
+              />
+            </v-col>
           </v-row>
-      
+
           <v-row dense>
-              <v-col
-              >
-              <v-textarea
-                v-model="uploadComment"
-                label="コメント"
-                placeholder="頑張って達成しました！！"
-                :rules="[validateUploadComment]"
-                counter="300"
-                rows="3"
-              ></v-textarea>
-              </v-col>
+            <v-col
+              cols="11"
+            >
+              <v-text-field
+                v-model="optionalTag"
+                label="タグ"
+                placeholder="リプ会用"
+                :rules="[validateOptionalTag]"
+                :counter="config.optional_tag_length_limit"
+              ></v-text-field>
+            </v-col>
           </v-row>
+
+          <div class="text-subtitle-1 font-weight-medium text-grey-darken-3 mb-4 mt-6 d-flex align-center">
+            <v-icon icon="mdi-comment"/>コメント
+          </div>
+
+          <v-row dense>
+            <v-col
+              cols="11"
+            >
+            <v-textarea
+              v-model="uploadComment"
+              label="コメント"
+              placeholder="頑張って達成しました！！"
+              :rules="[validateUploadComment]"
+              :counter="config.upload_comment_length_limit"
+              rows="3"
+            ></v-textarea>
+            </v-col>
+          </v-row>
+
       
-          
-          <v-col
-            cols="12"
-            md="4"
-            sm="6"
-          >
-          <v-text-field
-            v-model="deletePassword"
-            label="削除用パスワード"
-            persistent-hint
-            hint="必ず入力してください"
-            required
-            counter="60"
-            :rules="[validateDeletePassword]"
-            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-            :type="showPassword ? 'text' : 'password'"
-            @click:append="showPassword = !showPassword"
-          ></v-text-field>
-          </v-col>
+          <v-subheader class="text-subtitle-1 font-weight-medium text-grey-darken-3 mb-4 mt-6 d-flex align-center">
+            <v-icon icon="mdi-trash-can-outline" color="error"/>削除パスワード
+          </v-subheader>
         
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-row dense>
+          <v-row>
+            <v-col
+              cols="11"
+            >
+              <v-text-field
+                v-model="deletePassword"
+                label="削除用パスワード"
+                persistent-hint
+                hint="必ず入力してください"
+                required
+                counter="60"
+                :rules="[validateDeletePassword]"
+                :type="showPassword ? 'text' : 'password'"
+              >
+                <template #append-inner>
+                  <v-icon
+                    :icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    @click="showPassword = !showPassword"
+                    class="mr-2"
+                    style="cursor: pointer;"
+                  />
+                </template>
+              </v-text-field>
+            </v-col>
+          </v-row>
+
+        
+          
+          <v-row dense>
+            <v-col cols="12" class="d-flex justify-center mt-8">
+              <div class="g-recaptcha" :data-sitekey="config.recaptcha_sitekey"/>
+            </v-col>
+          </v-row>
+          <v-row dense>
+            <v-col cols="12" class="d-flex justify-center mt-4">
               <v-btn
                 color="primary"
                 text="送信"
                 variant="tonal"
                 @click="sendPostReplay"
               ></v-btn>
-              </v-row>
-          </v-card-actions>
+            </v-col>
+          </v-row>
+          
         </v-card-text>
       </v-card>
+    </v-container>
 
 
-      <ClientOnly>
+    <ClientOnly>
       <v-dialog
         v-model="dialogSuccessPost"
         max-width="600"
@@ -98,10 +160,10 @@
           <v-container class="d-flex justify-center">
             <v-btn
               prepend-icon="mdi-twitter"
-              color="blue darken-1"
-              max-width="200"
-              @click="shareToTweet"
-            >Twitterでシェアする</v-btn>
+                color="blue darken-1"
+                max-width="200"
+                @click="shareToTweet"
+              >Twitterでシェアする</v-btn>
           </v-container>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -116,90 +178,125 @@
         </v-card>
 
       </v-dialog>
-      </ClientOnly>
-    
-    </v-main>
-      </template>
+    </ClientOnly>
+  
+  </v-main>
+</template>
       
-    <script setup>
-        import { ClientOnly } from '#components'
-        import { ref } from 'vue'
-    
-        const userName = ref('')
-        const replayFile = ref(null)
-        const uploadComment = ref('')
-        const deletePassword = ref('')
-        const dialogSuccessPost=ref(false)
-        const pendingTweetText=ref('')
-        const showPassword=ref(false)
-    
-        const validateUserName=(value) => value.length<=30 || '30文字以内で入力してください'
-        const validateUploadComment=(value) => value.length<=300 || '300文字以内で入力してください'
-        const validateDeletePassword=(value) => value.length<=60 || '60文字以内で入力してください'
-        const validateReplayFile=(value) => value && value.size<=200*1024 || 'ファイルサイズが大きすぎます'
-        
-    
-        async function sendPostReplay() {
-          if(userName.value===""){
-            alert("ユーザ名を入力してください")
-            return
-          }
-          if(userName.value.length>30){
-            alert("ユーザ名の文字数が30文字以上です")
-            return
-          }
-          if(uploadComment.value.length>300){
-            alert("コメントの文字数が300文字以上です")
-            return
-          }
-          if(replayFile.value===null){
-            alert("リプレイファイルを指定してください")
-            return
-          }
-          if(deletePassword.value===""){
-            alert("パスワードを入力してください")
-            return
-          }
-          const formData = new FormData()
-          formData.append('user_name', userName.value)
-          formData.append('replay_file', replayFile.value)
-          formData.append('upload_comment', uploadComment.value)
-          formData.append('delete_password', deletePassword.value)
-          try{
-            await $fetch(
-              `${useRuntimeConfig().public.backend_url}/replays`,{
-                method: 'post',
-                body: formData,
-                onResponse({response}){
-                  if(200<=response.status && response.status<300){
-                    replayFile.value=null
-                    uploadComment.value=''
-                    pendingTweetText.value=`
-#黄昏酒場スコアボード に
-支払金額が${response._data["score"]}円の
-ファイル名が${response._data["replay_file_name"]}のリプレイを
-投稿しました！
+<script setup>
+  import { ClientOnly } from '#components'
+  import { ref } from 'vue'
 
-リプレイのダウンロードはこちらから！
-${useRuntimeConfig().public.backend_url}/replays/${response._data["replay_id"]}/file
+  const userName = ref('')
+  const replayFile = ref(null)
+  const uploadComment = ref('')
+  const deletePassword = ref('')
+  const categoryTag= ref('クリア')
+  const optionalTag=ref('')
+
+  const dialogSuccessPost=ref(false)
+  const pendingTweetText=ref('')
+  const showPassword=ref(false)
+
+  const config=useRuntimeConfig().public
+
+  const categoryTags={
+    'クリア': 'clear',
+    'スコアアタック': 'score_run',
+    'ノーボム': 'no_bomb',
+    'ノーミス': 'no_miss',
+    'その他': 'others'
+  }
+
+  const validateUserName=(value) => value.length<=config.username_length_limit || config.username_length_limit + '文字以内で入力してください'
+  const validateUploadComment=(value) => value.length<=config.upload_comment_length_limit || config.upload_comment_length_limit + '文字以内で入力してください'
+  const validateDeletePassword=(value) => value.length<=config.delete_password_length_limit || config.delete_password_length_limit + '文字以内で入力してください'
+  const validateReplayFile=(value) => value && value.size<=(config.filesize_kb_limit*1024) || 'ファイルサイズが大きすぎます'
+  const validateOptionalTag=(value) => value.length<=config.optional_tag_length_limit || config.optional_tag_length_limit + '文字以内で入力してください'
+
+  onMounted(() => {
+    const script = document.createElement('script')
+    script.src = 'https://www.google.com/recaptcha/api.js'
+    script.async = true
+    script.defer = true
+    document.head.appendChild(script)
+  })
+
+
+
+  async function sendPostReplay() {
+    if(userName.value===""){
+      alert("ユーザ名を入力してください")
+      return
+    }
+    if(userName.value.length>config.username_length_limit){
+      alert(`ユーザ名の${config.username_length_limit}文字数が文字以上です`)
+      return
+    }
+    if(uploadComment.value.length>config.upload_comment_length_limit){
+      alert(`コメントの文字数が${config.upload_comment_length_limit}文字以上です`)
+      return
+    }
+    if(replayFile.value===null){
+      alert("リプレイファイルを指定してください")
+      return
+    }
+    if(deletePassword.value.length>config.delete_password_length_limit){
+      alert(`パスワードの文字数が${config.delete_password_length_limit}文字以上です`)
+      return
+    }
+    if(deletePassword.value===""){
+      alert("パスワードを入力してください")
+      return
+    }
+
+    const response = window.grecaptcha?.getResponse()
+    if (!response) {
+      alert('reCAPTCHAを確認してください')
+      return
+    }
+
+    console.log(response)
+
+    const formData = new FormData()
+    formData.append('user_name', userName.value)
+    formData.append('replay_file', replayFile.value)
+    formData.append('upload_comment', uploadComment.value)
+    formData.append('delete_password', deletePassword.value)
+    formData.append('category',categoryTags[categoryTag.value])
+    formData.append('optional_tag',optionalTag)
+    formData.append('recaptcha_token',response)
+    try{
+      await $fetch(
+        `${useRuntimeConfig().public.backend_url}/replays`,{
+          method: 'post',
+          body: formData,
+          onResponse({response}){
+            if(200<=response.status && response.status<300){
+              replayFile.value=null
+              uploadComment.value=''
+              pendingTweetText.value=`#けーろだ2 に
+リプレイを投稿しました！
+
+詳細はこちらから！
+${window.location.origin}/replays/${response._data["replay_id"]}
 
 `
-                    dialogSuccessPost.value=true
-                  }
-                }
-              }
-            )
-           }catch(error){
-             alert(`${error.statusCode};${error.statusMessage};${error.data.detail}`)
-           }
-    
+              dialogSuccessPost.value=true
+            }
+          }
         }
+      )
+      }catch(error){
+        alert(`${error.statusCode};${error.statusMessage};${error.data.detail}`)
+      }
 
-        const shareToTweet=()=>{
-          const text=encodeURIComponent(pendingTweetText.value)
-          const url=encodeURIComponent(`${window.location.origin}/`)
-          window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`)
-          dialogSuccessPost.value=false
-        }
-    
-      </script>
+  }
+
+  const shareToTweet=()=>{
+    const text=encodeURIComponent(pendingTweetText.value)
+    window.open(`https://twitter.com/intent/tweet?text=${text}`)
+    dialogSuccessPost.value=false
+  }
+
+  </script>

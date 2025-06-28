@@ -46,7 +46,25 @@ export default defineNuxtConfig({
       })(),
       pagination_size: (() => {
         return process.env.NUXT_PUBLIC_PAGINATION_LIMIT
-      })()
+      })(),
+      username_length_limit: (() => {
+        return process.env.NUXT_PUBLIC_USERNAME_LENGTH_LIMIT
+      })(),
+      upload_comment_length_limit: (() => {
+        return process.env.NUXT_PUBLIC_UPLOAD_COMMENT_LENGTH_LIMIT
+      })(),
+      filesize_kb_limit: (() => {
+        return process.env.NUXT_PUBLIC_FILESIZE_KB_LIMIT
+      })(),
+      delete_password_length_limit: (() => {
+        return process.env.NUXT_PUBLIC_DELETE_PASSWORD_LENGTH_LIMIT
+      })(),
+      optional_tag_length_limit: (() => {
+        return process.env.NUXT_PUBLIC_OPTIONAL_TAG_LENGTH_LIMIT
+      })(),
+      recaptcha_sitekey: (() => {
+        return process.env.NUXT_PUBLIC_RECAPTCHA_SITEKEY
+      })(),
     }
   },
   sitemap: <any>{

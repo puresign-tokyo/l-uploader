@@ -66,9 +66,21 @@ from usecase import Usecase, AdminUsecase
 ALLOW_ORIGIN = os.getenv("ALLOW_FRONTEND_ORIGIN")
 if ALLOW_ORIGIN == None:
     raise ValidationError("not set ALLOW_FRONTEND_ORIGIN")
+
+
+def getenv_secure(envname: str) -> str:
+    if (const_var := os.getenv(envname)) is not None:
+        return str(const_var)
+    raise ValueError(f"{envname} is not defineded")
+
+
+USERNAME_LENGTH_LIMIT = int(getenv_secure("USERNAME_LENGTH_LIMIT"))
+UPLOAD_COMMENT_LENGTH_LIMIT = int(getenv_secure("UPLOAD_COMMENT_LENGTH_LIMIT"))
+FILESIZE_KB_LIMIT = int(getenv_secure("FILESIZE_KB_LIMIT"))
+DELETE_PASSWORD_LENGTH_LIMIT = int(getenv_secure("DELETE_PASSWORD_LENGTH_LIMIT"))
+OPTIONAL_TAG_LENGTH_LIMIT = int(getenv_secure("OPTIONAL_TAG_LENGTH_LIMIT"))
+
 FETCH_REPLAY_LIMIT = 1000
-DELETE_PASSWORD_LIMIT = 60
-MAX_REPLAY_SIZE = 200 * 1024
 
 
 replay_dir = Path("/replays")
@@ -287,12 +299,39 @@ def post_replays(
         "others"
     ),
     optional_tag=Form(),
+    recaptcha_token=Form(),
 ):
-    # ReplayPostはDBから持きにパスワードを取得しない為空文字を許さなければならない。
-    # よってここでパスワードのバリデーションを掛けなければいけない
-    if len(delete_password) > DELETE_PASSWORD_LIMIT:
+
+    if len(user_name) > USERNAME_LENGTH_LIMIT:
         logger.exception(
-            f"Delete password length exceeds the maximum allowed characters. Length: {len(delete_password)}, limit: {DELETE_PASSWORD_LIMIT}. Upload rejected."
+            f"user_name length exceeds the maximum allowed characters. user_name: {user_name},  Length: {len(user_name)}, limit: {USERNAME_LENGTH_LIMIT}. Upload rejected."
+        )
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="user_name length exceeds the maximum allowed characters",
+        )
+
+    if len(upload_comment) > UPLOAD_COMMENT_LENGTH_LIMIT:
+        logger.exception(
+            f"upload_comment length exceeds the maximum allowed characters. upload_comment: {upload_comment},  Length: {len(upload_comment)}, limit: {UPLOAD_COMMENT_LENGTH_LIMIT}. Upload rejected."
+        )
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="upload_comment length exceeds the maximum allowed characters",
+        )
+
+    if len(optional_tag) > OPTIONAL_TAG_LENGTH_LIMIT:
+        logger.exception(
+            f"optional_tag length exceeds the maximum allowed characters. optional_tag: {optional_tag},  Length: {len(optional_tag)}, limit: {OPTIONAL_TAG_LENGTH_LIMIT}. Upload rejected."
+        )
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="optional_tag length exceeds the maximum allowed characters",
+        )
+
+    if len(delete_password) > DELETE_PASSWORD_LENGTH_LIMIT:
+        logger.exception(
+            f"Delete password length exceeds the maximum allowed characters. Length: {len(delete_password)}, limit: {DELETE_PASSWORD_LENGTH_LIMIT}. Upload rejected."
         )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -309,9 +348,9 @@ def post_replays(
 
     rep_raw = replay_file.file.read()
     replay_file.file.close()
-    if (replay_file_length := len(rep_raw)) > MAX_REPLAY_SIZE:
+    if (replay_file_length := len(rep_raw)) > FILESIZE_KB_LIMIT * 1024:
         logger.info(
-            f"Replay file is too large (received {replay_file_length} bytes / {replay_file_length/1024} KB, limit is {MAX_REPLAY_SIZE} bytes / {MAX_REPLAY_SIZE/1024} KB.)"
+            f"Replay file is too large (received {replay_file_length} bytes / {replay_file_length/1024} KB, limit is {FILESIZE_KB_LIMIT*1024} bytes / {FILESIZE_KB_LIMIT} KB.)"
         )
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="")
 
@@ -324,10 +363,19 @@ def post_replays(
             upload_comment=upload_comment,
             uploaded_at=datetime.now(ZoneInfo("Asia/Tokyo")),
             raw_delete_password=delete_password,
+            recaptcha_token=recaptcha_token,
         )
     except Exception as e:
         logger.exception(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    print(result)
+
+    if result["state"] == "recaptcha_failed":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="did not authorized recaptcha",
+        )
 
     if result["state"] == "duplicate":
         return JSONResponse(
