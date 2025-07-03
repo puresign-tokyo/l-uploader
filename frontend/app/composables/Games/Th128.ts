@@ -51,7 +51,7 @@ export function Th128Table(replay: Th128Replay){
   return{
     game_meta:{
       theme_color: '#00C8C8',
-      img: {img: '/images/th128.png', alt: 'th128'},
+      img: {img: '/images/thumb/th128.png', alt: 'th128'},
       name: '妖精大戦争 〜 東方三月精'
     },
     filename: replay.filename,

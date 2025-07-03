@@ -51,7 +51,7 @@ export function Th12Table(replay: Th12Replay){
   return{
     game_meta:{
       theme_color: '#4169E1',
-      img: {img: '/images/th12.png', alt: 'th12'},
+      img: {img: '/images/thumb/th12.png', alt: 'th12'},
       name: '東方星蓮船 〜 Undefined Fantastic Object.'
     },
     filename: replay.filename,

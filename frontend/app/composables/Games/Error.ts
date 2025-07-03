@@ -2,7 +2,7 @@ export function ErrorTable(replay: object){
   return {
     game_meta: {
       theme_color: '#AAAAAA',
-      img: {img: '/images/error.png', alt: 'erorr'},
+      img: {img: '/images/thumb/error.png', alt: 'erorr'},
       name: '不明なゲームです'
     },
     filename: null,

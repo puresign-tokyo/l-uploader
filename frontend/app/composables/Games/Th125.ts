@@ -861,7 +861,7 @@ export function Th125Table(replay: Th125Replay){
   return{
     game_meta:{
       theme_color: '#7D3884',
-      img: {img: '/images/th125.png', alt: 'th125'},
+      img: {img: '/images/thumb/th125.png', alt: 'th125'},
       name: 'ダブルスポイラー 〜 東方文花帖'
     },
     filename: replay.filename,

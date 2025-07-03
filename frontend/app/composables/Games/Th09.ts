@@ -59,7 +59,7 @@ export function Th09Table(replay: Th09Replay){
   return{
     game_meta:{
       theme_color: '#FF9900',
-      img: {img: '/images/th09.png', alt: 'th09'},
+      img: {img: '/images/thumb/th09.png', alt: 'th09'},
       name: '東方花映塚 〜 Phantasmagoria of Flower View.'
     },
     filename: replay.filename,

@@ -49,7 +49,7 @@ export function Th11Table(replay: Th11Replay){
   return{
     game_meta:{
       theme_color: '#591400',
-      img: {img: '/images/th11.png', alt: 'th11'},
+      img: {img: '/images/thumb/th11.png', alt: 'th11'},
       name: '東方地霊殿 〜 Subterranean Animism.'
     },
     filename: replay.filename,

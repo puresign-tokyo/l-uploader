@@ -48,7 +48,7 @@ export function Th15Table(replay: Th15Replay){
   return{
     game_meta:{
       theme_color: '#6A47BE',
-      img: {img: '/images/th15.png', alt: 'th15'},
+      img: {img: '/images/thumb/th15.png', alt: 'th15'},
       name: '東方紺珠伝 〜 Legacy of Lunatic Kingdom.'
     },
     filename: replay.filename,

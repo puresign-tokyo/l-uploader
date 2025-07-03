@@ -918,7 +918,7 @@ export function Th165Table(replay: Th165Replay){
   return{
     game_meta:{
       theme_color: '#AE11D5',
-      img: {img: '/images/th165.png', alt: 'th165'},
+      img: {img: '/images/thumb/th165.png', alt: 'th165'},
       name: '秘封ナイトメアダイアリー 〜 Violet Detector.'
     },
     filename: replay.filename,

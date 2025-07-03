@@ -56,4 +56,4 @@ class FileHandler:
                 )
                 continue
             os.remove(replay_file_path)
-            logger.info(f"delete replays: {replay_ids}, delete replays")
+        logger.info(f"delete replays: {replay_ids}, delete replays")

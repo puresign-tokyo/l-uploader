@@ -182,7 +182,7 @@ export function Th14Table(replay: Th14Replay){
   return{
     game_meta:{
       theme_color: '#AA7777',
-      img: {img: '/images/th14.png', alt: 'th14'},
+      img: {img: '/images/thumb/th14.png', alt: 'th14'},
       name: '東方輝針城 〜 Double Dealing Character.'
     },
     filename: replay.filename,

@@ -17,7 +17,7 @@
 
           <v-row dense>
             <v-col
-            cols="11"
+            cols="12"
             >
             <v-file-input
               v-model="replayFile"
@@ -35,7 +35,7 @@
 
           <v-row dense>
             <v-col
-              cols="11"
+              cols="12"
             >
             <v-text-field
               v-model="userName"
@@ -50,7 +50,7 @@
 
           <v-row dense>
             <v-col
-              cols="11"
+              cols="12"
             >
               <v-select
                 label="プレイスタイル"
@@ -62,7 +62,7 @@
 
           <v-row dense>
             <v-col
-              cols="11"
+              cols="12"
             >
               <v-text-field
                 v-model="optionalTag"
@@ -74,13 +74,9 @@
             </v-col>
           </v-row>
 
-          <div class="text-subtitle-1 font-weight-medium text-grey-darken-3 mb-4 mt-6 d-flex align-center">
-            <v-icon icon="mdi-comment"/>コメント
-          </div>
-
           <v-row dense>
             <v-col
-              cols="11"
+              cols="12"
             >
             <v-textarea
               v-model="uploadComment"
@@ -100,7 +96,7 @@
         
           <v-row>
             <v-col
-              cols="11"
+              cols="12"
             >
               <v-text-field
                 v-model="deletePassword"
@@ -212,7 +208,13 @@
   const validateUserName=(value) => value.length<=config.username_length_limit || config.username_length_limit + '文字以内で入力してください'
   const validateUploadComment=(value) => value.length<=config.upload_comment_length_limit || config.upload_comment_length_limit + '文字以内で入力してください'
   const validateDeletePassword=(value) => value.length<=config.delete_password_length_limit || config.delete_password_length_limit + '文字以内で入力してください'
-  const validateReplayFile=(value) => value && value.size<=(config.filesize_kb_limit*1024) || 'ファイルサイズが大きすぎます'
+  const validateReplayFile=(value) => {
+    if (!value) return true; // nullや未選択ならバリデーションOK
+    if (value.size > config.filesize_kb_limit * 1024) {
+      return 'ファイルサイズが大きすぎます';
+    }
+    return true;
+  }
   const validateOptionalTag=(value) => value.length<=config.optional_tag_length_limit || config.optional_tag_length_limit + '文字以内で入力してください'
 
   onMounted(() => {
@@ -252,14 +254,14 @@
     }
 
     let response = ""
-    if (config.recaptcha_enabled && !response) {
-      alert('reCAPTCHAを確認してください')
-      return
-    }
     if (config.recaptcha_enabled){
       response = window.grecaptcha?.getResponse()
     }else{
       response = ""
+    }
+    if (config.recaptcha_enabled && !response) {
+      alert('reCAPTCHAを確認してください')
+      return
     }
 
     console.log(response)
@@ -270,7 +272,7 @@
     formData.append('upload_comment', uploadComment.value)
     formData.append('delete_password', deletePassword.value)
     formData.append('category',categoryTags[categoryTag.value])
-    formData.append('optional_tag',optionalTag)
+    formData.append('optional_tag',optionalTag.value)
     formData.append('recaptcha_token',response)
     try{
       await $fetch(
@@ -281,7 +283,7 @@
             if(200<=response.status && response.status<300){
               replayFile.value=null
               uploadComment.value=''
-              pendingTweetText.value=`#けーろだ2 に
+              pendingTweetText.value=`#えるろだ に
 リプレイを投稿しました！
 
 詳細はこちらから！

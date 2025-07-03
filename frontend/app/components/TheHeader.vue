@@ -32,7 +32,7 @@
     </v-navigation-drawer>
   </ClientOnly>
 
-  <v-app-bar color="#D99B01">
+  <v-app-bar color="#666699">
     <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
   </v-app-bar>

@@ -1,6 +1,6 @@
 <template>
     <v-main>                                               
-      <v-container class="fill-height d-flex my-8">
+      <v-container class="d-flex flex-column justify-center">
         <v-card
           elevation="4"
           :style="{
@@ -8,6 +8,7 @@
             minHeight: '170px',
             minWidth: '0'
           }"
+          class="mb-5"
         >
           <v-card-title class="text-h6 font-weight-bold">
             スタッフ紹介
@@ -29,14 +30,23 @@
                 <li>開発委託</li>
               </ul>
 
-              <h3 class="text-subtitle-2 font-weight-medium"><a href="https://info.puresigin.tokyo">irckk</a></h3>
+              <h3 class="text-subtitle-2 font-weight-medium"><a href="https://info.puresign.tokyo">irckk</a></h3>
               <ul class="pl-6">
                 <li>ドメイン管理</li>
                 <li>運用</li>
               </ul>
             </section>
           </v-card-text>
+        </v-card>
 
+        <v-card
+          elevation="4"
+          :style="{
+            alignItems: 'stretch',
+            minHeight: '170px',
+            minWidth: '0'
+          }"
+        >
           <v-card-title class="text-h6 font-weight-bold">
             使用したサードパーティ成果物
           </v-card-title>
@@ -45,7 +55,7 @@
     
           <v-card-text class="terms-content mt-3">
             <section class="mb-4">
-              <h3 class="text-subtitle-2 font-weight-medium"><a href="https://www.silentselene.net/">silentselene.net</a></h3>
+              <h3 class="text-subtitle-2 font-weight-medium"><a href="https://www.silentselene.net/">silentselene.net</a>(Apache2.0ライセンス)</h3>
               <ul class="pl-6">
                 <li>リプレイファイルパース定義</li>
               </ul>

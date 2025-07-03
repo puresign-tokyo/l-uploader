@@ -169,7 +169,7 @@ export function Th17Table(replay: Th17Replay){
   return{
     game_meta:{
       theme_color: '#190E0E',
-      img: {img: '/images/th17.png', alt: 'th17'},
+      img: {img: '/images/thumb/th17.png', alt: 'th17'},
       name: '東方鬼形獣 〜 Wily Beast and Weakest Creature.'
     },
     filename: replay.filename,

@@ -774,7 +774,7 @@ export function Th95Table(replay: Th95Replay){
   return{
     game_meta:{
       theme_color: '#009973',
-      img: {img: '/images/th95.png', alt: 'th95'},
+      img: {img: '/images/thumb/th95.png', alt: 'th95'},
       name: '東方文花帖 〜 Shoot the Bullet.'
     },
     filename: replay.filename,

@@ -159,7 +159,7 @@ export function Th18Table(replay: Th18Replay){
   return{
     game_meta:{
       theme_color: '#1DD294',
-      img: {img: '/images/th18.png', alt: 'th18'},
+      img: {img: '/images/thumb/th18.png', alt: 'th18'},
       name: '東方虹龍洞 〜 Unconnected Marketeers.'
     },
     filename: replay.filename,

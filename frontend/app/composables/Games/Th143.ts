@@ -663,7 +663,7 @@ export function Th143Table(replay: Th143Replay){
   return{
     game_meta:{
       theme_color: '#B6423C',
-      img: {img: '/images/th143.png', alt: 'th143'},
+      img: {img: '/images/thumb/th143.png', alt: 'th143'},
       name: '弾幕アマノジャク 〜 Impossible Spell Card.'
     },
     filename: replay.filename,
