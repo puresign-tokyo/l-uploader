@@ -29,6 +29,6 @@
 const externalLinks=[
   {path: "https://wefma.net", label: "開発者のホームページ"},
   {path: "https://info.puresign.tokyo", label: "運用者のホームページ"},
-  {path: "http://silentselene", label: "silentselene.net"}
+  {path: "http://silentselene.net", label: "silentselene.net"}
 ]
 </script>
