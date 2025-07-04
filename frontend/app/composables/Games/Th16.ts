@@ -198,7 +198,11 @@ export function Th16Table(replay: Th16Replay){
   return{
     game_meta:{
       theme_color: '#176E0E',
-      img: {img: '/images/thumb/th16.png', alt: 'th16'},
+      img: {
+        thumb: '/images/thumb/th16.png',
+        full: '/images/full/th16.png',
+        alt: 'th16'
+      },
       name: '東方天空璋 〜 Hidden Star in Four Seasons.'
     },
     filename: replay.filename,

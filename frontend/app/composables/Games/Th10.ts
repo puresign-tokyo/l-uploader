@@ -47,7 +47,11 @@ export function Th10Table(replay: Th10Replay){
   return{
     game_meta:{
       theme_color: '#96B300',
-      img: {img: '/images/thumb/th10.png', alt: 'th10'},
+      img: {
+        thumb: '/images/thumb/th10.png',
+        full: '/images/full/th10.png',
+        alt: 'th10'
+      },
       name: '東方風神録 〜 Mountain of Faith.'
     },
     filename: replay.filename,

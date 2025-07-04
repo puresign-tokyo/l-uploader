@@ -918,13 +918,17 @@ export function Th165Table(replay: Th165Replay){
   return{
     game_meta:{
       theme_color: '#AE11D5',
-      img: {img: '/images/thumb/th165.png', alt: 'th165'},
+      img: {
+        thumb: '/images/thumb/th165.png',
+        full: '/images/full/th165.png',
+        alt: 'th165'
+      },
       name: '秘封ナイトメアダイアリー 〜 Violet Detector.'
     },
     filename: replay.filename,
     uploaded_at: new Date(replay.uploaded_at).toLocaleString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }),
     user_name: replay.user_name,
-    total_score: Number(replay.replay_meta.total_score).toLocaleString(),
+    total_score: null,
     replay_name: replay.replay_meta.name,
     slowdown: (Number(replay.replay_meta.slowdown)).toFixed(2) + '%',
     timestamp: new Date(replay.replay_meta.timestamp).toLocaleString('ja-JP', {year:'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'}),

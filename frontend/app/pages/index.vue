@@ -22,7 +22,7 @@
       
     </v-container>
     <ClientOnly>
-    <v-container>
+    <!-- <v-container> -->
 
         <!-- <v-card
           class="d-flex flex-column my-8"
@@ -50,7 +50,7 @@
           
         </v-card> -->
 
-      <v-card
+      <!-- <v-card
         class="d-flex flex-column my-8"
         elevation="4"
         :style="{
@@ -58,14 +58,9 @@
           alignItems: 'stretch',
           minWidth: '0'
         }"
-      >
-        <v-pagination
-          v-model="replayPagination"
-          :length="replayPaginationLimit"
-          rounded="circle"
-        ></v-pagination>
-      </v-card>
-    </v-container>
+      > -->
+      <!-- </v-card> -->
+    <!-- </v-container> -->
 
     <v-container v-if="!loading">
       <component
@@ -73,114 +68,56 @@
         :key="replay.replay_id"
         :is="ReplayTable"
         :replayTable="getReplayTable(replay.game_id)(replay)"
-        @showDetail="openDetailDialog"
         @confirmDelete="openDeleteDialog"
         @confirmShare="openShareDialog"
       />
-    </v-container>
-
-    <v-container>
-      <v-card
-        class="d-flex flex-column my-8"
-        elevation="4"
-        :style="{
-          borderLeft: '8px solid var(--border-color)',
-          alignItems: 'stretch',
-          minWidth: '0'
-        }"
-      >
-        <v-pagination
-          v-model="replayPagination"
-          :length="replayPaginationLimit"
-          rounded="circle"
-        ></v-pagination>
-      </v-card>
+      <v-pagination
+        class="d-flex"
+        v-model="replayPagination"
+        :length="replayPaginationLimit"
+        rounded="circle"
+      />
     </v-container>
 
     </ClientOnly>
 
 
       <!-- 削除ダイアログ -->
-      <v-dialog v-model="deleteDialog" max-width="600" scrim="rgba(0, 0, 0, 0.5)" attach="body">
-        <v-card
-          :title="`${pendingDeleteItem.filename}を削除する`"
-          text="削除用パスワードを入力してください"
-          class="elevation-0"
-        >
-          <v-card-text>
-            <v-row dense>
-              <v-col cols="12" md="4" sm="6">
-                <v-text-field
-                  v-model="deletePassword"
-                  label="削除用パスワード"
-                  required
-                  :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                  :type="showPassword ? 'text' : 'password'"
-                  @click:append="showPassword = !showPassword"
-                />
-              </v-col>
-            </v-row>
-          </v-card-text>
+      <DeleteDialog
+        :filename="pendingDeleteItem.filename"
+        :replay_id="pendingDeleteItem.replay_id"
+        v-model="deleteDialog"
+        @result="openSnackBar"
+      />
 
-          <v-divider />
-
-          <v-card-actions>
-            <v-spacer />
-            <v-btn text="閉じる" variant="plain" @click="deleteDialog = false" />
-            <v-btn color="error" text="削除" variant="tonal" @click="sendDeleteReplay" />
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-
-      <v-dialog v-model="shareDialog" max-width="600" scrim="rgba(0, 0, 0, 0.5)" attach="body">
-        <v-card
-          :title="`${pendingShareItem.filename}をシェアする`"
-          text="どこでシェアしますか？"
-          class="elevation-0"
-        >
-
-          <v-icon
-            icon="mdi-link"
-            @click="shareToCopy"
-          />
-
-          <v-icon
-            icon="mdi-twitter"
-            @clink="shareToTweet"
-          />
-        
-          <v-divider />
-
-          <v-card-actions>
-            <v-spacer />
-            <v-btn text="閉じる" variant="plain" @click="shareDialog = false" />
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+      <!-- 共有ダイアログ -->
+      <ShareDialog
+        :game_name="pendingShareItem.game_name"
+        :filename="pendingShareItem.filename"
+        :replay_id="pendingShareItem.replay_id"
+        v-model="shareDialog"
+        @result="openSnackBar"
+      />
 
     <!-- スナックバー -->
-    <v-snackbar v-model="deleteSnackbar">
-      削除しました
+    <v-snackbar v-model="snackbar.visible" :color="snackbar.color">
+      {{ snackbar.message }}
       <template #actions>
-        <v-btn color="success" variant="outlined" @click="snackbar = false">閉じる</v-btn>
+        <v-btn variant="outlined" @click="snackbar.visible = false">閉じる</v-btn>
       </template>
     </v-snackbar>
-    <v-snackbar v-model="clipboardSnackbar">
-      クリップボードにコピーしました
-      <template #actions>
-        <v-btn color="success" variant="outlined" @click="snackbar = false">閉じる</v-btn>
-      </template>
-    </v-snackbar>
+
   </v-main>
 </template>
 
 <script setup>
 import { ref, watch } from 'vue'
 import { ClientOnly } from '#components'
-import { CommonUtils } from '~/composables/CommonUtils'
 
 
 import ReplayTable from '~/components/ReplayTable.vue'
+import DeleteDialog from '~/components/Dialogs/DeleteDialog.vue'
+import ShareDialog from '~/components/Dialogs/ShareDialog.vue'
 
 import { ErrorTable } from '~/composables/Games/Error'
 import { Th06Table } from '~/composables/Games/Th06'
@@ -206,18 +143,18 @@ import { Th165Table } from '~/composables/Games/Th165'
 
 const replays = ref([])
 const loading = ref(true)
-const clipboardSnackbar = ref(false)
-const deleteSnackbar = ref(false)
-const detailDialog = ref(false)
 const deleteDialog = ref(false)
 const shareDialog = ref(false)
 
-const showDetailItem = ref({})
+const snackbar=ref({
+  visible: false,
+  message: '',
+  color: 'success',
+})
+
 const pendingDeleteItem = ref({})
 const pendingShareItem = ref({})
 
-const deletePassword = ref('')
-const showPassword = ref(false)
 
 const replayPagination = ref(1)
 const replayPaginationLimit = ref(1)
@@ -284,7 +221,7 @@ const tableComponents = {
   th128: Th128Table,
   th143: Th143Table,
   th165: Th165Table
-  // 黄昏酒場とナイトメアダイアリーが作れていない
+  // 黄昏酒場が作れていない
 }
 const getReplayTable = (gameId) => {
   return tableComponents[gameId] ?? ErrorTable
@@ -354,61 +291,24 @@ watch(replayPagination, (newPage)=>{
 })
 
 // ダイアログ操作
-function openDetailDialog(item) {
-  showDetailItem.value = item
-  detailDialog.value = true
-}
-
-function openDeleteDialog(item) {
-  pendingDeleteItem.value = item
+function openDeleteDialog(payload) {
+  pendingDeleteItem.value = payload
   deleteDialog.value = true
 }
 
-function openShareDialog(item){
-  pendingShareItem.value = item
+function openShareDialog(payload){
+  pendingShareItem.value = payload
   shareDialog.value = true
 }
 
 
-// 削除リクエスト
-async function sendDeleteReplay() {
-  try {
-    await $fetch(`${config.backend_url}/replays/${pendingDeleteItem.value.replay_id}`, {
-      method: 'delete',
-      body: { delete_password: deletePassword.value },
-      headers: { 'Content-Type': 'application/json' },
-      server: false,
-      onResponse({ response }) {
-        if (response.status >= 200 && response.status < 300) {
-          dialog.value = false
-          snackbar.value = true
-          replays.value = replays.value.filter(r => r.replay_id !== pendingDeleteItem.value.replay_id)
-        }
-      }
-    })
-  } catch (error) {
-    const msg = error?.data?.detail === 'password mismatch'
-      ? 'パスワードが違います'
-      : `${error.statusCode};${error.statusMessage};${error.data.detail}`
-    alert(msg)
+const openSnackBar = async (payload) => {
+  snackbar.value.color = payload.success ? 'success' : 'error'
+  snackbar.value.message = payload.message ?? (payload.success ? '成功しました' : 'エラーが発生しました')
+  snackbar.value.visible = true
+  if(payload.page_reload){
+    await onPageChanged(replayPagination.value)
   }
-}
-
-const shareToCopy = async()=>{
-  try {
-    await navigator.clipboard.writeText(text)
-    clipboardSnackbar.value = true
-  } catch (err) {
-    console.error(err)
-    alert('コピーに失敗しました')
-  }
-}
-
-const shareToTweet=()=>{
-  const text=encodeURIComponent(`${CommonUtils().convertGameId(pendingShareItem.value.game_id)}のリプレイをアップロードしました！\n詳細はこちら！`)
-  const url=encodeURIComponent(`${window.location.origin}/replays/${pendingShareItem.value.replay_id}`)
-  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`)
-  dialogSuccessPost.value=false
 }
 
 </script>

@@ -199,7 +199,11 @@ export function Th13Table(replay: Th13Replay){
   return{
     game_meta:{
       theme_color: '#4A808C',
-      img: {img: '/images/thumb/th13.png', alt: 'th13'},
+      img: {
+        thumb: '/images/thumb/th13.png',
+        full: '/images/full/th13.png',
+        alt: 'th13'
+      },
       name: '東方神霊廟 〜 Ten Desires.'
     },
     filename: replay.filename,

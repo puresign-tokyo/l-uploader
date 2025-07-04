@@ -1,6 +1,5 @@
 import { useTableUtils } from "./TableUtils"
 
-
 const shotTypeMap: Record<string, {label: string, color: string}> = {
   ReimuA:   {label: '霊夢A',    color: useTableUtils().convertCharacter('Reimu').color},
   ReimuB:   {label: '霊夢B',    color: useTableUtils().convertCharacter('Reimu').color},
@@ -47,7 +46,11 @@ export function Th06Table(replay: Th06Replay){
   return{
     game_meta:{
       theme_color: '#993333',
-      img: {img: '/images/thumb/th06.png', alt: 'th06'},
+      img: {
+        thumb: '/images/thumb/th06.png',
+        full: '/images/full/th06.png',
+        alt: 'th06'
+      },
       name: '東方紅魔郷 〜 the Embodiment of Scarlet Devil.'
     },
     filename: replay.filename,

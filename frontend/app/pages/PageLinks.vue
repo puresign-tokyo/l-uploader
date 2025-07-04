@@ -27,8 +27,8 @@
 
 <script setup>
 const externalLinks=[
-  {path: "https://wefma.net", label: "製作者のホームページ"},
-  {path: "https://alcostg.wefma.net", label: "黄昏酒場攻略ページ"},
-  {path: "http://alcostg.amatukami.com/", label: "黄昏酒場公式"}
+  {path: "https://wefma.net", label: "開発者のホームページ"},
+  {path: "https://info.puresign.tokyo", label: "運用者のホームページ"},
+  {path: "http://silentselene", label: "silentselene.net"}
 ]
 </script>

@@ -60,7 +60,11 @@ export function Th07Table(replay: Th07Replay){
   return{
     game_meta:{
       theme_color: '#FF75DD',
-      img: {img: '/images/thumb/th07.png', alt: 'th07'},
+      img: {
+        thumb: '/images/thumb/th07.png',
+        full: '/images/full/th07.png',
+        alt: 'th07'
+      },
       name: '東方妖々夢 〜 Perfect Cherry Blossom.'
     },
     filename: replay.filename,

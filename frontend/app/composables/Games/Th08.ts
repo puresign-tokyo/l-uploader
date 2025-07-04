@@ -300,7 +300,11 @@ export function Th08Table(replay: Th08Replay){
   return{
     game_meta:{
       theme_color: '#333399',
-      img: {img: '/images/thumb/th08.png', alt: 'th08'},
+      img: {
+        thumb: '/images/thumb/th08.png',
+        full: '/images/full/th08.png',
+        alt: 'th08'
+      },
       name: '東方永夜抄 ～ Imperishable Night.'
     },
     filename: replay.filename,

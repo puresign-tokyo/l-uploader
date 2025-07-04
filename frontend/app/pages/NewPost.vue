@@ -165,9 +165,9 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn
-              text="閉じる"
+              text="ホーム画面に戻る"
               variant="plain"
-              @click="dialogSuccessPost = false"
+              @click="router.push('/')"
             />
             
           </v-card-actions>
@@ -177,12 +177,22 @@
       </v-dialog>
     </ClientOnly>
   
+    <!-- スナックバー -->
+    <v-snackbar v-model="snackbar.visible" :color="snackbar.color">
+      {{ snackbar.message }}
+      <template #actions>
+        <v-btn variant="outlined" @click="snackbar.visible = false">閉じる</v-btn>
+      </template>
+    </v-snackbar>
+
   </v-main>
 </template>
       
 <script setup>
   import { ClientOnly } from '#components'
   import { ref } from 'vue'
+
+  const router = useRouter()
 
   const userName = ref('')
   const replayFile = ref(null)
@@ -196,6 +206,14 @@
   const showPassword=ref(false)
 
   const config=useRuntimeConfig().public
+
+  let wasOpened = false
+
+  const snackbar=ref({
+    visible: false,
+    message: '',
+    color: 'success',
+  })
 
   const categoryTags={
     'クリア': 'clear',
@@ -229,27 +247,39 @@
 
   async function sendPostReplay() {
     if(userName.value===""){
-      alert("ユーザ名を入力してください")
+      snackbar.value.visible=true
+      snackbar.value.message='ユーザ名を入力してください'
+      snackbar.value.color='error'
       return
     }
     if(userName.value.length>config.username_length_limit){
-      alert(`ユーザ名の${config.username_length_limit}文字数が文字以上です`)
+      snackbar.value.visible=true
+      snackbar.value.message=`ユーザ名の${config.username_length_limit}文字数が文字以上です`
+      snackbar.value.color='error'
       return
     }
     if(uploadComment.value.length>config.upload_comment_length_limit){
-      alert(`コメントの文字数が${config.upload_comment_length_limit}文字以上です`)
+      snackbar.value.visible=true
+      snackbar.value.message=`コメントの文字数が${config.upload_comment_length_limit}文字以上です`
+      snackbar.value.color='error'
       return
     }
     if(replayFile.value===null){
-      alert("リプレイファイルを指定してください")
+      snackbar.value.visible=true
+      snackbar.value.message="リプレイファイルを指定してください"
+      snackbar.value.color='error'
       return
     }
     if(deletePassword.value.length>config.delete_password_length_limit){
-      alert(`パスワードの文字数が${config.delete_password_length_limit}文字以上です`)
+      snackbar.value.visible=true
+      snackbar.value.message=`パスワードの文字数が${config.delete_password_length_limit}文字以上です`
+      snackbar.value.color='error'
       return
     }
     if(deletePassword.value===""){
-      alert("パスワードを入力してください")
+      snackbar.value.visible=true
+      snackbar.value.message="パスワードを入力してください"
+      snackbar.value.color='error'
       return
     }
 
@@ -260,7 +290,9 @@
       response = ""
     }
     if (config.recaptcha_enabled && !response) {
-      alert('reCAPTCHAを確認してください')
+      snackbar.value.visible=true
+      snackbar.value.message="reCAPTCHAを確認してください"
+      snackbar.value.color='error'
       return
     }
 
@@ -292,6 +324,9 @@ ${window.location.origin}/replays/${response._data["replay_id"]}
 `
               dialogSuccessPost.value=true
             }
+            snackbar.value.visible=true
+            snackbar.value.message="リプレイを投稿しました"
+            snackbar.value.color='success'
           }
         }
       )
@@ -301,10 +336,19 @@ ${window.location.origin}/replays/${response._data["replay_id"]}
 
   }
 
+  watch(dialogSuccessPost, (val) => {
+    if (val) {
+      wasOpened = true
+    } else if (wasOpened) {
+      router.push('/')
+    }
+  })
+
   const shareToTweet=()=>{
     const text=encodeURIComponent(pendingTweetText.value)
     window.open(`https://twitter.com/intent/tweet?text=${text}`)
     dialogSuccessPost.value=false
+    router.push('/')
   }
 
   </script>

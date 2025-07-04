@@ -1,5 +1,6 @@
 <template>
   <v-main>
+    <ClientOnly>
     <v-layout >
       <v-container class="mt-5">
         <v-card v-if="loading">
@@ -18,17 +19,30 @@
             class="d-flex flex-row"
             style="position: fixed; top: 72px; right: 32px; gap: 8px; z-index: 1000"
           >
-            <v-fab
-              variant="tonal" 
-              color="error"
-              icon="mdi-trash-can-outline"
-            />
+            <!-- v-fabとtonalを組み合わせると後ろが透けてしまう --->
+            <v-btn
+              icon
+              style="background-color: #fdd8d5; color: #b00020;"
+              rounded="circle"
+              @click="deleteDialog = true"
+            >
+              <v-icon>mdi-trash-can-outline</v-icon>
+            </v-btn>
             <v-fab
               icon="mdi-share-variant"
+              @click="shareDialog = true"
             />
-            <v-fab
-              icon="mdi-tray-arrow-down"
-            />
+            <a
+              v-if="replayTable.replay_id"
+              :href="`${useRuntimeConfig().public.backend_url}/replays/${replayTable.replay_id}/file`"
+              target="_blank"
+              rel="noopener"
+              style="text-decoration: none; color: inherit;"
+            >
+              <v-fab
+                icon="mdi-tray-arrow-down"
+              />
+            </a>
           </div>
           
           <v-card 
@@ -42,8 +56,8 @@
 
               <div class="hidden-sm-and-down" style="padding: 10px 0 10px 10px; flex-shrink: 0;">
                 <v-img
-                  src="/images/full/th06.jpg"
-                  alt="th06"
+                  :src="replayTable.game_meta.img.full"
+                  :alt="replayTable.game_meta.img.alt"
                   width="95"
                   height="95"
                   cover
@@ -61,7 +75,7 @@
 
                     <v-col cols="12" class="d-flex align-baseline">
                       <span class="text-h4 font-weight-bold">
-                        {{ replay.filename }}
+                        {{ replayTable.filename }}
                       </span>
                     </v-col>
 
@@ -71,11 +85,11 @@
                           v-if="true"
                           class="text-h5 font-weight-bold mr-5"
                         > 
-                          {{ replay.user_name }}
+                          {{ replayTable.user_name }}
                         </span>
                         
                         <span class="text-caption text--secondary">
-                          YYYY/MM/DD HH:MM
+                          {{ replayTable.uploaded_at }}
                         </span>
                     </v-col>
 
@@ -93,7 +107,7 @@
                 <span>ゲーム名</span>
               </v-col>
               <v-col cols="12" md="9" class="d-flex">
-                <p>東方紅魔郷 ～ Embodiment of Scarlet Devil.</p>
+                <p>{{ replayTable.game_meta.name }}</p>
               </v-col>
               <v-col cols="12" v-if="display.smAndDown.value"/>
 
@@ -102,7 +116,7 @@
                 <span>スコア</span>
               </v-col>
               <v-col cols="12" md="9" class="d-flex">
-                <p class="text-h5 font-weight-bold">10,000</p>
+                <p class="text-h5 font-weight-bold">{{ replayTable.total_score ?? '-'}}</p>
               </v-col>
               <v-col cols="12" v-if="display.smAndDown.value"/>
 
@@ -114,17 +128,33 @@
                 <div class="d-flex flex-wrap" style="gap:8px;min-width: 0;">
                   <span>
                     <v-chip
-                      
-                      color="red" text-color="white" small>
-                      Lunatic
+                      v-if="replayTable.difficulty"
+                      :color="replayTable.difficulty.color" text-color="white" small>
+                      {{ replayTable.difficulty.label }}
                     </v-chip>
                     
                   </span>
                   <span>
                     <v-chip
-                    
-                    color="red" text-color="white" small>
-                    霊夢A
+                      v-if="replayTable.shot_type"
+                      :style="{
+                        border: `2px solid ${replayTable.shot_type.color}`,
+                        fontWeight: 500,
+                        minWidth: '0px',
+                      }"
+                      variant="outlined"
+                    >
+                      {{ replayTable.shot_type.label }}
+                    </v-chip>
+                  </span>
+                  <span>
+                    <v-chip
+                      v-if="replayTable.optional_division"
+                      :color="replayTable.optional_division.color"
+                      text-color="white"
+                      small
+                    >
+                      {{ replayTable.optional_division.label }}
                     </v-chip>
                   </span>
                 </div>
@@ -139,19 +169,22 @@
                 <div class="d-flex flex-wrap" style="gap:8px;min-width: 0;">
                   <span>
                     <v-chip
-                      
-                      color="red" text-color="white" small
+                      v-if="replayTable.replay_type"
+                      :color="replayTable.replay_type.color"
+                      text-color="white"
+                      small
                     >
-                      通しプレイ
+                      {{ replayTable.replay_type.label }}
                     </v-chip>
-                    
                   </span>
                   <span>
                     <v-chip
-                    
-                      color="red" text-color="white" small
+                      v-if="replayTable.category"
+                      :color="replayTable.category.color"
+                      text-color="white"
+                      small
                     >
-                      スコアアタック
+                      {{ replayTable.category.label }}
                     </v-chip>
                   </span>
                 </div>
@@ -162,8 +195,8 @@
                 <v-icon small class="mr-1" title="カテゴリ">mdi-tag-outline</v-icon>
                 <span>オプションタグ</span>
               </v-col>
-              <v-col cols="12" md="9" class="d-flex">
-                <p>なんちゃら</p>
+              <v-col cols="12" md="9" class="d-flex" >
+                <p v-if="replayTable.optional_tag">{{ replayTable.optional_tag }}</p>
               </v-col>
               <v-col cols="12" v-if="display.smAndDown.value"/>
 
@@ -172,7 +205,7 @@
                 <span>リプレイ名</span>
               </v-col>
               <v-col cols="12" md="9" class="d-flex">
-                <p>HOGEHOGE</p>
+                <p>{{ replayTable.replay_name ?? '-' }}</p>
               </v-col>
               <v-col cols="12" v-if="display.smAndDown.value"/>
 
@@ -181,7 +214,7 @@
                 <span>リプレイ作成日</span>
               </v-col>
               <v-col cols="12" md="9" class="d-flex">
-                <p>YYYY/MM/DD HH:MM</p>
+                <p>{{ replayTable.timestamp ?? '-'}}</p>
               </v-col>
               <v-col cols="12" v-if="display.smAndDown.value"/>
 
@@ -190,7 +223,7 @@
                 <span>処理落ち率</span>
               </v-col>
               <v-col cols="12" md="9" class="d-flex">
-                <p>5%</p>
+                <p>{{ replayTable.slowdown ?? '-' }}</p>
               </v-col>
               <v-col cols="12" v-if="display.smAndDown.value"/>
 
@@ -199,7 +232,7 @@
                 <span>コメント</span>
               </v-col>
               <v-col cols="12" md="9" class="d-flex pl-2 pr-2 mb-5" style="width: 100%;flex: 1 1 auto; overflow-y: auto; min-width: 0; white-space: pre-wrap;">
-                  {{ replay.upload_comment }}
+                  {{ replayTable.upload_comment }}
               </v-col>
               <v-col cols="12" v-if="display.smAndDown.value"/>
 
@@ -239,31 +272,140 @@
 
       </v-container>
     </v-layout>
-      
+
+    <!-- 削除ダイアログ -->
+    <DeleteDialog
+      v-if="!loading"
+      :filename="replayTable.filename ?? '不明なファイル'"
+      :replay_id="replayTable.replay_id ?? 'error'"
+      v-model="deleteDialog"
+      @result="openSnackBar"
+    />
+
+    <!-- 共有ダイアログ -->
+    <ShareDialog
+      v-if="!loading"
+      :game_name="replayTable.game_meta.name"
+      :filename="replayTable.filename ?? '不明なファイル'"
+      :replay_id="replayTable.replay_id ?? 'error'"
+      v-model="shareDialog"
+      @result="openSnackBar"
+      />
+
+    <!-- スナックバー -->
+    <v-snackbar v-model="snackbar.visible" :color="snackbar.color">
+      {{ snackbar.message }}
+      <template #actions>
+        <v-btn variant="outlined" @click="snackbar.visible = false">閉じる</v-btn>
+      </template>
+    </v-snackbar>
     
+    </ClientOnly>
   </v-main>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useDisplay } from 'vuetify';
+import { ClientOnly } from '#components'
+import DeleteDialog from '~/components/Dialogs/DeleteDialog.vue'
+import ShareDialog from '~/components/Dialogs/ShareDialog.vue'
+
+import { ErrorTable } from '~/composables/Games/Error'
+import { Th06Table } from '~/composables/Games/Th06'
+import { Th07Table } from '~/composables/Games/Th07'
+import { Th08Table } from '~/composables/Games/Th08'
+import { Th09Table } from '~/composables/Games/Th09'
+import { Th10Table } from '~/composables/Games/Th10'
+import { Th11Table } from '~/composables/Games/Th11'
+import { Th12Table } from '~/composables/Games/Th12'
+import { Th13Table } from '~/composables/Games/Th13'
+import { Th14Table } from '~/composables/Games/Th14'
+import { Th15Table } from '~/composables/Games/Th15'
+import { Th16Table } from '~/composables/Games/Th16'
+import { Th17Table } from '~/composables/Games/Th17'
+import { Th18Table } from '~/composables/Games/Th18'
+
+import { Th95Table } from '~/composables/Games/Th95'
+import { Th125Table } from '~/composables/Games/Th125'
+import { Th128Table } from '~/composables/Games/Th128'
+import { Th143Table } from '~/composables/Games/Th143'
+import { Th165Table } from '~/composables/Games/Th165'
+
 const display=useDisplay()
 // import Th06Detail from '~/components/Games/Th06/Th06Detail.vue'
 
+interface ReplayTable{
+  game_meta: {
+    theme_color: string,
+    img: {full: string, thumb: string, alt: string},
+    name: string
+  },
+  filename: string | null,
+  uploaded_at: string | null,
+  user_name: string | null,
+  total_score: string | null,
+  replay_name: string | null,
+  slowdown: string | null,
+  timestamp: string | null,
+  difficulty: {label: string, color: string} | null,
+  shot_type: {label: string, color: string} | null,
+  optional_division: {label: string, color: string} | null,
+  optional_tag: string | null,
+  upload_comment: string | null,
+  replay_type: {label: string, color: string} | null,
+  category: {label: string, color: string} | null,
+  replay_id: string | null,
+}
+
+
 const route = useRoute()
+const router = useRouter()
 const loading = ref(true)
 const errorResponse=ref(false)
-const replay=ref({})
+const deleteDialog = ref(false)
+const shareDialog = ref(false)
+const snackbar=ref({
+  visible: false,
+  message: '',
+  color: 'success',
+})
 
-const detailComponents = {
-  // th06: Th06Detail,
+let replayTable: ReplayTable
+
+type TableParser=(data: any)=>ReplayTable
+const tableComponents: Record<string, TableParser> = {
+  th06: Th06Table,
+  th07: Th07Table,
+  th08: Th08Table,
+  th09: Th09Table,
+  th10: Th10Table,
+  th11: Th11Table,
+  th12: Th12Table,
+  th13: Th13Table,
+  th14: Th14Table,
+  th15: Th15Table,
+  th16: Th16Table,
+  th17: Th17Table,
+  th18: Th18Table,
+
+  th95: Th95Table,
+  th125: Th125Table,
+  th128: Th128Table,
+  th143: Th143Table,
+  th165: Th165Table
+  // 黄昏酒場が作れていない
 }
+const getReplayTable = (game_id: string) => {
+  return tableComponents[game_id] ?? ErrorTable
+}
+
 
 // const getComponentForReplayDetail = (gameId)=>detailComponents[gameId] || Th06Detail
 
 await useFetch(`${useRuntimeConfig().public.backend_url}/replays/${route.params.replay_id}`, {
   server: false,
   onResponse({ response }) {
-    replay.value = response._data
+    replayTable = tableComponents[response._data.game_id](response._data)
     loading.value = false
   },
   onResponseError({ error }) {
@@ -272,4 +414,14 @@ await useFetch(`${useRuntimeConfig().public.backend_url}/replays/${route.params.
     loading.value = false
   },
 })
+
+const openSnackBar = async (payload: { success: boolean; message: string; page_reload: boolean }) => {
+  snackbar.value.color = payload.success ? 'success' : 'error'
+  snackbar.value.message = payload.message ?? (payload.success ? '成功しました' : 'エラーが発生しました')
+  snackbar.value.visible = true
+  if(payload.page_reload){
+    router.push('/')
+  }
+}
+
 </script>

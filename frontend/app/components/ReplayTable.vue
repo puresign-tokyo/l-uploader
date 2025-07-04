@@ -15,7 +15,7 @@
   <!-- 画像 -->
   <div class="hidden-sm-and-down" style="padding: 10px 0 10px 10px; flex-shrink: 0;">
     <v-img
-      :src=replayTable.game_meta.img.img
+      :src=replayTable.game_meta.img.thumb
       :alt=replayTable.game_meta.img.alt
       width="100"
       height="150"
@@ -183,11 +183,16 @@
                   variant="tonal"
                   color="error"
                   :class="{ 'text-disabled': !props.replayTable.replay_id }"
-                  @click="props.replayTable.replay_id && $emit('confirmDelete', replayTable)"
+                  @click="props.replayTable.replay_id && emit('confirmDelete', {filename: props.replayTable.filename ?? '不明なファイル', replay_id: props.replayTable.replay_id ?? 'error'})"
                   title="削除"
                 />
 
-                <v-icon icon="mdi-share-variant" variant="tonal" @click="$emit('confirmShare', props.replayTable)" title="シェア" />
+                <v-icon
+                  icon="mdi-share-variant"
+                  variant="tonal"
+                  @click="emit('confirmShare', {filename: props.replayTable.filename ?? '不明なファイル', game_name: props.replayTable.game_meta.name ?? '不明なゲーム', replay_id: props.replayTable.replay_id ?? 'error'})"
+                  title="シェア"
+                  />
 
                 <a
                   v-if="props.replayTable.replay_id"
@@ -248,7 +253,7 @@ const display=useDisplay()
 interface ReplayTable{
   game_meta: {
     theme_color: string,
-    img: {img: string, alt: string},
+    img: {img: string, thumb: string, alt: string},
     name: string
   },
   filename: string | null,
@@ -261,7 +266,7 @@ interface ReplayTable{
   difficulty: {label: string, color: string} | null,
   shot_type: {label: string, color: string} | null,
   optional_division: {label: string, color: string} | null,
-  optional_tag: {label: string, color: string} | null,
+  optional_tag: string | null,
   upload_comment: string | null,
   replay_type: {label: string, color: string} | null,
   category: {label: string, color: string} | null,
@@ -273,10 +278,15 @@ const props=defineProps<{
   replayTable: ReplayTable
 }>()
 
-defineEmits({
-  confirmDelete: null,
-  confirmShare: null
-})
+// defineEmits({
+//   confirmDelete: null,
+//   confirmShare: null
+// })
+
+const emit = defineEmits<{
+  (e: 'confirmDelete', payload: { filename: string; replay_id: string }): void
+  (e: 'confirmShare', payload: { filename: string; game_name: string; replay_id: string }): void
+}>()
 
 
 </script>
