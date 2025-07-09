@@ -72,6 +72,78 @@ export function Th12Table(replay: Th12Replay){
     upload_comment: replay.upload_comment,
     replay_type: useTableUtils().convertReplayType(replay.replay_meta.replay_type),
     category: useTableUtils().convertCategory(replay.category),
-    replay_id: replay.replay_id
+    replay_id: replay.replay_id,
+    stage_details: {
+      headers: [
+        {
+          title: 'ステージ',
+          key: 'stage',
+          sortable: false,
+          fixed: true,
+        },
+        {
+          title: 'スコア',
+          key: 'score',
+          sortable: false,
+        },
+        {
+          title: '残機',
+          key: 'lives',
+          sortable: false,
+        },
+        {
+          title: 'ボム',
+          key: 'bombs',
+          sortable: false,
+        },
+        {
+          title: 'パワー',
+          key: 'power',
+          sortable: false,
+        },
+        {
+          title: '最大得点',
+          key: 'piv',
+          sortable: false,
+        },
+        {
+          title: 'グレイズ',
+          key: 'graze',
+          sortable: false,
+        },
+      ],
+      items: replay.replay_meta.stage_details.map(stage => {
+        let lifeLabel
+        if (stage.lives !== null && stage.life_pieces !== null){
+          lifeLabel = String(stage.lives) + ' + (' + String(stage.life_pieces) + '/5)'
+        }else{
+          lifeLabel = '-'
+        }
+
+        let bombLabel
+
+        if (stage.lives !== null && stage.life_pieces !== null){
+          lifeLabel = String(stage.lives) + ' + (' + String(stage.life_pieces) + '/5)'
+        }else{
+          lifeLabel = '-'
+        }
+        
+        if (stage.bombs !== null && stage.bomb_pieces !== null){
+          bombLabel = String(stage.bombs) + ' + (' + String(stage.bomb_pieces) + '/3)'
+        }else{
+          bombLabel = '-'
+        }
+
+        return {
+          stage: String(stage.stage) !== '7' ? stage.stage : 'Ex',
+          score: stage.score !== null ? Number(stage.score).toLocaleString() : '-',
+          power: stage.power !== null ? (Number(stage.power) / 100).toFixed(2) : '-',
+          lives: lifeLabel,
+          bombs: bombLabel,
+          piv: stage.piv !== null ? Number(stage.piv).toLocaleString() : '-',
+          graze: stage.graze !== null ? Number(stage.graze).toLocaleString() : '-',
+        }
+      })
+    }
   }
 }

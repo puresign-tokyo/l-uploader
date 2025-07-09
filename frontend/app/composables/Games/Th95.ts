@@ -795,6 +795,10 @@ export function Th95Table(replay: Th95Replay){
     upload_comment: replay.upload_comment,
     replay_type: null,
     category: useTableUtils().convertCategory(replay.category),
-    replay_id: replay.replay_id
+    replay_id: replay.replay_id,
+    stage_details:{
+      headers: [],
+      items: []
+    }
   }
 }

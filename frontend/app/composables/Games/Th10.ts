@@ -68,6 +68,43 @@ export function Th10Table(replay: Th10Replay){
     upload_comment: replay.upload_comment,
     replay_type: useTableUtils().convertReplayType(replay.replay_meta.replay_type),
     category: useTableUtils().convertCategory(replay.category),
-    replay_id: replay.replay_id
+    replay_id: replay.replay_id,
+    stage_details: {
+      headers: [
+        {
+          title: 'ステージ',
+          key: 'stage',
+          sortable: false,
+          fixed: true,
+        },
+        {
+          title: 'スコア',
+          key: 'score',
+          sortable: false,
+        },
+        {
+          title: '残機',
+          key: 'lives',
+          sortable: false,
+        },
+        {
+          title: 'パワー',
+          key: 'power',
+          sortable: false,
+        },
+        {
+          title: '信仰点',
+          key: 'piv',
+          sortable: false,
+        },
+      ],
+      items: replay.replay_meta.stage_details.map(stage => ({
+        stage: String(stage.stage) !== '7' ? stage.stage : 'Ex',
+        score: stage.score !== null ? Number(stage.score).toLocaleString() : '-',
+        power: stage.power !== null ? (Number(stage.power) / 20).toFixed(2) : '-',
+        lives: stage.lives ?? '-',
+        piv: stage.piv !== null ? Number(stage.piv).toLocaleString() : '-',
+      }))
+    }
   }
 }

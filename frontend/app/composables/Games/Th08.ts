@@ -321,6 +321,86 @@ export function Th08Table(replay: Th08Replay){
     upload_comment: replay.upload_comment,
     replay_type: useTableUtils().convertReplayType(replay.replay_meta.replay_type),
     category: useTableUtils().convertCategory(replay.category),
-    replay_id: replay.replay_id
+    replay_id: replay.replay_id,
+    stage_details: {
+      headers: [
+        {
+          title: 'ステージ',
+          key: 'stage',
+          sortable: false,
+          fixed: true,
+        },
+        {
+          title: 'スコア',
+          key: 'score',
+          sortable: false,
+        },
+        {
+          title: '残機',
+          key: 'lives',
+          sortable: false,
+        },
+        {
+          title: 'ボム',
+          key: 'bombs',
+          sortable: false,
+        },
+        {
+          title: 'パワー',
+          key: 'power',
+          sortable: false,
+        },
+        {
+          title: '得点アイテム数',
+          key: 'point_items',
+          sortable: false,
+        },
+        {
+          title: '人妖点',
+          key: 'piv',
+          sortable: false,
+        },
+        {
+          title: 'グレイズ',
+          key: 'graze',
+          sortable: false,
+        },
+      ],
+      items: replay.replay_meta.stage_details.map(stage => {
+        let stageLabel: string
+
+        switch (String(stage.stage)) {
+          case '4':
+            stageLabel = '4A'
+            break
+          case '5':
+            stageLabel = '4B'
+            break
+          case '6':
+            stageLabel = '5'
+            break
+          case '7':
+            stageLabel = '6A'
+            break
+          case '8':
+            stageLabel = '6B'
+            break
+          case '9':
+            stageLabel = 'Ex'
+          default:
+            stageLabel = stage.stage
+        }
+        return {
+          stage: stageLabel,
+          score: stage.score !== null ? Number(stage.score).toLocaleString() : '-',
+          power: stage.power ?? '-',
+          lives: stage.lives ?? '-',
+          bombs: stage.bombs ?? '-',
+          point_items: stage.point_items !== null ? Number(stage.point_items).toLocaleString() : '-',
+          piv: stage.piv !== null ? Number(stage.piv).toLocaleString() : '-',
+          graze: stage.graze !== null ? Number(stage.graze).toLocaleString() : '-',
+        }
+      })
+    }
   }
 }

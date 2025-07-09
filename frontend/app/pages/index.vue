@@ -20,67 +20,67 @@
           </p>
         </v-card>
       
-    </v-container>
-    <ClientOnly>
-    <!-- <v-container> -->
+      <ClientOnly>
 
-        <!-- <v-card
-          class="d-flex flex-column my-8"
-          elevation="4"
-          :style="{
-            borderLeft: '8px solid var(--border-color)',
-            alignItems: 'stretch',
-            minHeight: '170px',
-            minWidth: '0'
-          }"
-        >
-          <v-select
-            v-model="selectedGame"
-            :items="Object.keys(dropMenuGame)"
-            label="作品を選択"
-            outlined
+        <v-row>
+
+          <v-col cols="12" md="4">
+            <div class="d-flex align-center">
+              <v-text-field
+                v-model="inputedTag"
+                label="タグ検索"
+                placeholder="リプ会用"
+                dense
+                hide-details
+              />
+              <v-btn
+                icon="mdi-magnify"
+                class="ml-2"
+                variant="tonal"
+                size="small"
+              />
+            </div>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-select
+              v-model="selectedGame"
+              :items="Object.keys(dropMenuGame)"
+              label="作品を選択"
+              hide-details
+              outlined
+            />
+          </v-col>
+
+          <v-col cols="12" md="4">
+            <v-select
+              v-model="selectedOrder"
+              :items="Object.keys(dropMenuOrder)"
+              label="表示順"
+              hide-details
+              outlined
+            />
+          </v-col>
+        </v-row>
+
+        <template v-if="!loading">
+          <component
+            v-for="replay in replays"
+            :key="replay.replay_id"
+            :is="ReplayTable"
+            :replayTable="getReplayTable(replay.game_id)(replay)"
+            @confirmDelete="openDeleteDialog"
+            @confirmShare="openShareDialog"
           />
-
-          <v-select
-            v-model="selectedOrder"
-            :items="Object.keys(dropMenuOrder)"
-            label="表示順"
-            outlined
+          <v-pagination
+            class="d-flex"
+            v-model="replayPagination"
+            :length="replayPaginationLimit"
+            rounded="circle"
           />
-          
-        </v-card> -->
+        </template>
 
-      <!-- <v-card
-        class="d-flex flex-column my-8"
-        elevation="4"
-        :style="{
-          borderLeft: '8px solid var(--border-color)',
-          alignItems: 'stretch',
-          minWidth: '0'
-        }"
-      > -->
-      <!-- </v-card> -->
-    <!-- </v-container> -->
-
-    <v-container v-if="!loading">
-      <component
-        v-for="replay in replays"
-        :key="replay.replay_id"
-        :is="ReplayTable"
-        :replayTable="getReplayTable(replay.game_id)(replay)"
-        @confirmDelete="openDeleteDialog"
-        @confirmShare="openShareDialog"
-      />
-      <v-pagination
-        class="d-flex"
-        v-model="replayPagination"
-        :length="replayPaginationLimit"
-        rounded="circle"
-      />
+      </ClientOnly>
     </v-container>
-
-    </ClientOnly>
-
 
       <!-- 削除ダイアログ -->
       <DeleteDialog
@@ -163,6 +163,7 @@ const config = useRuntimeConfig().public
 
 const selectedGame=ref('全作品')
 const selectedOrder=ref('新しい順')
+const inputedTag=ref('')
 
 // 日付整形
 const formatDate = (iso) =>
@@ -172,33 +173,33 @@ const formatDate = (iso) =>
     hour12: false, timeZone: 'Asia/Tokyo'
   }).format(new Date(iso))
 
-// const dropMenuGame={  
-//   '全作品':     all,
-//   '東方紅魔郷': th06,
-//   '東方妖々夢': th07,
-//   '東方永夜抄': th08,
-//   '東方花映塚': th09,
-//   '東方文花帖': th95,
-//   '東方風神録': th10,
-//   '黄昏酒場':   alco,
-//   '東方地霊殿': th11,
-//   '東方星蓮船': th12,
-//   'ダブルスポイラー': th125,
-//   '妖精大戦争': th128,
-//   '東方神霊廟': th13,
-//   '東方輝針城': th14,
-//   '弾幕アマノジャク': th143,
-//   '東方紺珠伝': th15,
-//   '東方天空璋': th16,
-//   '秘封ナイトメアダイアリー': th165,
-//   '東方鬼形獣': th17,
-//   '東方虹龍洞': th18,
-// }
+const dropMenuGame={  
+  '全作品':     'all',
+  '東方紅魔郷': 'th06',
+  '東方妖々夢': 'th07',
+  '東方永夜抄': 'th08',
+  '東方花映塚': 'th09',
+  '東方文花帖': 'th95',
+  '東方風神録': 'th10',
+  '黄昏酒場':   'alco',
+  '東方地霊殿': 'th11',
+  '東方星蓮船': 'th12',
+  'ダブルスポイラー': 'th125',
+  '妖精大戦争': 'th128',
+  '東方神霊廟': 'th13',
+  '東方輝針城': 'th14',
+  '弾幕アマノジャク': 'th143',
+  '東方紺珠伝': 'th15',
+  '東方天空璋': 'th16',
+  '秘封ナイトメアダイアリー': 'th165',
+  '東方鬼形獣': 'th17',
+  '東方虹龍洞': 'th18',
+}
 
-// const dropMenuOrder={
-//   '新しい順': 'desc',
-//   '古い順': 'asc'
-// }
+const dropMenuOrder={
+  '新しい順': 'desc',
+  '古い順': 'asc'
+}
 
 // コンポーネントの取得
 const tableComponents = {
@@ -240,7 +241,7 @@ await useFetch(`${config.backend_url}/replays/count`, {
 })
 
 // リプレイ取得
-await useFetch(`${config.backend_url}/replays?order=desc&offset=0&limit=${config.pagination_size}`, {
+await useFetch(`${config.backend_url}/replays?order=desc&page=0`, {
   server: false,
   onResponse({ response }) {
     const rawData = response._data
@@ -272,7 +273,7 @@ const onPageChanged= async (newPage)=>{
       return
     }
 
-    const replaysData = await $fetch(`${config.backend_url}/replays?order=desc&offset=${config.pagination_size * (replayPagination.value - 1)}&limit=${config.pagination_size}`, {
+    const replaysData = await $fetch(`${config.backend_url}/replays?order=desc&page=${(replayPagination.value - 1)}`, {
       method: 'get',
       server: false
     })

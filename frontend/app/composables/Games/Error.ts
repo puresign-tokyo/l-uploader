@@ -2,7 +2,11 @@ export function ErrorTable(replay: object){
   return {
     game_meta: {
       theme_color: '#AAAAAA',
-      img: {img: '/images/thumb/error.png', alt: 'erorr'},
+      img: {
+        thumb: '/images/thumb/error.png',
+        full: '/images/full/error.png',
+        alt: 'erorr'
+      },
       name: '不明なゲームです'
     },
     filename: null,
@@ -19,6 +23,10 @@ export function ErrorTable(replay: object){
     upload_comment: null,
     replay_type: null,
     category: null,
-    replay_id: null
+    replay_id: null,
+    stage_details:{
+      headers: [],
+      items: []
+    }
   }
 }

@@ -219,6 +219,91 @@ export function Th16Table(replay: Th16Replay){
     upload_comment: replay.upload_comment,
     replay_type: useTableUtils().convertReplayType(replay.replay_meta.replay_type),
     category: useTableUtils().convertCategory(replay.category),
-    replay_id: replay.replay_id
+    replay_id: replay.replay_id,
+    stage_details: {
+      headers: [
+        {
+          title: 'ステージ',
+          key: 'stage',
+          sortable: false,
+          fixed: true,
+        },
+        {
+          title: 'スコア',
+          key: 'score',
+          sortable: false,
+        },
+        {
+          title: '残機',
+          key: 'lives',
+          sortable: false,
+        },
+        {
+          title: 'ボム',
+          key: 'bombs',
+          sortable: false,
+        },
+        {
+          title: 'パワー',
+          key: 'power',
+          sortable: false,
+        },
+        {
+          title: '最大得点',
+          key: 'piv',
+          sortable: false,
+        },
+        {
+          title: '季節ゲージ',
+          key: 'season_power',
+          sortable: false,
+        },
+        {
+          title: 'グレイズ',
+          key: 'graze',
+          sortable: false,
+        },
+      ],
+      items: replay.replay_meta.stage_details.map(stage => {
+
+        let bombLabel
+        if (stage.bombs !== null && stage.bomb_pieces !== null){
+          bombLabel = String(stage.bombs) + ' + (' + String(stage.bomb_pieces) + '/5)'
+        }else{
+          bombLabel = '-'
+        }
+
+        let seasonPowerLabel=null
+        if (stage.season_power === null){
+          seasonPowerLabel='-'
+        }else if (Number(stage.season_power) - 1140 >= 0){
+          // レベル6は満タンの状態しか存在しえない
+          seasonPowerLabel = 'Lv6'
+        }else if (Number(stage.season_power) - 840 >= 0){
+          seasonPowerLabel = 'Lv5 + ' + String(Number(stage.season_power) - 840) + '/300'
+        }else if (Number(stage.season_power) - 590 >= 0){
+          seasonPowerLabel = 'Lv4 + ' + String(Number(stage.season_power) - 590) + '/250'
+        }else if (Number(stage.season_power) - 390 >= 0){
+          seasonPowerLabel = 'Lv3 + ' + String(Number(stage.season_power) - 390) + '/200'
+        }else if (Number(stage.season_power) - 230 >= 0){
+          seasonPowerLabel = 'Lv2 + ' + String(Number(stage.season_power) - 230) + '/160'
+        }else if (Number(stage.season_power) - 100 >= 0){
+          seasonPowerLabel = 'Lv1 + ' + String(Number(stage.season_power) - 100) + '/130'
+        }else{
+          seasonPowerLabel = 'Lv0 + ' + String(stage.season_power) + '/100'
+        }
+
+        return {
+          stage: String(stage.stage) !== '7' ? stage.stage : 'Ex',
+          score: stage.score !== null ? Number(stage.score).toLocaleString() : '-',
+          power: stage.power !== null ? (Number(stage.power) / 100).toFixed(2) : '-',
+          lives: stage.lives ?? '-',
+          bombs: bombLabel,
+          season_power: seasonPowerLabel,
+          piv: stage.piv !== null ? Number(stage.piv).toLocaleString() : '-',
+          graze: stage.graze !== null ? Number(stage.graze).toLocaleString() : '-',
+        }
+      })
+    }
   }
 }

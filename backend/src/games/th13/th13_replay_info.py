@@ -24,7 +24,7 @@ class TH13StageDetail(BaseModel, StageDetail):
             "power": self.power,
             "piv": self.piv,
             "lives": self.lives,
-            "life_pieces": self.lives,
+            "life_pieces": self.life_pieces,
             "bombs": self.bombs,
             "bomb_pieces": self.bomb_pieces,
             "graze": self.graze,

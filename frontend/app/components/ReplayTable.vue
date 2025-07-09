@@ -164,7 +164,7 @@
               </div>
 
               <!-- 右側アイコン群 -->
-              <div class="d-flex align-center ms-2" style="flex-shrink: 0; gap: 4px;min-width: 0;">
+              <div class="d-flex align-center ms-4" style="flex-shrink: 0; gap: 8px;min-width: 0;">
                 <NuxtLink
                   v-if="props.replayTable.replay_id"
                   :to="`/replays/${props.replayTable.replay_id}`"
@@ -173,6 +173,7 @@
                   <v-icon
                     icon="mdi-information-outline"
                     variant="tonal"
+                    size="large"
                     title="詳細情報"
                     :class="{ 'text-disabled': !props.replayTable.replay_id }"
                   />
@@ -182,6 +183,7 @@
                   icon="mdi-trash-can-outline"
                   variant="tonal"
                   color="error"
+                  size="large"
                   :class="{ 'text-disabled': !props.replayTable.replay_id }"
                   @click="props.replayTable.replay_id && emit('confirmDelete', {filename: props.replayTable.filename ?? '不明なファイル', replay_id: props.replayTable.replay_id ?? 'error'})"
                   title="削除"
@@ -190,6 +192,7 @@
                 <v-icon
                   icon="mdi-share-variant"
                   variant="tonal"
+                  size="large"
                   @click="emit('confirmShare', {filename: props.replayTable.filename ?? '不明なファイル', game_name: props.replayTable.game_meta.name ?? '不明なゲーム', replay_id: props.replayTable.replay_id ?? 'error'})"
                   title="シェア"
                   />
@@ -204,6 +207,7 @@
                   <v-icon
                     icon="mdi-tray-arrow-down"
                     variant="tonal"
+                    size="large"
                     title="ダウンロード"
                   />
                 </a>

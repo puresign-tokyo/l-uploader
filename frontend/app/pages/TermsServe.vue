@@ -1,7 +1,7 @@
 <template>
     <v-main>                                               
       <v-container class="fill-height d-flex align-center justify-center">
-        <v-card class="pa-4" elevation="3" rounded="lg" max-width="800" height="80vh">
+        <v-card class="pa-4" elevation="3" rounded="lg" max-width="800">
           <v-card-title class="text-h6 font-weight-bold">
             利用規約
           </v-card-title>
@@ -154,7 +154,7 @@
   <style scoped>
   .terms-content {
     overflow-y: auto;
-    height: calc(80vh - 120px); /* カード全体の高さからタイトル・余白を引いた高さ */
+    
     padding-right: 8px; /* スクロールバーのスペース */
     line-height: 1.6;
     font-size: 0.9rem;

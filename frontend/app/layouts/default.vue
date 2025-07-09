@@ -1,6 +1,14 @@
 <template>
-      <TheHeader/>
-        <slot />
+  <TheHeader/>
+  <slot/>
+  <ClientOnly>
+    <div :style="{ position: 'sticky', top: 'calc(100vh - 80px)', width: '100%' }">
       <TheFooter/>
-  </template>
+    </div>
+  </ClientOnly>
+</template>
 
+
+<script setup lang="ts">
+  import { ClientOnly } from '#components'
+</script>

@@ -82,6 +82,43 @@ export function Th09Table(replay: Th09Replay){
     upload_comment: replay.upload_comment,
     replay_type: useTableUtils().convertReplayType(replay.replay_meta.replay_type),
     category: useTableUtils().convertCategory(replay.category),
-    replay_id: replay.replay_id
+    replay_id: replay.replay_id,
+    stage_details: {
+      headers: [
+        {
+          title: 'ステージ',
+          key: 'stage',
+          sortable: false,
+          fixed: true,
+        },
+        {
+          title: 'スコア',
+          key: 'score',
+          sortable: false,
+        },
+        {
+          title: '残機',
+          key: 'lives',
+          sortable: false,
+        },
+        {
+          title: '対戦相手',
+          key: 'p2_shot',
+          sortable: false,
+        },
+        {
+          title: 'スコア(対戦相手)',
+          key: 'p2_score',
+          sortable: false,
+        },
+      ],
+      items: replay.replay_meta.stage_details.map(stage => ({
+        stage: stage.stage,
+        score: stage.score !== null ? Number(stage.score).toLocaleString() : '-',
+        lives: stage.lives ?? '-',
+        p2_shot: stage.p2_shot !== null ? convertShotType(stage.p2_shot).label : '-',
+        p2_score: stage.p2_score !== null ? Number(stage.p2_score).toLocaleString() : '-'
+      }))
+    }
   }
 }

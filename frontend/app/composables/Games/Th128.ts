@@ -40,6 +40,7 @@ interface Th128Replay{
         score: string | null,
         motivation: string | null,
         perfect_freeze: string | null,
+        frozen_area: string | null,
         graze: string | null,
       }
     ]
@@ -72,6 +73,109 @@ export function Th128Table(replay: Th128Replay){
     upload_comment: replay.upload_comment,
     replay_type: useTableUtils().convertReplayType(replay.replay_meta.replay_type),
     category: useTableUtils().convertCategory(replay.category),
-    replay_id: replay.replay_id
+    replay_id: replay.replay_id,
+    stage_details: {
+      headers: [
+        {
+          title: 'ステージ',
+          key: 'stage',
+          sortable: false,
+          fixed: true,
+        },
+        {
+          title: 'スコア',
+          key: 'score',
+          sortable: false,
+        },
+        {
+          title: 'やる気',
+          key: 'motivation',
+          sortable: false,
+        },
+        {
+          title: 'パーフェクトフリーズ',
+          key: 'perfect_freeze',
+          sortable: false,
+        },
+        {
+          title: 'こおらせた面積',
+          key: 'frozen_area',
+          sortable: false,
+        },
+        {
+          title: 'グレイズ',
+          key: 'graze',
+          sortable: false,
+        },
+      ],
+      items: replay.replay_meta.stage_details.map(stage => {
+        let stageLabel
+        if (stage.stage !== null){
+          switch(String(stage.stage)){
+            case '1':
+              stageLabel = 'A-1'
+              break
+            case '2':
+              stageLabel = 'A1-2'
+              break
+            case '3':
+              stageLabel = 'A1-3'
+              break
+            case '4':
+              stageLabel = 'A2-2'
+              break
+            case '5':
+              stageLabel = 'A2-3'
+              break
+            case '6':
+              stageLabel = 'B-1'
+              break
+            case '7':
+              stageLabel = 'B1-2'
+              break
+            case '8':
+              stageLabel = 'B1-3'
+              break
+            case '9':
+              stageLabel = 'B2-2'
+              break
+            case '10':
+              stageLabel = 'B2-3'
+              break
+            case '11':
+              stageLabel = 'C-1'
+              break
+            case '12':
+              stageLabel = 'C1-2'
+              break
+            case '13':
+              stageLabel = 'C1-3'
+              break
+            case '14':
+              stageLabel = 'C2-2'
+              break
+            case '15':
+              stageLabel = 'C2-3'
+              break
+            case '16':
+              stageLabel = 'Ex'
+              break
+            default:
+              stageLabel = '-'
+          }
+        }else{
+          stageLabel = '-'
+        }
+
+        return {
+          stage: stageLabel,
+          score: stage.score !== null ? Number(stage.score).toLocaleString() : '-',
+          motivation: stage.motivation !== null ? String(Math.floor(Number(stage.motivation)/100)) + '%' : '-',
+          perfect_freeze: stage.perfect_freeze !== null ? String(Math.floor(Number(stage.perfect_freeze)/100)) + '%' : '-',
+        frozen_area: stage.frozen_area ? String(Math.floor(Number(stage.frozen_area))) + '%' : '-',
+          graze: stage.graze !== null ? Number(stage.graze).toLocaleString() : '-',
+        }
+      })
+    }
   }
 }

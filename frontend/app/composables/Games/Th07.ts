@@ -82,6 +82,75 @@ export function Th07Table(replay: Th07Replay){
     upload_comment: replay.upload_comment,
     replay_type: useTableUtils().convertReplayType(replay.replay_meta.replay_type),
     category: useTableUtils().convertCategory(replay.category),
-    replay_id: replay.replay_id
+    replay_id: replay.replay_id,
+    stage_details: {
+      headers: [
+        {
+          title: 'ステージ',
+          key: 'stage',
+          sortable: false,
+          fixed: true,
+        },
+        {
+          title: 'スコア',
+          key: 'score',
+          sortable: false,
+        },
+        {
+          title: '残機',
+          key: 'lives',
+          sortable: false,
+        },
+        {
+          title: 'ボム',
+          key: 'bombs',
+          sortable: false,
+        },
+        {
+          title: 'パワー',
+          key: 'power',
+          sortable: false,
+        },
+        {
+          title: '桜＋',
+          key: 'cherry',
+          sortable: false,
+        },
+        {
+          title: '桜分子',
+          key: 'piv',
+          sortable: false,
+        },
+        {
+          title: '桜分母',
+          key: 'cherry_max',
+          sortable: false,
+        },
+      ],
+      items: replay.replay_meta.stage_details.map(stage => {
+        let stageLabel: string
+
+        switch (String(stage.stage)) {
+          case '7':
+            stageLabel = 'Ex'
+            break
+          case '8':
+            stageLabel = 'Ph'
+            break
+          default:
+            stageLabel = stage.stage
+        }
+        return {
+          stage: stageLabel,
+          score: stage.score !== null ? Number(stage.score).toLocaleString() : '-',
+          power: stage.power ?? '-',
+          lives: stage.lives ?? '-',
+          bombs: stage.bombs ?? '-',
+          cherry: stage.cherry !== null ? Number(stage.cherry).toLocaleString() : '-',
+          piv: stage.piv !== null ? Number(stage.piv).toLocaleString() : '-',
+          cherry_max: stage.cherry_max !== null ? Number(stage.cherry_max).toLocaleString() : '-',
+        }
+      })
+    }
   }
 }

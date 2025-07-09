@@ -238,32 +238,24 @@
 
             </v-row>
 
-            <v-row class="ml-10 mr-10 align-center" style="min-width: 0;">
+            <v-row class="ml-4 mr-10 align-center" style="min-width: 0;">
 
               <v-col cols="12" class="d-flex mt-1">
                 <v-icon small class="mr-1" title="プレイ進行">mdi-chart-line</v-icon>
                 <span>プレイ進行</span>
               </v-col>
-              <v-col cols="12" class="d-flex ">
+              <v-col cols="12" class="d-flex mb-5">
                 <v-data-table
-                  :items="[
-                    {
-                      ステージ: '1',
-                      残機: '1',
-                      ボム: '1',
-                      スコア: '100',
-                    },
-                    {
-                      ステージ: '2',
-                      残機: '2',
-                      ボム: '2',
-                      スコア: '200',
-                    }
-                  ]"
+                  v-if="replayTable.stage_details.items.length !== 0"
+                  :headers="replayTable.stage_details.headers"
+                  :items="replayTable.stage_details.items"
                   :items-per-page="0"
+                  :style="{
+                    whiteSpace: 'nowrap'
+                  }"
                   hide-default-footer
-
-                ></v-data-table>
+                />
+                <span v-else>このリプレイではプレイ進行を表示することができません</span>
               </v-col>
             </v-row>
           
@@ -334,6 +326,9 @@ import { Th165Table } from '~/composables/Games/Th165'
 const display=useDisplay()
 // import Th06Detail from '~/components/Games/Th06/Th06Detail.vue'
 
+type StageDetailsRow = Record<string, string | number | boolean | null>
+
+
 interface ReplayTable{
   game_meta: {
     theme_color: string,
@@ -355,6 +350,15 @@ interface ReplayTable{
   replay_type: {label: string, color: string} | null,
   category: {label: string, color: string} | null,
   replay_id: string | null,
+  stage_details: {
+    headers: {
+      title: string
+      key: string
+      sortable?: boolean
+      fixed?: boolean
+    }[]
+    items: StageDetailsRow[]
+  }
 }
 
 

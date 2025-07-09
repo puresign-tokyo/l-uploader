@@ -24,6 +24,7 @@ from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 import shutil
 import utility
+from common_util import getenv_secure
 
 import logging
 import log.log_manager as log_manager
@@ -79,6 +80,7 @@ UPLOAD_COMMENT_LENGTH_LIMIT = int(getenv_secure("UPLOAD_COMMENT_LENGTH_LIMIT"))
 FILESIZE_KB_LIMIT = int(getenv_secure("FILESIZE_KB_LIMIT"))
 DELETE_PASSWORD_LENGTH_LIMIT = int(getenv_secure("DELETE_PASSWORD_LENGTH_LIMIT"))
 OPTIONAL_TAG_LENGTH_LIMIT = int(getenv_secure("OPTIONAL_TAG_LENGTH_LIMIT"))
+MAX_PAGINATION_PAGES = int(getenv_secure("MAX_PAGINATION_PAGES"))
 
 FETCH_REPLAY_LIMIT = 1000
 
@@ -181,26 +183,34 @@ def get_replays(
         default=datetime(1970, 1, 1, tzinfo=ZoneInfo("Asia/Tokyo"))
     ),
     upload_date_until: datetime = Query(default=datetime.now(ZoneInfo("Asia/Tokyo"))),
-    offset: int = 0,
-    limit: int = 1000,
+    page: int = -1,
 ):
     if game_id != "all" and game_id not in GameRegistry.supported_game_ids():
         logger.info(f"Received replay request with invalid game_id: {game_id}")
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 
-    if offset < 0:
-        logger.info(f"Invalid offset: negative value {offset} is not allowed.")
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
-
-    if limit < 0:
-        logger.info(f"Invalid limit parameter: negative value {limit} is not allowed.")
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
-
-    if limit > FETCH_REPLAY_LIMIT:
+    if page < -1:
         logger.info(
-            f"Invalid limit parameter: received {limit}, but maximum allowed is {FETCH_REPLAY_LIMIT}."
+            f"Invalid page: negative value {page} is not allowed. only -1 is allowed in negative value."
         )
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+    if page > MAX_PAGINATION_PAGES:
+        logger.info(
+            f"Invalid page: received {page}, but maximum allowed is {MAX_PAGINATION_PAGES}."
+        )
+    # if offset < 0:
+    #     logger.info(f"Invalid offset: negative value {offset} is not allowed.")
+    #     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+
+    # if limit < 0:
+    #     logger.info(f"Invalid limit parameter: negative value {limit} is not allowed.")
+    #     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+
+    # if limit > FETCH_REPLAY_LIMIT:
+    #     logger.info(
+    #         f"Invalid limit parameter: received {limit}, but maximum allowed is {FETCH_REPLAY_LIMIT}."
+    #     )
+    #     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 
     try:
         result = Usecase.select_replays(
@@ -210,8 +220,7 @@ def get_replays(
             category=category,
             optional_tag=optional_tag,
             order=order,
-            offset=offset,
-            limit=limit,
+            page=page,
         )
     except Exception as e:
         logger.exception(e)

@@ -33,7 +33,24 @@
   </ClientOnly>
 
   <v-app-bar color="#666699">
-    <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+    <v-app-bar-nav-icon
+      v-if="display.smAndDown.value"
+      @click="drawer = !drawer"
+    />
+    <v-img
+      src="/images/logo.png"
+      height="50"
+      class="ml-2"
+      style="max-width: 200px;"
+    />
+    <v-btn
+      v-if="!display.smAndDown.value"
+      v-for="internalLink in internalLinks" :key="internalLink.path"
+      :to="internalLink.path"
+      class="ml-2"
+    >
+      {{internalLink.label}}
+    </v-btn>
 
   </v-app-bar>
   
@@ -41,15 +58,23 @@
 
 <script setup>
   import { ref } from 'vue'
+  import { useDisplay } from 'vuetify'
+  const display=useDisplay()
 
   const drawer = ref(false)
 
   const internalLinks=[
     {path: "/", label: "ホーム"},
     {path: "/NewPost", label: "新規投稿"},
-    {path: "/PageLinks", label: "外部リンク一覧"},
     {path: "/TermsServe", label: "利用規約"},
+    {path: "/ReleaseNote", label: "リリースノート"},
     {path: "/Credits", label: "スタッフ紹介"},
-    {path: "/ReleaseNote", label: "リリースノート"}
+    {path: "/PageLinks", label: "外部リンク一覧"},
   ]
+
+  watch(display.smAndDown, (isSmall) => {
+    if (!isSmall) {
+      drawer.value = false
+    }
+  })
 </script>

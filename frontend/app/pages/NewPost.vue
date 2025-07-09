@@ -208,6 +208,7 @@
   const config=useRuntimeConfig().public
 
   let wasOpened = false
+  let postedReplayId = ''
 
   const snackbar=ref({
     visible: false,
@@ -327,6 +328,7 @@ ${window.location.origin}/replays/${response._data["replay_id"]}
             snackbar.value.visible=true
             snackbar.value.message="リプレイを投稿しました"
             snackbar.value.color='success'
+            postedReplayId = response._data["replay_id"]
           }
         }
       )
@@ -339,8 +341,8 @@ ${window.location.origin}/replays/${response._data["replay_id"]}
   watch(dialogSuccessPost, (val) => {
     if (val) {
       wasOpened = true
-    } else if (wasOpened) {
-      router.push('/')
+    } else if (wasOpened && postedReplayId !== '') {
+      router.push('/replays/' + postedReplayId)
     }
   })
 

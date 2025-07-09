@@ -47,7 +47,7 @@ export default defineNuxtConfig({
         return `${protocol}://${host}${omitPort ? '' : `:${port}`}`
       })(),
       pagination_size: (() => {
-        return process.env.NUXT_PUBLIC_PAGINATION_LIMIT
+        return process.env.NUXT_PUBLIC_POSTS_PER_PAGE
       })(),
       username_length_limit: (() => {
         return process.env.NUXT_PUBLIC_USERNAME_LENGTH_LIMIT

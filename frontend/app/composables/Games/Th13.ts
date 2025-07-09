@@ -220,6 +220,105 @@ export function Th13Table(replay: Th13Replay){
     upload_comment: replay.upload_comment,
     replay_type: useTableUtils().convertReplayType(replay.replay_meta.replay_type),
     category: useTableUtils().convertCategory(replay.category),
-    replay_id: replay.replay_id
+    replay_id: replay.replay_id,
+    stage_details: {
+      headers: [
+        {
+          title: 'ステージ',
+          key: 'stage',
+          sortable: false,
+          fixed: true,
+        },
+        {
+          title: 'スコア',
+          key: 'score',
+          sortable: false,
+        },
+        {
+          title: '残機',
+          key: 'lives',
+          sortable: false,
+        },
+        {
+          title: 'ボム',
+          key: 'bombs',
+          sortable: false,
+        },
+        {
+          title: 'パワー',
+          key: 'power',
+          sortable: false,
+        },
+        {
+          title: 'トランスゲージ',
+          key: 'trance',
+          sortable: false,
+        },
+        {
+          title: '最大得点',
+          key: 'piv',
+          sortable: false,
+        },
+        {
+          title: 'グレイズ',
+          key: 'graze',
+          sortable: false,
+        },
+      ],
+      items: replay.replay_meta.stage_details.map(stage => {
+        let lifeMaxLabel
+        if (stage.extends !== null){
+          switch(String(stage.extends)){
+            case '0':
+              lifeMaxLabel = '8'
+              break
+            case '1':
+              lifeMaxLabel = '10'
+              break
+            case '2':
+              lifeMaxLabel = '12'
+              break
+            case '3':
+              lifeMaxLabel = '15'
+              break
+            case '4':
+              lifeMaxLabel = '18'
+              break
+            case '5':
+              lifeMaxLabel = '20'
+              break
+            case '6':
+              lifeMaxLabel = '25'
+              break
+            default:
+              lifeMaxLabel = '-'
+          }
+        }
+        let lifeLabel
+        if (stage.lives !== null && stage.life_pieces !== null){
+          lifeLabel = String(stage.lives) + ' + (' + String(stage.life_pieces) + '/' + String(lifeMaxLabel) + ')'
+        }else{
+          lifeLabel = '-'
+        }
+
+        let bombLabel
+        if (stage.bombs !== null && stage.bomb_pieces !== null){
+          bombLabel = String(stage.bombs) + ' + (' + String(stage.bomb_pieces) + '/8)'
+        }else{
+          bombLabel = '-'
+        }
+
+        return {
+          stage: String(stage.stage) !== '7' ? stage.stage : 'Ex',
+          score: stage.score !== null ? Number(stage.score).toLocaleString() : '-',
+          power: stage.power !== null ? (Number(stage.power) / 100).toFixed(2) : '-',
+          lives: lifeLabel,
+          bombs: bombLabel,
+          piv: stage.piv !== null ? Number(stage.piv).toLocaleString() : '-',
+          trance: stage.trance !== null ? String(Number(stage.trance) / 2) + '%' : '-',
+          graze: stage.graze !== null ? Number(stage.graze).toLocaleString() : '-',
+        }
+      })
+    }
   }
 }

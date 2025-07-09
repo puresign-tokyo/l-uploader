@@ -9,11 +9,14 @@ from datetime import datetime, date
 from hashlib import sha256
 import utility
 import os
+from common_util import getenv_secure
 
 logger = log_manager.get_logger()
 
+POSTS_PER_PAGE = int(getenv_secure("POSTS_PER_PAGE"))
+MAX_PAGINATION_PAGES = int(getenv_secure("MAX_PAGINATION_PAGES"))
 
-RECAPTCHA_ENABLED = os.getenv("RECAPTCHA_ENABLED")
+RECAPTCHA_ENABLED = getenv_secure("RECAPTCHA_ENABLED")
 
 if RECAPTCHA_ENABLED == "True":
     RECAPTCHA_ENABLED = True
@@ -74,9 +77,16 @@ class Usecase:
         category: str,
         optional_tag: str,
         order: str,
-        offset: int,
-        limit: int,
+        page: int,
     ):
+
+        if page == -1:
+            offset = 0
+            limit = POSTS_PER_PAGE * MAX_PAGINATION_PAGES
+        else:
+            offset = page * POSTS_PER_PAGE
+            limit = POSTS_PER_PAGE
+
         result = SQLReplays.select_replay_sorted(
             uploaded_date_since=upload_date_since,
             uploaded_date_until=upload_date_until,

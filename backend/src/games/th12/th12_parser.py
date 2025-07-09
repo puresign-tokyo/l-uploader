@@ -38,11 +38,12 @@ class TH12Parser(BaseParser):
                 s.piv = (math.trunc(next_stage_start_data.piv / 1000)) * 10
                 s.lives = next_stage_start_data.lives
                 s.life_pieces = next_stage_start_data.life_pieces
-                #   fix zun fuckery
+                # fix zun fuckery
                 if s.life_pieces is not None and s.life_pieces > 0:
                     s.life_pieces -= 1
                 s.bombs = next_stage_start_data.bombs
-                s.bomb_pieces = next_stage_start_data.bomb_pieces
+                # パース結果は本来の個数の2倍となるので÷2しなければならない
+                s.bomb_pieces = next_stage_start_data.bomb_pieces / 2
                 s.graze = next_stage_start_data.graze
             else:
                 # no next stage means this is the last stage, so use the final run score
