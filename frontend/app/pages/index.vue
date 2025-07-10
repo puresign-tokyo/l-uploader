@@ -1,28 +1,72 @@
 <template>
   <v-main>
     <v-container>
-        <v-card
-          class="d-flex flex-column my-8"
-          elevation="4"
-          :style="{
-            borderLeft: '8px solid var(--border-color)',
-            alignItems: 'stretch',
-            minHeight: '170px',
-            minWidth: '0'
-          }"
+    <v-card
+      class="my-8 px-6 py-4"
+      elevation="4"
+      :style="{
+        borderLeft: '8px solid var(--border-color)',
+        backgroundColor: 'var(--v-theme-surface)',
+        alignItems: 'stretch',
+        minHeight: '170px',
+        minWidth: '0'
+      }"
+    >
+      <v-card-title class="text-h6 font-weight-bold mb-2">
+        ようこそ、L-Uploaderへ！
+      </v-card-title>
+
+      <v-card-text class="text-body-1">
+        ここは
+        <a href="https://www16.big.or.jp/~zun/" target="_blank" rel="noopener noreferrer">
+          上海アリス幻樂団
+        </a>
+        が制作した東方Projectシリーズ作品のリプレイを投稿・閲覧できるアップローダです。
+        <br/>
+        解析済みのリプレイファイルを確認・共有・ダウンロードすることができます。<br/>
+        まずは新規投稿からリプレイファイルをアップロードしてみましょう。
+      </v-card-text>
+
+      <v-card-actions class="mt-3">
+        <v-btn
+          to="/NewPost"
+          color="primary"
+          variant="elevated"
+          prepend-icon="mdi-upload"
         >
-          <p>
-            このページは
-            <a href="https://www16.big.or.jp/~zun/" target="_blank" rel="noopener noreferrer">
-              上海アリス幻樂団
-            </a>
-            が作成した東方Projectシリーズのリプレイアップローダです。
-          </p>
-        </v-card>
+          新規投稿
+        </v-btn>
+        <v-btn
+          to="/About"
+          color="secondary"
+          variant="outlined"
+          prepend-icon="mdi-information-outline"
+        >
+          対応作品
+        </v-btn>
+      </v-card-actions>
+
+      <v-divider class="my-4" />
+
+      <v-card-subtitle class="text-subtitle-2 font-weight-medium text-grey-darken-1">
+        最新の更新情報
+      </v-card-subtitle>
+
+      <v-list density="compact" class="px-2">
+        <v-list-item
+          v-for="(item, index) in release.changes"
+          :key="index"
+        >
+          <v-list-item-content>
+            <v-list-item-title>{{ item }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-card>
       
       <ClientOnly>
 
-        <v-row>
+        <v-row class="mb-1">
 
           <v-col cols="12" md="4">
             <div class="d-flex align-center">
@@ -31,20 +75,23 @@
                 label="タグ検索"
                 placeholder="リプ会用"
                 dense
-                hide-details
+                :rules="[validateOptionalTag]"
+                :counter="config.optional_tag_length_limit"
               />
               <v-btn
                 icon="mdi-magnify"
                 class="ml-2"
                 variant="tonal"
                 size="small"
+                style="position: relative; top: -10px;"
+                @click="applyTag"
               />
             </div>
           </v-col>
           <v-col cols="12" md="4">
             <v-select
               v-model="selectedGame"
-              :items="Object.keys(dropMenuGame)"
+              :items="Object.keys(dropMenuGames)"
               label="作品を選択"
               hide-details
               outlined
@@ -53,9 +100,9 @@
 
           <v-col cols="12" md="4">
             <v-select
-              v-model="selectedOrder"
-              :items="Object.keys(dropMenuOrder)"
-              label="表示順"
+              v-model="selectedCategory"
+              :items="Object.keys(dropMenuCategories)"
+              label="カテゴリ"
               hide-details
               outlined
             />
@@ -139,6 +186,9 @@ import { Th125Table } from '~/composables/Games/Th125'
 import { Th128Table } from '~/composables/Games/Th128'
 import { Th143Table } from '~/composables/Games/Th143'
 import { Th165Table } from '~/composables/Games/Th165'
+import { AlcoTable } from '~/composables/Games/Alco'
+
+import { Releases } from '~/composables/ReleaseNotes'
 
 
 const replays = ref([])
@@ -162,8 +212,11 @@ const replayPaginationLimit = ref(1)
 const config = useRuntimeConfig().public
 
 const selectedGame=ref('全作品')
-const selectedOrder=ref('新しい順')
+const selectedCategory=ref('全て')
 const inputedTag=ref('')
+const selectedTag=ref('')
+
+const release=ref(Releases()[0])
 
 // 日付整形
 const formatDate = (iso) =>
@@ -173,7 +226,7 @@ const formatDate = (iso) =>
     hour12: false, timeZone: 'Asia/Tokyo'
   }).format(new Date(iso))
 
-const dropMenuGame={  
+const dropMenuGames={  
   '全作品':     'all',
   '東方紅魔郷': 'th06',
   '東方妖々夢': 'th07',
@@ -196,9 +249,13 @@ const dropMenuGame={
   '東方虹龍洞': 'th18',
 }
 
-const dropMenuOrder={
-  '新しい順': 'desc',
-  '古い順': 'asc'
+const dropMenuCategories={
+  '全て': 'all',
+  'クリア': 'clear',
+  'スコアタ': 'score_run',
+  'ノーボム': 'no_bomb',
+  'ノーミス': 'no_miss',
+  'その他': 'others'
 }
 
 // コンポーネントの取得
@@ -221,9 +278,12 @@ const tableComponents = {
   th125: Th125Table,
   th128: Th128Table,
   th143: Th143Table,
-  th165: Th165Table
-  // 黄昏酒場が作れていない
+  th165: Th165Table,
+  alco: AlcoTable
 }
+
+const validateOptionalTag=(value) => value.length<=config.optional_tag_length_limit || config.optional_tag_length_limit + '文字以内で入力してください'
+
 const getReplayTable = (gameId) => {
   return tableComponents[gameId] ?? ErrorTable
 }
@@ -237,6 +297,7 @@ await useFetch(`${config.backend_url}/replays/count`, {
   onResponseError({ error }) {
     console.error(error)
     replayPagination.value = 1
+    openSnackBar({success: false, message: String(error)})
   },
 })
 
@@ -255,12 +316,13 @@ await useFetch(`${config.backend_url}/replays?order=desc&page=0`, {
     console.error(error)
     replays.value = []
     loading.value = false
+    openSnackBar({success: false, message: String(error)})
   },
 })
 
 const onPageChanged= async (newPage)=>{
   try {
-    const countData = await $fetch(`${config.backend_url}/replays/count`, {
+    const countData = await $fetch(`${config.backend_url}/replays/count?game_id=${dropMenuGames[selectedGame.value]}&category=${dropMenuCategories[selectedCategory.value]}&optional_tag=${encodeURIComponent(selectedTag.value)}`, {
       method: 'get',
       server: false
     })
@@ -273,7 +335,7 @@ const onPageChanged= async (newPage)=>{
       return
     }
 
-    const replaysData = await $fetch(`${config.backend_url}/replays?order=desc&page=${(replayPagination.value - 1)}`, {
+    const replaysData = await $fetch(`${config.backend_url}/replays?order=desc&page=${(replayPagination.value - 1)}&game_id=${dropMenuGames[selectedGame.value]}&category=${dropMenuCategories[selectedCategory.value]}&optional_tag=${encodeURIComponent(selectedTag.value)}`, {
       method: 'get',
       server: false
     })
@@ -283,9 +345,41 @@ const onPageChanged= async (newPage)=>{
       uploaded_at: formatDate(item.uploaded_at),
     }))
   } catch (error) {
-    console.error(error)
+    openSnackBar({success: false, message: String(error)})
   }
 }
+
+const applyTag = ()=>{
+  if(inputedTag.value.length<=config.optional_tag_length_limit){
+    selectedTag.value = inputedTag.value
+  }else{
+    openSnackBar({success: false, message: `タグは${config.optional_tag_length_limit}文字以内で入力してください`})
+  }
+}
+
+watch(selectedTag, ()=>{
+  if(replayPagination.value===1){
+    onPageChanged(1)
+  }else{
+    replayPagination.value=1
+  }
+})
+
+watch(selectedGame, ()=>{
+  if(replayPagination.value===1){
+    onPageChanged(1)
+  }else{
+    replayPagination.value=1
+  }
+})
+
+watch(selectedCategory, ()=>{
+  if(replayPagination.value===1){
+    onPageChanged(1)
+  }else{
+    replayPagination.value=1
+  }
+})
 
 watch(replayPagination, (newPage)=>{
   onPageChanged(newPage)

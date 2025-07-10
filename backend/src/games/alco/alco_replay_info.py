@@ -17,7 +17,7 @@ class AlcoReplayInfo(BaseModel, ReplayInfo):
             "timestamp": self.timestamp.isoformat(),
             "stage": self.stage,
             "total_score": self.total_score,
-            "slow_down": self.slowdown,
+            "slowdown": self.slowdown,
             "stage_details": [],
             "parser_version": 1,
         }

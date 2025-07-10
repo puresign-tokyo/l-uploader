@@ -1,7 +1,7 @@
 <template>
 
 <v-card
-  class="d-flex my-8"
+  class="d-flex mb-8"
   elevation="4"
     :style="{
     '--border-color': replayTable.game_meta.theme_color,

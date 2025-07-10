@@ -318,7 +318,7 @@ class SQLReplays:
                     query += " AND game_id = %(game_id)s"
                     params["game_id"] = game_id
                 if category != "all":
-                    query += " AND category = %(category)"
+                    query += " AND category = %(category)s"
                     params["category"] = category
                 if optional_tag != "":
                     query += " AND optional_tag = %(optional_tag)s"
@@ -390,7 +390,7 @@ class SQLReplays:
                     query += " AND game_id = %(game_id)s"
                     params["game_id"] = game_id
                 if category != "all":
-                    query += " AND category = %(category)"
+                    query += " AND category = %(category)s"
                     params["category"] = category
                 if optional_tag != "":
                     query += " AND optional_tag = %(optional_tag)s"

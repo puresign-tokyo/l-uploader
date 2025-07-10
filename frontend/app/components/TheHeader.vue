@@ -41,7 +41,7 @@
       src="/images/logo.png"
       height="50"
       class="ml-2"
-      style="max-width: 200px;"
+      style="max-width: 133px;"
     />
     <v-btn
       v-if="!display.smAndDown.value"
@@ -66,9 +66,9 @@
   const internalLinks=[
     {path: "/", label: "ホーム"},
     {path: "/NewPost", label: "新規投稿"},
+    {path: "/About", label: "サイト概要"},
     {path: "/TermsServe", label: "利用規約"},
     {path: "/ReleaseNote", label: "リリースノート"},
-    {path: "/Credits", label: "スタッフ紹介"},
     {path: "/PageLinks", label: "外部リンク一覧"},
   ]
 

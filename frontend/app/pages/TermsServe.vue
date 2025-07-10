@@ -8,7 +8,7 @@
           <v-card-subtitle class="text-caption mb-2">
             最終更新日：2025年4月17日
           </v-card-subtitle>
-          <v-divider></v-divider>
+          <v-divider/>
     
           <v-card-text class="terms-content mt-3">
             <section class="mb-4">

@@ -322,6 +322,7 @@ import { Th125Table } from '~/composables/Games/Th125'
 import { Th128Table } from '~/composables/Games/Th128'
 import { Th143Table } from '~/composables/Games/Th143'
 import { Th165Table } from '~/composables/Games/Th165'
+import { AlcoTable } from '~/composables/Games/Alco';
 
 const display=useDisplay()
 // import Th06Detail from '~/components/Games/Th06/Th06Detail.vue'
@@ -396,8 +397,9 @@ const tableComponents: Record<string, TableParser> = {
   th125: Th125Table,
   th128: Th128Table,
   th143: Th143Table,
-  th165: Th165Table
-  // 黄昏酒場が作れていない
+  th165: Th165Table,
+
+  alco: AlcoTable
 }
 const getReplayTable = (game_id: string) => {
   return tableComponents[game_id] ?? ErrorTable

@@ -104,7 +104,7 @@
                 persistent-hint
                 hint="必ず入力してください"
                 required
-                counter="60"
+                :counter="config.delete_password_length_limit"
                 :rules="[validateDeletePassword]"
                 :type="showPassword ? 'text' : 'password'"
               >
@@ -255,13 +255,13 @@
     }
     if(userName.value.length>config.username_length_limit){
       snackbar.value.visible=true
-      snackbar.value.message=`ユーザ名の${config.username_length_limit}文字数が文字以上です`
+      snackbar.value.message=`ユーザ名の文字数が${config.username_length_limit}文字より多いです`
       snackbar.value.color='error'
       return
     }
     if(uploadComment.value.length>config.upload_comment_length_limit){
       snackbar.value.visible=true
-      snackbar.value.message=`コメントの文字数が${config.upload_comment_length_limit}文字以上です`
+      snackbar.value.message=`コメントの文字数が${config.upload_comment_length_limit}文字より多いです`
       snackbar.value.color='error'
       return
     }
@@ -273,13 +273,19 @@
     }
     if(deletePassword.value.length>config.delete_password_length_limit){
       snackbar.value.visible=true
-      snackbar.value.message=`パスワードの文字数が${config.delete_password_length_limit}文字以上です`
+      snackbar.value.message=`パスワードの文字数が${config.delete_password_length_limit}文字より多いです`
       snackbar.value.color='error'
       return
     }
     if(deletePassword.value===""){
       snackbar.value.visible=true
       snackbar.value.message="パスワードを入力してください"
+      snackbar.value.color='error'
+      return
+    }
+    if(optionalTag.value.length>config.optional_tag_length_limit){
+      snackbar.value.visible=true
+      snackbar.value.message=`タグの文字数が${config.optional_tag_length_limit}文字より多いです`
       snackbar.value.color='error'
       return
     }
@@ -333,7 +339,9 @@ ${window.location.origin}/replays/${response._data["replay_id"]}
         }
       )
       }catch(error){
-        alert(`${error.statusCode};${error.statusMessage};${error.data.detail}`)
+        snackbar.value.visible=true
+        snackbar.value.message=`${error.statusCode};${error.statusMessage};${error.data.detail}`
+        snackbar.value.color='error'
       }
 
   }
