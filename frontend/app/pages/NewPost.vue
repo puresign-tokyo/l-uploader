@@ -340,8 +340,13 @@ ${window.location.origin}/replays/${response._data["replay_id"]}
       )
       }catch(error){
         snackbar.value.visible=true
-        snackbar.value.message=`${error.statusCode};${error.statusMessage};${error.data.detail}`
         snackbar.value.color='error'
+        if(error?.response?.status === 429){
+          snackbar.value.message="リプレイ送信上限を超えました。時間を置いて送信してください。"
+        }else{
+          snackbar.value.message=`${error?.statusCode};${error?.statusMessage};${error?.data?.detail}`
+        }
+        
       }
 
   }

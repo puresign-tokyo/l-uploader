@@ -1,11 +1,3 @@
-stage_mapping = {
-    "1": "Stage1",
-    "1 〜 2": "Stage2",
-    "1 〜 3": "Stage3",
-    "All Clear": "All Clear",
-}
-
-
 def id_to_filename(replay_id: int):
     n = replay_id % 1679616  # zzzzを超えると0から数え直し
     returining = ""

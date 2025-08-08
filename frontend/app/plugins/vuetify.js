@@ -10,6 +10,7 @@ import * as directives from 'vuetify/directives' // Vuetifyのディレクティ
 
 export default defineNuxtPlugin((nuxtApp) => {
   const vuetify = createVuetify({
+    ssr: true,
     components,
     directives,
     theme: {

@@ -1,9 +1,9 @@
-import os
 import requests
 import json
+from getenv import getenv_secure
 
-if (RECAPTCHA_SECRET := os.getenv("RECAPTCHA_SECRET")) is None:
-    raise ValueError("RECAPTCHA_SECRET is not defineded")
+
+RECAPTCHA_SECRET = getenv_secure("RECAPTCHA_SECRET")
 
 
 def is_verified_recaptcha_token(token: str) -> bool:

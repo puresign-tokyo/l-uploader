@@ -6,7 +6,7 @@ ENV LANG=C.UTF-8 \
 
 COPY ./app /app
 
-RUN yarn install && yarn cache clean
+RUN npm install
 
 ARG NUXT_PUBLIC_HTTP_PROTOCOL
 ARG NUXT_PUBLIC_BACKEND_HOST
@@ -37,7 +37,7 @@ ENV NUXT_PUBLIC_RECAPTCHA_SITEKEY=$NUXT_PUBLIC_RECAPTCHA_SITEKEY
 ENV NUXT_PUBLIC_RECAPTCHA_ENABLED=$NUXT_PUBLIC_RECAPTCHA_ENABLED
 # CMD [ "yarn", "run", "dev" ]
 
-RUN yarn build
+RUN npm run build
 
 FROM node:23.11.0-bullseye-slim
 

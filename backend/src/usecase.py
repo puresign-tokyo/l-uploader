@@ -1,37 +1,43 @@
 import http_requester as http_requester
 from log import log_manager
 from postgres_handler import SQLReplays
-from datetime import date
 from postgres_handler import SQLReplays
 from file_handler import FileHandler
 from game_registry import GameRegistry
-from datetime import datetime, date
+from datetime import datetime
 from hashlib import sha256
-import utility
-import os
-from common_util import getenv_secure
+import filename
+from getenv import getenv_secure, get_env_secure_bool
+from cache_handler import CacheClient
 
 logger = log_manager.get_logger()
 
 POSTS_PER_PAGE = int(getenv_secure("POSTS_PER_PAGE"))
 MAX_PAGINATION_PAGES = int(getenv_secure("MAX_PAGINATION_PAGES"))
 
-RECAPTCHA_ENABLED = getenv_secure("RECAPTCHA_ENABLED")
+REPLAY_RATE_POST_WINDOW_SEC = int(getenv_secure("REPLAY_RATE_POST_WINDOW_SEC"))
+REPLAY_RATE_POST_MAX_REQUEST = int(getenv_secure("REPLAY_RATE_POST_MAX_REQUEST"))
+REPLAY_RATE_DELETE_WINDOW_SEC = int(getenv_secure("REPLAY_RATE_DELETE_WINDOW_SEC"))
+REPLAY_RATE_DELETE_MAX_REQUEST = int(getenv_secure("REPLAY_RATE_DELETE_MAX_REQUEST"))
+CACHE_EXPIRE_SEC = int(getenv_secure("CACHE_EXPIRE_SEC"))
 
-if RECAPTCHA_ENABLED == "True":
-    RECAPTCHA_ENABLED = True
-elif RECAPTCHA_ENABLED == "False":
-    RECAPTCHA_ENABLED = False
-else:
-    raise ValueError(
-        f"RECAPTCHA_ENABLED is not True or False, value is {RECAPTCHA_ENABLED}"
-    )
+RECAPTCHA_ENABLED = get_env_secure_bool("RECAPTCHA_ENABLED")
+
+
+CACHE_NAMESPACE_RATELIMIT_POST_IP = "ratelimit_post_ip_addr"
+CACHE_NAMESPACE_SELECT_REPLAY_ID = "select_replay_id"
+CACHE_NAMESPACE_SELECT_REPLAYS = "select_replays"
+CACHE_NAMESPACE_DOWNLOAD_REPLAY_ID = "download_replay_id"
+CACHE_NAMESPACE_RATELIMIT_DELETE_IP = "ratelimit_delete_ip_addr"
+CACHE_NAMESPACE_COUNT_REPLAYS = "count_replays"
+cache_client = CacheClient()
 
 
 class Usecase:
 
     @staticmethod
     def post_replay(
+        ip_addr: str,
         rep_raw: bytes,
         user_name: str,
         category: str,
@@ -41,6 +47,14 @@ class Usecase:
         raw_delete_password: str,
         recaptcha_token: str,
     ):
+        if (
+            cache_client.counter(
+                f"{CACHE_NAMESPACE_RATELIMIT_POST_IP}:{ip_addr}",
+                REPLAY_RATE_POST_WINDOW_SEC,
+            )
+            > REPLAY_RATE_POST_MAX_REQUEST
+        ):
+            return {"state": "rate_limit_exceeded"}
 
         if RECAPTCHA_ENABLED and not (
             http_requester.is_verified_recaptcha_token(recaptcha_token)
@@ -66,20 +80,27 @@ class Usecase:
             rep_raw=rep_raw,
             file_digest=file_digest,
         )
+        cache_client.delete_prefix_list("*", "cache")
 
         return result_sql
 
     @staticmethod
     def select_replays(
-        upload_date_since: date,
-        upload_date_until: date,
         game_id: str,
         category: str,
         optional_tag: str,
         order: str,
         page: int,
     ):
-
+        if optional_tag == "" and (
+            (
+                cache := cache_client.get(
+                    f"{CACHE_NAMESPACE_SELECT_REPLAYS}:{game_id}:{category}:{order}:{page}"
+                )
+            )
+            is not None
+        ):
+            return cache
         if page == -1:
             offset = 0
             limit = POSTS_PER_PAGE * MAX_PAGINATION_PAGES
@@ -88,8 +109,6 @@ class Usecase:
             limit = POSTS_PER_PAGE
 
         result = SQLReplays.select_replay_sorted(
-            uploaded_date_since=upload_date_since,
-            uploaded_date_until=upload_date_until,
             game_id=game_id,
             category=category,
             optional_tag=optional_tag,
@@ -100,7 +119,14 @@ class Usecase:
 
         for post in result["posts"]:
             post["filename"] = (
-                f"{post["game_id"]}_ud{utility.id_to_filename(post["replay_id"])}.rpy"
+                f"{post["game_id"]}_ud{filename.id_to_filename(post["replay_id"])}.rpy"
+            )
+
+        if optional_tag == "":
+            cache_client.insert_if_not_exists(
+                f"{CACHE_NAMESPACE_SELECT_REPLAYS}:{game_id}:{category}:{order}:{page}",
+                result["posts"],
+                CACHE_EXPIRE_SEC,
             )
 
         return result["posts"]
@@ -110,50 +136,106 @@ class Usecase:
         game_id: str,
         category: str,
         optional_tag: str,
-        uploaded_date_since: datetime,
-        uploaded_date_until: datetime,
     ) -> dict:
-        return SQLReplays.count_replays(
+        if optional_tag == "" and (
+            (
+                cache := cache_client.get(
+                    f"{CACHE_NAMESPACE_COUNT_REPLAYS}:{game_id}:{category}"
+                )
+            )
+            is not None
+        ):
+            return cache
+        returning = SQLReplays.count_replays(
             game_id=game_id,
             category=category,
             optional_tag=optional_tag,
-            uploaded_date_since=uploaded_date_since,
-            uploaded_date_until=uploaded_date_until,
         )
+        if optional_tag == "":
+            cache_client.insert_if_not_exists(
+                f"{CACHE_NAMESPACE_COUNT_REPLAYS}:{game_id}:{category}",
+                returning,
+                CACHE_EXPIRE_SEC,
+            )
+        return returning
 
     @staticmethod
     def select_replay(replay_id: int):
+        if (
+            cache := cache_client.get(f"{CACHE_NAMESPACE_SELECT_REPLAY_ID}:{replay_id}")
+        ) is not None:
+            return cache
         result = SQLReplays.select_replay(replay_id)
         if result["state"] != "success":
+            cache_client.insert_if_not_exists(
+                f"{CACHE_NAMESPACE_SELECT_REPLAY_ID}:{replay_id}",
+                result,
+                CACHE_EXPIRE_SEC,
+            )
             return result
         result["post"][
             "filename"
-        ] = f"{result["post"]["game_id"]}_ud{utility.id_to_filename(result["post"]["replay_id"])}.rpy"
+        ] = f"{result["post"]["game_id"]}_ud{filename.id_to_filename(result["post"]["replay_id"])}.rpy"
+        cache_client.insert_if_not_exists(
+            f"{CACHE_NAMESPACE_SELECT_REPLAY_ID}:{replay_id}",
+            result,
+            CACHE_EXPIRE_SEC,
+        )
         return result
 
     @staticmethod
     def download_replay(replay_id: int):
+        if (
+            cache := cache_client.get(
+                f"{CACHE_NAMESPACE_DOWNLOAD_REPLAY_ID}:{replay_id}"
+            )
+        ) is not None:
+            return cache
         result_sql = SQLReplays.select_replay_game_id(replay_id=replay_id)
         if result_sql["state"] != "success":
+            cache_client.insert_if_not_exists(
+                f"{CACHE_NAMESPACE_DOWNLOAD_REPLAY_ID}:{replay_id}",
+                result_sql,
+                CACHE_EXPIRE_SEC,
+            )
             return result_sql
 
         # read処理なのでトランザクション外でも許される
         result_file = FileHandler.get_replay_file_path(str(replay_id))
         if result_file["state"] != "success":
+            cache_client.insert_if_not_exists(
+                f"{CACHE_NAMESPACE_DOWNLOAD_REPLAY_ID}:{replay_id}",
+                result_file,
+                CACHE_EXPIRE_SEC,
+            )
             return result_file
 
-        return {
+        returning = {
             "state": "success",
             "path": result_file["path"],
-            "filename": f"{result_sql["game_id"]}_ud{utility.id_to_filename(replay_id)}.rpy",
+            "filename": f"{result_sql["game_id"]}_ud{filename.id_to_filename(replay_id)}.rpy",
         }
+        cache_client.insert_if_not_exists(
+            f"{CACHE_NAMESPACE_DOWNLOAD_REPLAY_ID}:{replay_id}",
+            returning,
+            CACHE_EXPIRE_SEC,
+        )
+        return returning
 
     @staticmethod
-    def delete_replay(replay_id: int, raw_delete_password: str):
+    def delete_replay(ip_addr: str, replay_id: int, raw_delete_password: str):
+        if (
+            cache_client.counter(
+                f"{CACHE_NAMESPACE_RATELIMIT_DELETE_IP}:{ip_addr}",
+                REPLAY_RATE_DELETE_WINDOW_SEC,
+            )
+            > REPLAY_RATE_DELETE_MAX_REQUEST
+        ):
+            return {"state": "rate_limit_exceeded"}
         result_sql = SQLReplays.delete_replay(
             replay_id=replay_id, raw_delete_password=raw_delete_password
         )
-
+        cache_client.delete_prefix_list("*", "cache")
         return result_sql
 
 
@@ -170,11 +252,18 @@ class AdminUsecase:
     @staticmethod
     def delete_replay_without_pass(replay_id: int):
         SQLReplays.delete_replay_without_pass(replay_id=replay_id)
+        cache_client.delete_prefix_list("*", "cache")
 
     @staticmethod
     def delete_replays_until(uploaded_until: datetime):
         SQLReplays.delete_replay_until(uploaded_until=uploaded_until)
+        cache_client.delete_prefix_list("*", "cache")
 
     @staticmethod
     def integrity_sync():
         SQLReplays.integrity_sync()
+        cache_client.delete_prefix_list("*", "cache")
+
+    @staticmethod
+    def clear_ratelimit_ip(ip_addr: str):
+        cache_client.delete(f"{CACHE_NAMESPACE_RATELIMIT_POST_IP}:{ip_addr}", "counter")

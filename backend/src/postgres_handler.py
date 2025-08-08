@@ -2,21 +2,20 @@ import os
 from contextlib import contextmanager
 from log import log_manager
 import psycopg
-from datetime import datetime, date, timedelta
+from datetime import datetime
 from replay_info import ReplayInfo
 import hashlib
 import secrets
 from psycopg.rows import dict_row
+from psycopg import sql
 from mongo_handler import MongoHandler
 from typing import Union
 from file_handler import FileHandler
+from getenv import get_env_secure_bool
 
 logger = log_manager.get_logger()
 
-if os.getenv("ALLOW_DUPLICATE_POSTS") == "True":
-    allow_duplicate_posts = True
-else:
-    allow_duplicate_posts = False
+ALLOW_DUPLICATE_POSTS = get_env_secure_bool("ALLOW_DUPLICATE_POSTS")
 
 
 def encrypt_password(raw_password: str, salt: str):
@@ -100,7 +99,7 @@ class SQLReplays:
         with postgres.transactional() as conn:
             with conn.cursor(row_factory=dict_row) as cur:
 
-                if not allow_duplicate_posts:
+                if not ALLOW_DUPLICATE_POSTS:
                     cur.execute(
                         """
                         SELECT replay_id FROM posts WHERE file_digest = %s
@@ -283,8 +282,6 @@ class SQLReplays:
 
     @staticmethod
     def select_replay_sorted(
-        uploaded_date_since: date,
-        uploaded_date_until: date,
         game_id: str,
         category: str,
         optional_tag: str,
@@ -294,7 +291,8 @@ class SQLReplays:
     ):
         with postgres.transactional() as conn:
             with conn.cursor(row_factory=dict_row) as cur:
-                query = """
+                base_sql = sql.SQL(
+                    """
                         SELECT
                             replay_id,
                             game_id,
@@ -304,41 +302,50 @@ class SQLReplays:
                             category,
                             optional_tag
                         FROM posts
-                        WHERE
-                            %(uploaded_date_since)s <= uploaded_at::date
-                            AND uploaded_at::date < %(uploaded_date_before)s
                     """
+                )
 
-                params: dict[str, Union[int, str, date]] = {
-                    "uploaded_date_since": uploaded_date_since,
-                    "uploaded_date_before": uploaded_date_until + timedelta(days=1),
-                }
+                conditions: list[sql.Composable] = []
+                params: dict[str, Union[int, str]] = {}
 
                 if game_id != "all":
-                    query += " AND game_id = %(game_id)s"
+                    conditions.append(
+                        sql.SQL("game_id = {}").format(sql.Placeholder("game_id"))
+                    )
                     params["game_id"] = game_id
                 if category != "all":
-                    query += " AND category = %(category)s"
+                    conditions.append(
+                        sql.SQL("category = {}").format(sql.Placeholder("category"))
+                    )
                     params["category"] = category
                 if optional_tag != "":
-                    query += " AND optional_tag = %(optional_tag)s"
+                    conditions.append(
+                        sql.SQL("optional_tag = {}").format(
+                            sql.Placeholder("optional_tag")
+                        )
+                    )
                     params["optional_tag"] = optional_tag
 
+                if conditions:
+                    where_sql = sql.SQL(" WHERE ") + sql.SQL(" AND ").join(conditions)
+                else:
+                    where_sql = sql.SQL("")
+
                 if order == "asc":
-                    query += " ORDER BY uploaded_at ASC"
+                    order_sql = sql.SQL(" ORDER BY uploaded_at ASC")
                 elif order == "desc":
-                    query += " ORDER BY uploaded_at DESC"
+                    order_sql = sql.SQL(" ORDER BY uploaded_at DESC")
                 else:
                     raise RuntimeError(f"order is not asc or desc. order is {order}")
 
-                query += " LIMIT %(limit)s"
+                limit_sql = sql.SQL(" LIMIT {limit} OFFSET {offset}").format(
+                    limit=sql.Placeholder("limit"), offset=sql.Placeholder("offset")
+                )
                 params["limit"] = limit
-
-                query += " OFFSET %(offset)s"
                 params["offset"] = offset
 
                 cur.execute(
-                    query,
+                    base_sql + where_sql + order_sql + limit_sql,
                     params,
                 )
                 rows = cur.fetchall()
@@ -367,44 +374,52 @@ class SQLReplays:
         game_id: str,
         category: str,
         optional_tag: str,
-        uploaded_date_since: datetime,
-        uploaded_date_until: datetime,
     ) -> dict:
         with postgres.transactional() as conn:
             with conn.cursor(row_factory=dict_row) as cur:
-                query = """
+                base_sql = sql.SQL(
+                    """
                         SELECT
                             COUNT(*)
                         FROM posts
-                        WHERE
-                            %(uploaded_date_since)s <= uploaded_at::date
-                            AND uploaded_at::date < %(uploaded_date_before)s
                     """
+                )
 
-                params: dict[str, Union[str, date]] = {
-                    "uploaded_date_since": uploaded_date_since,
-                    "uploaded_date_before": uploaded_date_until + timedelta(days=1),
-                }
+                conditions: list[sql.Composable] = []
+                params: dict[str, str] = {}
 
                 if game_id != "all":
-                    query += " AND game_id = %(game_id)s"
+                    conditions.append(
+                        sql.SQL("game_id = {}").format(sql.Placeholder("game_id"))
+                    )
                     params["game_id"] = game_id
                 if category != "all":
-                    query += " AND category = %(category)s"
+                    conditions.append(
+                        sql.SQL("category = {}").format(sql.Placeholder("category"))
+                    )
                     params["category"] = category
                 if optional_tag != "":
-                    query += " AND optional_tag = %(optional_tag)s"
+                    conditions.append(
+                        sql.SQL("optional_tag = {}").format(
+                            sql.Placeholder("optional_tag")
+                        )
+                    )
                     params["optional_tag"] = optional_tag
 
+                if conditions:
+                    where_sql = sql.SQL(" WHERE ") + sql.SQL(" AND ").join(conditions)
+                else:
+                    where_sql = sql.SQL("")
+
                 cur.execute(
-                    query,
+                    base_sql + where_sql,
                     params,
                 )
                 rows = cur.fetchall()
 
                 if len(rows) != 1:
                     raise RuntimeError(
-                        f"Multi result in sql count request: game_id={game_id}, category={category}, optional_tag={optional_tag}, uploaded_date_since={uploaded_date_since}, uploaded_date_until={uploaded_date_until}"
+                        f"Multi result in sql count request: game_id={game_id}, category={category}, optional_tag={optional_tag}"
                     )
 
                 return {"state": "success", "count": rows[0]["count"]}

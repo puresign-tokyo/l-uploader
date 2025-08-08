@@ -8,3 +8,4 @@ tsadecode
 setuptools
 pymongo
 requests
+redis

@@ -34,6 +34,7 @@
 
 <script setup lang="ts">
 import {ref} from 'vue'
+import { el } from 'vuetify/locale'
 
 const deletePassword=ref('')
 const showPassword=ref(false)
@@ -68,9 +69,17 @@ async function sendDeleteReplay() {
     })
   } catch (error) {
     const e = error as { statusCode?: number; statusMessage?: string; data?: { detail?: string } }
-    const msg = e?.data?.detail === 'password mismatch'
-      ? 'パスワードが違います'
-      : `${e.statusCode};${e.statusMessage};${e.data?.detail}`
+    // const msg = e?.data?.detail === 'password mismatch'
+    //   ? 'パスワードが違います'
+    //   : `${e.statusCode};${e.statusMessage};${e.data?.detail}`
+    let msg
+    if (e?.data?.detail === 'password mismatch'){
+      msg = 'パスワードが違います'
+    }else if(e?.statusCode === 429){
+      msg = '短時間で何回もパスワードを間違えています。時間を置いて削除してください。'
+    }else{
+      msg = `${e.statusCode};${e.statusMessage};${e.data?.detail}`
+    }
     emit('result', { success: false, message: msg, page_reload: false })
   }
 }

@@ -2,6 +2,7 @@ import os
 from pymongo import MongoClient
 from log import log_manager
 from contextlib import contextmanager
+from getenv import getenv_secure
 
 logger = log_manager.get_logger()
 
@@ -17,30 +18,11 @@ logger = log_manager.get_logger()
 class MongoClientWrapper:
     def __init__(self) -> None:
 
-        if (host := os.getenv("MONGO_HOST")) is not None:
-            self.host = host
-        else:
-            raise ValueError("environmental variable MONGO_HOST is not defineded.")
-
-        if (port := os.getenv("MONGO_PORT")) is not None:
-            self.port = int(port)
-        else:
-            raise ValueError("environmental variable MONGO_PORT is not defineded.")
-
-        if (user := os.getenv("MONGO_APP_USER")) is not None:
-            self.user = user
-        else:
-            raise ValueError("environmental variable MONGO_APP_USER is not defineded.")
-
-        if (password := os.getenv("MONGO_APP_PASS")) is not None:
-            self.password = password
-        else:
-            raise ValueError("environmental variable MONGO_APP_PASS is not defineded.")
-
-        if (database := os.getenv("MONGO_DATABASE")) is not None:
-            self.database = database
-        else:
-            raise ValueError("environmental variable MONGO_DATABASE is not defineded.")
+        self.host = getenv_secure("MONGO_HOST")
+        self.port = int(getenv_secure("MONGO_PORT"))
+        self.user = getenv_secure("MONGO_APP_USER")
+        self.password = getenv_secure("MONGO_APP_PASS")
+        self.database = getenv_secure("MONGO_DATABASE")
 
         self.client = MongoClient(
             host=self.host, port=self.port, username=self.user, password=self.password
@@ -91,7 +73,6 @@ class MongoHandler:
                     f"these replay_ids is not found in mongodb: {missing_ids}"
                 )
 
-            # ordered_docs = [docs[_id] for _id in replay_ids if _id in docs]
             returning_docs = {}
             for _id in replay_ids:
                 if _id in docs:

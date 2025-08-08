@@ -25,9 +25,6 @@ services:
     ports:
       - "${BACKEND_PORT_INTERNAL}:5001"
     volumes:
-      - type: bind
-        source: "/var/log"
-        target: "/var/log"
       - replays:/replays/
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
@@ -43,9 +40,14 @@ services:
       - MONGO_APP_USER=${MONGO_ROOT_USER}
       - MONGO_APP_PASS=${MONGO_ROOT_PASS}
       - MONGO_DATABASE=${MONGO_DATABASE}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_USER=${REDIS_USER}
+      - REDIS_PASS=${REDIS_PASS}
       - HTTP_PROTOCOL=${HTTP_PROTOCOL}
       - ALLOW_FRONTEND_ORIGIN=${ALLOW_FRONTEND_ORIGIN}
       - USE_REVERSE_PROXY=${USE_REVERSE_PROXY}
+      - USE_CLOUDFLARE_PROXY=${USE_CLOUDFLARE_PROXY}
       - USERNAME_LENGTH_LIMIT=${USERNAME_LENGTH_LIMIT}
       - UPLOAD_COMMENT_LENGTH_LIMIT=${UPLOAD_COMMENT_LENGTH_LIMIT}
       - FILESIZE_KB_LIMIT=${FILESIZE_KB_LIMIT}
@@ -56,6 +58,11 @@ services:
       - RECAPTCHA_ENABLED=${RECAPTCHA_ENABLED}
       - POSTS_PER_PAGE=${POSTS_PER_PAGE}
       - MAX_PAGINATION_PAGES=${MAX_PAGINATION_PAGES}
+      - REPLAY_RATE_POST_WINDOW_SEC=${REPLAY_RATE_POST_WINDOW_SEC}
+      - REPLAY_RATE_POST_MAX_REQUEST=${REPLAY_RATE_POST_MAX_REQUEST}
+      - REPLAY_RATE_DELETE_WINDOW_SEC=${REPLAY_RATE_DELETE_WINDOW_SEC}
+      - REPLAY_RATE_DELETE_MAX_REQUEST=${REPLAY_RATE_DELETE_MAX_REQUEST}
+      - CACHE_EXPIRE_SEC=${CACHE_EXPIRE_SEC}
     tty: true
 
   postgresql:
@@ -79,16 +86,18 @@ services:
       - MONGO_INITDB_DATABASE=${MONGO_DATABASE}
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USER}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASS}
-      - MONGO_APP_USER=${MONGO_APP_USER}
-      - MONGO_APP_PASS=${MONGO_APP_PASS}
       - MONGO_DATABASE=${MONGO_DATABASE}
     ports:
       - ${MONGO_PORT}:27017
 
   redis:
-    image: redis:8.0
-    container_name: redis
-    command: redis-server --requirepass yourpassword
+    build: ./redis
+    container_name: ${REDIS_HOST}
+    environment:
+      - REDIS_USER=${REDIS_USER}
+      - REDIS_PASS=${REDIS_PASS}
+    ports:
+      - ${REDIS_PORT}:6379
 
 volumes:
   postgresql_table:

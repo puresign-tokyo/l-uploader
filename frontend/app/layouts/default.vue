@@ -1,4 +1,5 @@
 <template>
+  <v-app>
   <TheHeader/>
   <slot/>
   <ClientOnly>
@@ -6,6 +7,7 @@
       <TheFooter/>
     </div>
   </ClientOnly>
+  </v-app>
 </template>
 
 

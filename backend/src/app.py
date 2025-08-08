@@ -11,20 +11,16 @@ from fastapi import (
 from fastapi.responses import HTMLResponse
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.responses import RedirectResponse
-from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exception_handlers import http_exception_handler
-
-from psycopg.errors import ConnectionFailure, ConnectionTimeout
 
 from typing import Literal
 from pydantic import BaseModel, ValidationError
 from enum import StrEnum
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
-import shutil
-import utility
-from common_util import getenv_secure
+
+from getenv import getenv_secure
 
 import logging
 import log.log_manager as log_manager
@@ -140,16 +136,43 @@ def request_detail(request: Request):
     return f"{request.method} {request.url.path}&{request.query_params}"
 
 
-@app.middleware("http")
-async def set_ip_context(request: Request, call_next):
+def direct_client_ip(request: Request):
+    if request.client is None:
+        logger.error("request.client is None")
+        return None
+    return request.client.host
+
+
+def header_client_ip(request: Request, header_name: str):
+    client_ip = request.headers.get(header_name)
+    if client_ip is None:
+        logger.error(f"{header_name} header is not found.")
+    return client_ip
+
+
+def get_client_ip(request: Request):
+    logger.info(request.headers)
+    if request.client is not None and (
+        request.client.host == "127.0.0.1" or request.client.host == "localhost"
+    ):
+        return "localhost"
 
     if os.getenv("USE_REVERSE_PROXY") != "True":
-        client_ip_context.set("NoProxy")
-    elif (client_ip := request.headers.get("X-Forwarded-For")) == None:
-        client_ip_context.set("")
-        logger.error("did not use reverse proxy")
+        return direct_client_ip(request)
+
+    if os.getenv("USE_CLOUDFLARE_PROXY") == "True":
+        header_name = "CF-Connecting-IP"
+    else:
+        header_name = "X-Forwarded-For"
+
+    return header_client_ip(request, header_name)
+
+
+@app.middleware("http")
+async def set_ip_context(request: Request, call_next):
+    if (client_ip := get_client_ip(request)) is None:
         return JSONResponse(
-            status_code=status.HTTP_403_FORBIDDEN,
+            status_code=status.HTTP_400_BAD_REQUEST,
             content={"detail": "Forbidden: validation failed"},
         )
     else:
@@ -179,10 +202,6 @@ def get_replays(
     ] = "all",
     optional_tag: str = "",
     order: Literal["desc", "asc"] = "asc",
-    upload_date_since: datetime = Query(
-        default=datetime(1970, 1, 1, tzinfo=ZoneInfo("Asia/Tokyo"))
-    ),
-    upload_date_until: datetime = Query(default=datetime.now(ZoneInfo("Asia/Tokyo"))),
     page: int = -1,
 ):
     if game_id != "all" and game_id not in GameRegistry.supported_game_ids():
@@ -198,24 +217,10 @@ def get_replays(
         logger.info(
             f"Invalid page: received {page}, but maximum allowed is {MAX_PAGINATION_PAGES}."
         )
-    # if offset < 0:
-    #     logger.info(f"Invalid offset: negative value {offset} is not allowed.")
-    #     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
-
-    # if limit < 0:
-    #     logger.info(f"Invalid limit parameter: negative value {limit} is not allowed.")
-    #     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
-
-    # if limit > FETCH_REPLAY_LIMIT:
-    #     logger.info(
-    #         f"Invalid limit parameter: received {limit}, but maximum allowed is {FETCH_REPLAY_LIMIT}."
-    #     )
-    #     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 
     try:
         result = Usecase.select_replays(
-            upload_date_since=upload_date_since,
-            upload_date_until=upload_date_until,
             game_id=game_id,
             category=category,
             optional_tag=optional_tag,
@@ -246,9 +251,7 @@ def count_replays(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 
     try:
-        result = Usecase.count_replays(
-            game_id, category, optional_tag, uploaded_date_since, uploaded_date_until
-        )
+        result = Usecase.count_replays(game_id, category, optional_tag)
     except Exception as e:
         logger.exception(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -300,6 +303,7 @@ def get_replays_replay_id_file(replay_id: int):
 
 @app.post("/replays")
 def post_replays(
+    request: Request,
     replay_file: UploadFile,
     user_name=Form(),
     upload_comment=Form(),
@@ -310,7 +314,11 @@ def post_replays(
     optional_tag=Form(),
     recaptcha_token=Form(),
 ):
-
+    if (client_ip := get_client_ip(request)) is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="validation error",
+        )
     if len(user_name) > USERNAME_LENGTH_LIMIT:
         logger.exception(
             f"user_name length exceeds the maximum allowed characters. user_name: {user_name},  Length: {len(user_name)}, limit: {USERNAME_LENGTH_LIMIT}. Upload rejected."
@@ -365,7 +373,8 @@ def post_replays(
 
     try:
         result = Usecase.post_replay(
-            rep_raw,
+            ip_addr=client_ip,
+            rep_raw=rep_raw,
             user_name=user_name,
             category=category,
             optional_tag=optional_tag,
@@ -392,16 +401,24 @@ def post_replays(
             content={"replay_id": result["replay_id"]},
         )
 
+    if result["state"] == "rate_limit_exceeded":
+        raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS)
+
     return JSONResponse(
         status_code=status.HTTP_200_OK, content={"replay_id": result["replay_id"]}
     )
 
 
 @app.delete("/replays/{replay_id}")
-def delete_replays_replay_id(replay_id: int, body: DeleteReplays):
+def delete_replays_replay_id(request: Request, replay_id: int, body: DeleteReplays):
+    if (client_ip := get_client_ip(request)) is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="validation error",
+        )
     try:
         result = Usecase.delete_replay(
-            replay_id=replay_id, raw_delete_password=body.delete_password
+            client_ip, replay_id=replay_id, raw_delete_password=body.delete_password
         )
 
     except Exception as e:
@@ -422,12 +439,20 @@ def delete_replays_replay_id(replay_id: int, body: DeleteReplays):
             status_code=status.HTTP_404_NOT_FOUND, detail="replay not found"
         )
 
+    if result["state"] == "rate_limit_exceeded":
+        raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS)
+
     return
 
 
 @app.post("/internal/integrity_sync")
 def integrity_sync():
     AdminUsecase.integrity_sync()
+
+
+@app.delete("/internal/cache/ratelimit_ip")
+def delete_cache_ratelimit_ip(ip_addr: str):
+    AdminUsecase.clear_ratelimit_ip(ip_addr)
 
 
 @app.delete("/internal/replays/{replay_id}")

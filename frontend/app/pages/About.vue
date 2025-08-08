@@ -85,16 +85,17 @@
               <li>運用管理</li>
             </ul>
 
-            <h3 class="text-subtitle-1 font-weight-medium mt-4"><a href="https://x.com/kamoneko_nonaku">かも猫</a></h3>
-            <ul class="pl-6 text-body-1" style="line-height: 1.8;">
-              <li>開発委託</li>
-            </ul>
-
             <h3 class="text-subtitle-1 font-weight-medium mt-4"><a href="https://info.puresign.tokyo">irckk</a></h3>
             <ul class="pl-6 text-body-1" style="line-height: 1.8;">
               <li>ドメイン管理</li>
               <li>運用</li>
             </ul>
+
+            <h3 class="text-subtitle-1 font-weight-medium mt-4"><a href="https://x.com/kamoneko_nonaku">かも猫</a></h3>
+            <ul class="pl-6 text-body-1" style="line-height: 1.8;">
+              <li>開発委託</li>
+            </ul>
+
           </section>
         </v-card-text>
       </v-card>
@@ -121,6 +122,29 @@
             <ul class="pl-6 text-body-1" style="line-height: 1.8;">
               <li>リプレイファイルパース定義</li>
             </ul>
+          </section>
+        </v-card-text>
+
+      </v-card>
+
+      <v-card
+        elevation="4"
+        :style="{
+          alignItems: 'stretch',
+          minHeight: '170px',
+          minWidth: '0'
+        }"
+        class="mb-5 px-6"
+      >
+        <v-card-title class="text-h5 font-weight-bold px-0">
+          寄付
+        </v-card-title>
+        <v-divider/>
+  
+        <v-card-text class="terms-content mt-3">
+          <section class="mb-4">
+            <p>このサイトはゑふまいかの家の電気代によって成り立っています。</p>
+            <p><a href="https://ofuse.me/wefmaika">ここ</a>からゑふまいかに寄付を送ることができます。</p>
           </section>
         </v-card-text>
 

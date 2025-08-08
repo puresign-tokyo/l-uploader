@@ -16,8 +16,14 @@ export default defineNuxtConfig({
   },
   devtools: { enabled: true },
   modules: [
-    '@nuxtjs/sitemap',
+    '@nuxtjs/seo',
   ],
+  site: {
+    // url: 'https://l-uploader.puresign.tokyo',
+    name: 'えるろだ',
+    defaultLocale: 'ja',
+    indexable: true
+  },
   css: [
     "vuetify/styles"
   ],
@@ -75,48 +81,6 @@ export default defineNuxtConfig({
         }
       })(),
     }
-  },
-  sitemap: <any>{
-    hostname: (() => {
-      const protocol = process.env.NUXT_PUBLIC_HTTP_PROTOCOL || 'http'
-      const host = process.env.NUXT_PUBLIC_FRONTEND_HOST || 'localhost'
-      const port = process.env.NUXT_PUBLIC_FRONTEND_PORT || (protocol === 'https' ? '443' : '80')
-
-      const omitPort = (protocol === 'http' && port === '80') || (protocol === 'https' && port === '443')
-      return `${protocol}://${host}${omitPort ? '' : `:${port}`}`
-    })(),
-    urls: [
-      {
-        loc: '/',
-        lastmod: '2025-05-04',
-        priority: 0.5,
-        changefreq: 'weekly'
-      },
-      {
-        loc: '/NewPost',
-        lastmod: '2025-05-04',
-        priority: 0.5,
-        changefreq: 'weekly'
-      },
-      {
-        loc: '/PageLinks',
-        lastmod: '2025-05-04',
-        priority: 0.5,
-        changefreq: 'weekly'
-      },
-      {
-        loc: '/ReleaseNote',
-        lastmod: '2025-05-04',
-        priority: 0.5,
-        changefreq: 'weekly'
-      },
-      {
-        loc: '/TermsServe',
-        lastmod: '2025-05-04',
-        priority: 0.5,
-        changefreq: 'weekly'
-      },
-    ]
   },
   vite: {
     define: {
