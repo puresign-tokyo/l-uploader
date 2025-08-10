@@ -24,13 +24,15 @@ services:
     build: ./backend
     ports:
       - "${BACKEND_PORT_INTERNAL}:5001"
+    user: "10001:10001"
+    init: true
     volumes:
-      - replays:/replays/
+      - replays:/home/app/replays/
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASS=${POSTGRES_PASS}
       - POSTGRES_HOST=${POSTGRES_HOST}
-      - POSTGRES_PORT=${PPOSTGRES_PORT}
+      - POSTGRES_PORT=${POSTGRES_PORT}
       - HASH_PEPPER=${HASH_PEPPER}
       - FRONTEND_HOST=${FRONTEND_HOST_EXTERNAL}
       - FRONTEND_PORT=${FRONTEND_PORT_EXTERNAL}

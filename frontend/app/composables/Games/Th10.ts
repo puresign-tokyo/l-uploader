@@ -43,7 +43,6 @@ interface Th10Replay{
 }
 
 export function Th10Table(replay: Th10Replay){
-  console.log(replay.replay_meta.slowdown)
   return{
     game_meta:{
       theme_color: '#96B300',

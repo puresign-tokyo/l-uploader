@@ -4,7 +4,7 @@ import os
 
 logger = log_manager.get_logger()
 
-replay_dir = Path("/replays")
+replay_dir = Path("/home/app/replays")
 if not replay_dir.is_dir():
     raise FileNotFoundError(f"Directory {replay_dir} is not found")
 

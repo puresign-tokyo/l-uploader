@@ -15,7 +15,5 @@ def is_verified_recaptcha_token(token: str) -> bool:
     result = json.loads(res.text)
 
     if result["success"] == False:
-        print("the result is false")
         return False
-    print("the result is true")
     return True

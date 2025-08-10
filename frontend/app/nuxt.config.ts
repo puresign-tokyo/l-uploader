@@ -2,8 +2,6 @@
 
 import { el } from "vuetify/locale"
 
-// const backend_url = `${process.env.VITE_APP_HTTP_PROTOCOL}://${process.env.VITE_APP_BACKEND_HOST}:${process.env.VITE_APP_BACKEND_PORT}`
-// console.log(process.env.VITE_APP_HTTP_PROTOCOL)
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   ssr: true,
@@ -19,7 +17,7 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
   ],
   site: {
-    // url: 'https://l-uploader.puresign.tokyo',
+    url: 'https://l-uploader.puresign.tokyo',
     name: 'えるろだ',
     defaultLocale: 'ja',
     indexable: true

@@ -81,7 +81,7 @@ MAX_PAGINATION_PAGES = int(getenv_secure("MAX_PAGINATION_PAGES"))
 FETCH_REPLAY_LIMIT = 1000
 
 
-replay_dir = Path("/replays")
+replay_dir = Path("/home/app/replays")
 
 
 class Stage(StrEnum):
@@ -271,7 +271,6 @@ def get_replays_replay_id(request: Request, replay_id: int):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="select replay not found"
         )
-    print(result["post"])
     return JSONResponse(content=result["post"])
 
 
@@ -386,8 +385,6 @@ def post_replays(
     except Exception as e:
         logger.exception(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    print(result)
 
     if result["state"] == "recaptcha_failed":
         raise HTTPException(

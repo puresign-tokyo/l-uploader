@@ -4,9 +4,12 @@ WORKDIR /app
 ENV LANG=C.UTF-8 \
     TZ=Asia/Tokyo
 
-COPY ./app /app
+COPY ./app/package.json /app
+COPY ./app/package-lock.json /app
 
-RUN npm install
+RUN npm ci
+
+COPY ./app .
 
 ARG NUXT_PUBLIC_HTTP_PROTOCOL
 ARG NUXT_PUBLIC_BACKEND_HOST
@@ -46,11 +49,13 @@ WORKDIR /app
 ENV LANG=C.UTF-8 \
     TZ=Asia/Tokyo
 
-COPY --from=build-stage /app/.output .output
+COPY --from=build-stage /app/.output ./.output
 COPY --from=build-stage /app/package.json ./package.json
 
 ENV NODE_ENV=production
 
 EXPOSE 80
+
+USER node
 
 CMD ["node", ".output/server/index.mjs"]

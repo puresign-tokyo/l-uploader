@@ -805,10 +805,6 @@ const spellCardMap: Record<string, Record<string, Spell>>={
 }
 
 function convertSpellCard(level: string, scene: string){
-  console.log(level)
-  console.log(scene)
-  console.log(spellCardMap[level])
-  console.log(spellCardMap[level][scene])
   return spellCardMap[level][scene] || {spellCard: {ja: 'Unknown'}, boss: {ja: 'Unknown', en: 'Unknwon'}}
 }
 

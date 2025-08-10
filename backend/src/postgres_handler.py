@@ -11,7 +11,7 @@ from psycopg import sql
 from mongo_handler import MongoHandler
 from typing import Union
 from file_handler import FileHandler
-from getenv import get_env_secure_bool
+from getenv import getenv_secure, get_env_secure_bool
 
 logger = log_manager.get_logger()
 
@@ -31,11 +31,11 @@ def encrypt_password(raw_password: str, salt: str):
 def build_postgres_kwargs() -> str:
     "dbname=sample_db user=test password=test host=localhost port=5432"
     return f"""
-                dbname={os.getenv("POSTGRES_USER")}
-                user={os.getenv("POSTGRES_USER")}
-                password={os.getenv("POSTGRES_PASS")}
-                host={os.getenv("POSTGRES_HOST")}
-                port={os.getenv("POSTGRES_PORT")}
+                dbname={getenv_secure("POSTGRES_USER")}
+                user={getenv_secure("POSTGRES_USER")}
+                password={getenv_secure("POSTGRES_PASS")}
+                host={getenv_secure("POSTGRES_HOST")}
+                port={int(getenv_secure("POSTGRES_PORT"))}
             """
 
 

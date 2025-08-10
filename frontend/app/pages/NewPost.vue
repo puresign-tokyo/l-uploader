@@ -303,8 +303,6 @@
       return
     }
 
-    console.log(response)
-
     const formData = new FormData()
     formData.append('user_name', userName.value)
     formData.append('replay_file', replayFile.value)
