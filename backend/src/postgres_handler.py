@@ -16,16 +16,22 @@ from getenv import getenv_secure, get_env_secure_bool
 logger = log_manager.get_logger()
 
 ALLOW_DUPLICATE_POSTS = get_env_secure_bool("ALLOW_DUPLICATE_POSTS")
+STRETCH_NUMBER = int(getenv_secure("STRETCH_NUMBER"))
+if STRETCH_NUMBER < 600000:
+    raise ValueError(
+        f"STRETCH_NUMBER is less than 600000. STRETCH_NUMBER: {STRETCH_NUMBER}"
+    )
+HASH_PEPPER = getenv_secure("HASH_PEPPER")
 
 
 def encrypt_password(raw_password: str, salt: str):
-    stretch_number = os.getenv("STRETCH_NUMBER")
-    return hashlib.pbkdf2_hmac(
+    salted = hashlib.pbkdf2_hmac(
         "sha256",
         raw_password.encode(),
-        (salt + str(os.getenv("HASH_PEPPER"))).encode(),
-        int(stretch_number) if stretch_number is not None else 114514,
-    ).hex()
+        salt.encode(),
+        STRETCH_NUMBER,
+    )
+    return hashlib.pbkdf2_hmac("sha256", salted, HASH_PEPPER.encode(), 1)
 
 
 def build_postgres_kwargs() -> str:
