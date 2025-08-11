@@ -93,6 +93,7 @@ class Stage(StrEnum):
 
 class DeleteReplays(BaseModel):
     delete_password: str
+    recaptcha_token: str
 
 
 class PostReplays(BaseModel):
@@ -151,7 +152,6 @@ def header_client_ip(request: Request, header_name: str):
 
 
 def get_client_ip(request: Request):
-    logger.info(request.headers)
     if request.client is not None and (
         request.client.host == "127.0.0.1" or request.client.host == "localhost"
     ):
@@ -415,9 +415,11 @@ def delete_replays_replay_id(request: Request, replay_id: int, body: DeleteRepla
         )
     try:
         result = Usecase.delete_replay(
-            client_ip, replay_id=replay_id, raw_delete_password=body.delete_password
+            client_ip,
+            replay_id=replay_id,
+            raw_delete_password=body.delete_password,
+            recaptcha_token=body.recaptcha_token,
         )
-
     except Exception as e:
         logger.exception(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -438,6 +440,12 @@ def delete_replays_replay_id(request: Request, replay_id: int, body: DeleteRepla
 
     if result["state"] == "rate_limit_exceeded":
         raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS)
+
+    if result["state"] == "recaptcha_failed":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="did not authorized recaptcha",
+        )
 
     return
 

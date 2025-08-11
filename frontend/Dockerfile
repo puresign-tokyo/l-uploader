@@ -54,8 +54,6 @@ COPY --from=build-stage /app/package.json ./package.json
 
 ENV NODE_ENV=production
 
-EXPOSE 80
-
 USER node
 
 CMD ["node", ".output/server/index.mjs"]

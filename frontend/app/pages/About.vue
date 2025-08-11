@@ -110,7 +110,7 @@
         class="mb-5 px-6"
       >
         <v-card-title class="text-h5 font-weight-bold px-0">
-          使用したサードパーティ成果物
+          使用した主なサードパーティ成果物
         </v-card-title>
         <v-divider/>
   
@@ -121,6 +121,12 @@
             </h3>
             <ul class="pl-6 text-body-1" style="line-height: 1.8;">
               <li>リプレイファイルパース定義</li>
+            </ul>
+            <h3 class="text-subtitle-1 font-weight-medium">
+              <a href="https://pypi.org/project/tsadecode/">tsadecode</a> (パブリックドメイン)
+            </h3>
+            <ul class="pl-6 text-body-1" style="line-height: 1.8;">
+              <li>リプレイファイルデコーダ</li>
             </ul>
           </section>
         </v-card-text>

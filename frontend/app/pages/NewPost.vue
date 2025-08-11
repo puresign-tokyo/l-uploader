@@ -228,7 +228,7 @@
   const validateUploadComment=(value) => value.length<=config.upload_comment_length_limit || config.upload_comment_length_limit + '文字以内で入力してください'
   const validateDeletePassword=(value) => value.length<=config.delete_password_length_limit || config.delete_password_length_limit + '文字以内で入力してください'
   const validateReplayFile=(value) => {
-    if (!value) return true; // nullや未選択ならバリデーションOK
+    if (!value) return true;
     if (value.size > config.filesize_kb_limit * 1024) {
       return 'ファイルサイズが大きすぎます';
     }

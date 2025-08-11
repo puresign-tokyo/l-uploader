@@ -80,7 +80,6 @@ class Usecase:
             rep_raw=rep_raw,
             file_digest=file_digest,
         )
-        cache_client.delete_prefix_list("*", "cache")
 
         return result_sql
 
@@ -92,15 +91,6 @@ class Usecase:
         order: str,
         page: int,
     ):
-        if optional_tag == "" and (
-            (
-                cache := cache_client.get(
-                    f"{CACHE_NAMESPACE_SELECT_REPLAYS}:{game_id}:{category}:{order}:{page}"
-                )
-            )
-            is not None
-        ):
-            return cache
         if page == -1:
             offset = 0
             limit = POSTS_PER_PAGE * MAX_PAGINATION_PAGES
@@ -122,13 +112,6 @@ class Usecase:
                 f"{post["game_id"]}_ud{filename.id_to_filename(post["replay_id"])}.rpy"
             )
 
-        if optional_tag == "":
-            cache_client.insert_if_not_exists(
-                f"{CACHE_NAMESPACE_SELECT_REPLAYS}:{game_id}:{category}:{order}:{page}",
-                result["posts"],
-                CACHE_EXPIRE_SEC,
-            )
-
         return result["posts"]
 
     @staticmethod
@@ -137,67 +120,27 @@ class Usecase:
         category: str,
         optional_tag: str,
     ) -> dict:
-        if optional_tag == "" and (
-            (
-                cache := cache_client.get(
-                    f"{CACHE_NAMESPACE_COUNT_REPLAYS}:{game_id}:{category}"
-                )
-            )
-            is not None
-        ):
-            return cache
         returning = SQLReplays.count_replays(
             game_id=game_id,
             category=category,
             optional_tag=optional_tag,
         )
-        if optional_tag == "":
-            cache_client.insert_if_not_exists(
-                f"{CACHE_NAMESPACE_COUNT_REPLAYS}:{game_id}:{category}",
-                returning,
-                CACHE_EXPIRE_SEC,
-            )
         return returning
 
     @staticmethod
     def select_replay(replay_id: int):
-        if (
-            cache := cache_client.get(f"{CACHE_NAMESPACE_SELECT_REPLAY_ID}:{replay_id}")
-        ) is not None:
-            return cache
         result = SQLReplays.select_replay(replay_id)
         if result["state"] != "success":
-            cache_client.insert_if_not_exists(
-                f"{CACHE_NAMESPACE_SELECT_REPLAY_ID}:{replay_id}",
-                result,
-                CACHE_EXPIRE_SEC,
-            )
             return result
         result["post"][
             "filename"
         ] = f"{result["post"]["game_id"]}_ud{filename.id_to_filename(result["post"]["replay_id"])}.rpy"
-        cache_client.insert_if_not_exists(
-            f"{CACHE_NAMESPACE_SELECT_REPLAY_ID}:{replay_id}",
-            result,
-            CACHE_EXPIRE_SEC,
-        )
         return result
 
     @staticmethod
     def download_replay(replay_id: int):
-        if (
-            cache := cache_client.get(
-                f"{CACHE_NAMESPACE_DOWNLOAD_REPLAY_ID}:{replay_id}"
-            )
-        ) is not None:
-            return cache
         result_sql = SQLReplays.select_replay_game_id(replay_id=replay_id)
         if result_sql["state"] != "success":
-            cache_client.insert_if_not_exists(
-                f"{CACHE_NAMESPACE_DOWNLOAD_REPLAY_ID}:{replay_id}",
-                result_sql,
-                CACHE_EXPIRE_SEC,
-            )
             return result_sql
 
         # read処理なのでトランザクション外でも許される
@@ -215,15 +158,12 @@ class Usecase:
             "path": result_file["path"],
             "filename": f"{result_sql["game_id"]}_ud{filename.id_to_filename(replay_id)}.rpy",
         }
-        cache_client.insert_if_not_exists(
-            f"{CACHE_NAMESPACE_DOWNLOAD_REPLAY_ID}:{replay_id}",
-            returning,
-            CACHE_EXPIRE_SEC,
-        )
         return returning
 
     @staticmethod
-    def delete_replay(ip_addr: str, replay_id: int, raw_delete_password: str):
+    def delete_replay(
+        ip_addr: str, replay_id: int, raw_delete_password: str, recaptcha_token: str
+    ):
         if (
             cache_client.counter(
                 f"{CACHE_NAMESPACE_RATELIMIT_DELETE_IP}:{ip_addr}",
@@ -232,6 +172,13 @@ class Usecase:
             > REPLAY_RATE_DELETE_MAX_REQUEST
         ):
             return {"state": "rate_limit_exceeded"}
+
+        if RECAPTCHA_ENABLED and not (
+            http_requester.is_verified_recaptcha_token(recaptcha_token)
+        ):
+            logger.info("recaptcha authz failed")
+            return {"state": "recaptcha_failed"}
+        logger.info("recaptcha authz success")
         result_sql = SQLReplays.delete_replay(
             replay_id=replay_id, raw_delete_password=raw_delete_password
         )

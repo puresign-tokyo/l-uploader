@@ -19,7 +19,15 @@
             />
           </v-col>
         </v-row>
+        <v-row dense>
+          <v-col cols="12" class="d-flex justify-center mt-8">
+            <div v-if="config.recaptcha_enabled"
+            ref="recaptchaRef" class="g-recaptcha"/>
+          </v-col>
+        </v-row>
       </v-card-text>
+
+
 
       <v-divider />
 
@@ -34,12 +42,14 @@
 
 <script setup lang="ts">
 import {ref} from 'vue'
-import { el } from 'vuetify/locale'
 
 const deletePassword=ref('')
 const showPassword=ref(false)
 const deleteDialog=defineModel<boolean>()
 const config = useRuntimeConfig().public
+
+const recaptchaRef = ref<HTMLElement | null>(null)
+let widgetId: number | null = null
 
 const props=defineProps<{
   filename: string
@@ -51,17 +61,29 @@ const emit = defineEmits<{
 }>()
 
 async function sendDeleteReplay() {
+  // 同じrecaptchaキーは再度削除リクエストに使えないがダイアログをつけっぱなしだとさもパスワードを間違えた後も使えるように見えてしまう
+  // そのため削除リクエストを送る度に毎回削除ダイアログを消すようにする
+  deleteDialog.value=false
+
+  let response = ""
+  if (config.recaptcha_enabled){
+    response = (window as any).grecaptcha?.getResponse()
+  }else{
+    response = ""
+  }
+  if (config.recaptcha_enabled && !response) {
+    emit('result', { success: false, message: "reCAPTCHAを確認してください", page_reload: false })
+    return
+  }
+
   try {
     await $fetch(`${config.backend_url}/replays/${props.replay_id}`, {
       method: 'delete',
-      body: { delete_password: deletePassword.value },
+      body: { delete_password: deletePassword.value, recaptcha_token: response },
       headers: { 'Content-Type': 'application/json' },
       server: false,
       onResponse({ response }) {
         if (response.status >= 200 && response.status < 300) {
-          // dialog.value = false
-          // snackbar.value = true
-          // replays.value = replays.value.filter(r => r.replay_id !== pendingDeleteItem.value.replay_id)
           deleteDialog.value=false
           emit('result',{success: true, message: '削除しました', page_reload: true})
         }
@@ -69,9 +91,6 @@ async function sendDeleteReplay() {
     })
   } catch (error) {
     const e = error as { statusCode?: number; statusMessage?: string; data?: { detail?: string } }
-    // const msg = e?.data?.detail === 'password mismatch'
-    //   ? 'パスワードが違います'
-    //   : `${e.statusCode};${e.statusMessage};${e.data?.detail}`
     let msg
     if (e?.data?.detail === 'password mismatch'){
       msg = 'パスワードが違います'
@@ -83,5 +102,34 @@ async function sendDeleteReplay() {
     emit('result', { success: false, message: msg, page_reload: false })
   }
 }
+
+function renderRecaptcha() {
+  if (!recaptchaRef.value) return
+  const g = (window as any).grecaptcha
+  if (!g) return
+  // widgetId が残っているケースはrenderさせないことで再度ダイアログを開いたときは再生成させる。
+  widgetId = g.render(recaptchaRef.value, { sitekey: config.recaptcha_sitekey })
+}
+
+watch(deleteDialog, async (open) => {
+  if (open) {
+    await nextTick()
+    renderRecaptcha()
+  } else {
+    // 閉じるときは必ず破棄して次回は render させる
+    widgetId = null
+    if (recaptchaRef.value) recaptchaRef.value.innerHTML = ''
+  }
+})
+
+onMounted(() => {
+  if (!document.querySelector('script[src*="recaptcha/api.js"]')) {
+    const script = document.createElement('script')
+    script.src = 'https://www.google.com/recaptcha/api.js?render=explicit'
+    script.async = true
+    script.defer = true
+    document.head.appendChild(script)
+  }
+})
 
 </script>
