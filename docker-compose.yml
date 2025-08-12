@@ -90,6 +90,7 @@ services:
     container_name: ${MONGO_HOST}
     volumes:
       - mongodb_table:/data/db
+      - mongodb_config:/data/configdb
       - ./mongo/init/:/docker-entrypoint-initdb.d/
     environment:
       - MONGO_INITDB_DATABASE=${MONGO_DATABASE}
@@ -115,5 +116,6 @@ services:
 volumes:
   postgresql_table:
   mongodb_table:
+  mongodb_config:
   replays:
   redis_data:
