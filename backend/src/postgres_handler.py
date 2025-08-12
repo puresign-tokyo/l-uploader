@@ -37,7 +37,7 @@ def encrypt_password(raw_password: str, salt: str):
 def build_postgres_kwargs() -> str:
     "dbname=sample_db user=test password=test host=localhost port=5432"
     return f"""
-                dbname={getenv_secure("POSTGRES_USER")}
+                dbname={getenv_secure("POSTGRES_DB")}
                 user={getenv_secure("POSTGRES_USER")}
                 password={getenv_secure("POSTGRES_PASS")}
                 host={getenv_secure("POSTGRES_HOST")}

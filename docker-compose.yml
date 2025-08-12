@@ -29,8 +29,11 @@ services:
     volumes:
       - replays:/home/app/replays/
     environment:
+      - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASS=${POSTGRES_PASS}
+      - POSTGRES_APP_USER=${POSTGRES_APP_USER}
+      - POSTGRES_APP_PASS=${POSTGRES_APP_PASS}
       - POSTGRES_HOST=${POSTGRES_HOST}
       - POSTGRES_PORT=${POSTGRES_PORT}
       - STRETCH_NUMBER=${STRETCH_NUMBER}
@@ -75,8 +78,11 @@ services:
       - postgresql_table:/var/lib/postgresql/data/
       - ./postgresql/init/:/docker-entrypoint-initdb.d/
     environment:
+      - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASS}
+      - POSTGRES_APP_USER=${POSTGRES_APP_USER}
+      - POSTGRES_APP_PASS=${POSTGRES_APP_PASS}
     ports:
       - ${POSTGRES_PORT}:5432
 
@@ -101,8 +107,11 @@ services:
       - REDIS_PASS=${REDIS_PASS}
     ports:
       - ${REDIS_PORT}:6379
+    volumes:
+      - redis_data:/data
 
 volumes:
   postgresql_table:
   mongodb_table:
   replays:
+  redis_data:

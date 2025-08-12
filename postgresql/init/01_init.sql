@@ -1,5 +1,3 @@
-
-
 CREATE TABLE posts(
     replay_id           SERIAL      NOT NULL,
     game_id             TEXT        NOT NULL,
