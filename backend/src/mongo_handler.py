@@ -25,7 +25,11 @@ class MongoClientWrapper:
         self.database = getenv_secure("MONGO_DATABASE")
 
         self.client = MongoClient(
-            host=self.host, port=self.port, username=self.user, password=self.password
+            host=self.host,
+            port=self.port,
+            username=self.user,
+            password=self.password,
+            authSource=self.database,
         )
         logger.info("mongodb connected")
 
