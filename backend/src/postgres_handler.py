@@ -31,7 +31,7 @@ def encrypt_password(raw_password: str, salt: str):
         salt.encode(),
         STRETCH_NUMBER,
     )
-    return hashlib.pbkdf2_hmac("sha256", salted, HASH_PEPPER.encode(), 1)
+    return hashlib.pbkdf2_hmac("sha256", salted, HASH_PEPPER.encode(), 1).hex()
 
 
 def build_postgres_kwargs() -> str:
