@@ -34,6 +34,6 @@ ENV PYTHONUNBUFFERED=1 \
 
 
 # # コンテナ起動時にapp.pyを実行
-RUN find /app/parsers/threp-ksy -name "*.ksy" -exec ksc -t python --outdir /app/parsers/py-code {} \;
+RUN find /app/parsers/threp-ksy -name "*.ksy" -exec ksc -t python --outdir /app/parsers/py_code {} \;
 ENTRYPOINT ["/usr/bin/tini","--"]
 CMD ["/bin/sh","-c","supercronic /etc/cron.d/cron.conf & exec python /app/app.py"]
