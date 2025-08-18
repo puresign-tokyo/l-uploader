@@ -66,7 +66,7 @@ class TH17Parser(BaseParser):
 
         r_type = "full_game"
         if len(rep_stages) == 1 and replay.header.difficulty != 4:
-            r_type = "stage_practive"
+            r_type = "stage_practice"
 
         r = TH17ReplayInfo(
             shot_type=get_shot(replay.header.shot, replay.header.subshot),
