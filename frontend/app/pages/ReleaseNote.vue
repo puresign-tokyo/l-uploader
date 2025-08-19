@@ -6,14 +6,14 @@
         :style="{
           alignItems: 'stretch',
           minHeight: '170px',
-          minWidth: '0'
+          minWidth: '0',
         }"
         class="mb-5"
       >
         <v-card-title class="text-h6 font-weight-bold">
           リリースノート
         </v-card-title>
-        <v-divider/>
+        <v-divider />
         <v-list two-line>
           <v-sheet
             v-for="(release, index) in releases"
@@ -32,7 +32,9 @@
               :key="`${index}-${i}`"
             >
               <v-list-item-content>
-                <v-list-item-title class="text-wrap">{{ item }}</v-list-item-title>
+                <v-list-item-title class="text-wrap">{{
+                  item
+                }}</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-sheet>
@@ -42,7 +44,7 @@
   </v-main>
 </template>
 <script setup>
-  import { Releases } from '~/composables/ReleaseNotes';
-  const releases=ref({})
-  releases.value=Releases()
+import { Releases } from "~/composables/ReleaseNotes";
+const releases = ref({});
+releases.value = Releases();
 </script>

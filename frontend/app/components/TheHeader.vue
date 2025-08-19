@@ -1,19 +1,20 @@
 <template>
-
   <!-- クローラのための情報 -->
-  <nav style="
-    position: absolute;
-    left: -9999px;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-  ">
+  <nav
+    style="
+      position: absolute;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    "
+  >
     <a
       v-for="internalLink in internalLinks"
       :key="internalLink.path"
       :href="internalLink.path"
     >
-      {{internalLink.label}}
+      {{ internalLink.label }}
     </a>
   </nav>
 
@@ -21,60 +22,60 @@
     <v-navigation-drawer v-model="drawer" temporary>
       <v-container>
         <v-btn
-         v-for="internalLink in internalLinks" :key="internalLink.path"
-         block
-         :to="internalLink.path"
-         class="mb-2"
+          v-for="internalLink in internalLinks"
+          :key="internalLink.path"
+          block
+          :to="internalLink.path"
+          class="mb-2"
         >
-          {{internalLink.label}}
+          {{ internalLink.label }}
         </v-btn>
       </v-container>
     </v-navigation-drawer>
   </ClientOnly>
 
-  <v-app-bar color="#666699">
+  <v-app-bar color="#8255C8">
     <v-app-bar-nav-icon
       v-if="display.smAndDown.value"
       @click="drawer = !drawer"
     />
     <v-img
-      src="/images/logo.png"
+      src="/images/logo/header_purple_noback.png"
       height="50"
       class="ml-2"
-      style="max-width: 133px;"
+      style="max-width: 133px"
     />
     <v-btn
       v-if="!display.smAndDown.value"
-      v-for="internalLink in internalLinks" :key="internalLink.path"
+      v-for="internalLink in internalLinks"
+      :key="internalLink.path"
       :to="internalLink.path"
       class="ml-2"
     >
-      {{internalLink.label}}
+      {{ internalLink.label }}
     </v-btn>
-
   </v-app-bar>
-  
 </template>
 
 <script setup>
-  import { ref } from 'vue'
-  import { useDisplay } from 'vuetify'
-  const display=useDisplay()
+import { ref } from "vue";
+import { useDisplay } from "vuetify";
+const display = useDisplay();
 
-  const drawer = ref(false)
+const drawer = ref(false);
 
-  const internalLinks=[
-    {path: "/", label: "ホーム"},
-    {path: "/NewPost", label: "新規投稿"},
-    {path: "/About", label: "サイト概要"},
-    {path: "/TermsServe", label: "利用規約"},
-    {path: "/ReleaseNote", label: "リリースノート"},
-    {path: "/PageLinks", label: "外部リンク一覧"},
-  ]
+const internalLinks = [
+  { path: "/", label: "ホーム" },
+  { path: "/NewPost", label: "新規投稿" },
+  { path: "/About", label: "サイト概要" },
+  { path: "/TermsServe", label: "利用規約" },
+  { path: "/ReleaseNote", label: "リリースノート" },
+  { path: "/PageLinks", label: "外部リンク一覧" },
+];
 
-  watch(display.smAndDown, (isSmall) => {
-    if (!isSmall) {
-      drawer.value = false
-    }
-  })
+watch(display.smAndDown, (isSmall) => {
+  if (!isSmall) {
+    drawer.value = false;
+  }
+});
 </script>

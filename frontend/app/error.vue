@@ -111,6 +111,6 @@
 
 <script setup>
 defineProps({
-  error: Object
-})
+  error: Object,
+});
 </script>

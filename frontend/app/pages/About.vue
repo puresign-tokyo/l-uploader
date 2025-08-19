@@ -1,27 +1,24 @@
 <template>
-  <v-main>                                               
+  <v-main>
     <v-container class="d-flex flex-column justify-center">
-
       <v-card
         elevation="4"
         :style="{
           alignItems: 'stretch',
           minHeight: '170px',
-          minWidth: '0'
+          minWidth: '0',
         }"
         class="mb-5 px-6"
       >
         <v-card-title class="text-h5 font-weight-bold px-0">
           対応作品一覧
         </v-card-title>
-        <v-divider/>
-  
+        <v-divider />
+
         <v-card-text class="terms-content mt-3">
           <section class="mb-4">
-            <h3 class="text-subtitle-1 font-weight-medium">
-              整数作品
-            </h3>
-            <ul class="pl-6 text-body-1" style="line-height: 1.8;">
+            <h3 class="text-subtitle-1 font-weight-medium">整数作品</h3>
+            <ul class="pl-6 text-body-1" style="line-height: 1.8">
               <li>東方紅魔郷 〜 the Embodiment of Scarlet Devil.</li>
               <li>東方妖々夢 〜 Perfect Cherry Blossom.</li>
               <li>東方永夜抄 ～ Imperishable Night.</li>
@@ -38,10 +35,8 @@
             </ul>
           </section>
           <section class="mb-4">
-            <h3 class="text-subtitle-1 font-weight-medium">
-              小数作品
-            </h3>
-            <ul class="pl-6 text-body-1" style="line-height: 1.8;">
+            <h3 class="text-subtitle-1 font-weight-medium">小数作品</h3>
+            <ul class="pl-6 text-body-1" style="line-height: 1.8">
               <li>東方文花帖 〜 Shoot the Bullet.</li>
               <li>ダブルスポイラー 〜 東方文花帖</li>
               <li>妖精大戦争 〜 東方三月精</li>
@@ -50,15 +45,12 @@
             </ul>
           </section>
           <section class="mb-4">
-            <h3 class="text-subtitle-1 font-weight-medium">
-              その他
-            </h3>
-            <ul class="pl-6 text-body-1" style="line-height: 1.8;">
+            <h3 class="text-subtitle-1 font-weight-medium">その他</h3>
+            <ul class="pl-6 text-body-1" style="line-height: 1.8">
               <li>黄昏酒場 ～Uwabami Breakers～</li>
             </ul>
           </section>
         </v-card-text>
-
       </v-card>
 
       <v-card
@@ -66,36 +58,41 @@
         :style="{
           alignItems: 'stretch',
           minHeight: '170px',
-          minWidth: '0'
+          minWidth: '0',
         }"
         class="mb-5 px-6"
       >
         <v-card-title class="text-h5 font-weight-bold px-0">
           スタッフ紹介
         </v-card-title>
-  
-        <v-divider/>
+
+        <v-divider />
 
         <v-card-text class="terms-content mt-3">
           <section class="mb-4">
-            <h3 class="text-subtitle-1 font-weight-medium"><a href="https://wefma.net">ゑふまいか</a></h3>
-            <ul class="pl-6 text-body-1" style="line-height: 1.8;">
+            <h3 class="text-subtitle-1 font-weight-medium">
+              <a href="https://wefma.net">ゑふまいか</a>
+            </h3>
+            <ul class="pl-6 text-body-1" style="line-height: 1.8">
               <li>開発</li>
               <li>サーバ管理</li>
               <li>運用管理</li>
             </ul>
 
-            <h3 class="text-subtitle-1 font-weight-medium mt-4"><a href="https://info.puresign.tokyo">irckk</a></h3>
-            <ul class="pl-6 text-body-1" style="line-height: 1.8;">
+            <h3 class="text-subtitle-1 font-weight-medium mt-4">
+              <a href="https://info.puresign.tokyo">irckk</a>
+            </h3>
+            <ul class="pl-6 text-body-1" style="line-height: 1.8">
               <li>ドメイン管理</li>
               <li>運用</li>
             </ul>
 
-            <h3 class="text-subtitle-1 font-weight-medium mt-4"><a href="https://x.com/kamoneko_nonaku">かも猫</a></h3>
-            <ul class="pl-6 text-body-1" style="line-height: 1.8;">
+            <h3 class="text-subtitle-1 font-weight-medium mt-4">
+              <a href="https://x.com/kamoneko_nonaku">かも猫</a>
+            </h3>
+            <ul class="pl-6 text-body-1" style="line-height: 1.8">
               <li>開発委託</li>
             </ul>
-
           </section>
         </v-card-text>
       </v-card>
@@ -105,32 +102,33 @@
         :style="{
           alignItems: 'stretch',
           minHeight: '170px',
-          minWidth: '0'
+          minWidth: '0',
         }"
         class="mb-5 px-6"
       >
         <v-card-title class="text-h5 font-weight-bold px-0">
           使用した主なサードパーティ成果物
         </v-card-title>
-        <v-divider/>
-  
+        <v-divider />
+
         <v-card-text class="terms-content mt-3">
           <section class="mb-4">
             <h3 class="text-subtitle-1 font-weight-medium">
-              <a href="https://www.silentselene.net/">silentselene.net</a> (Apache2.0ライセンス)
+              <a href="https://www.silentselene.net/">silentselene.net</a>
+              (Apache2.0ライセンス)
             </h3>
-            <ul class="pl-6 text-body-1" style="line-height: 1.8;">
+            <ul class="pl-6 text-body-1" style="line-height: 1.8">
               <li>リプレイファイルパース定義</li>
             </ul>
             <h3 class="text-subtitle-1 font-weight-medium">
-              <a href="https://pypi.org/project/tsadecode/">tsadecode</a> (パブリックドメイン)
+              <a href="https://pypi.org/project/tsadecode/">tsadecode</a>
+              (パブリックドメイン)
             </h3>
-            <ul class="pl-6 text-body-1" style="line-height: 1.8;">
+            <ul class="pl-6 text-body-1" style="line-height: 1.8">
               <li>リプレイファイルデコーダ</li>
             </ul>
           </section>
         </v-card-text>
-
       </v-card>
 
       <v-card
@@ -138,22 +136,24 @@
         :style="{
           alignItems: 'stretch',
           minHeight: '170px',
-          minWidth: '0'
+          minWidth: '0',
         }"
         class="mb-5 px-6"
       >
         <v-card-title class="text-h5 font-weight-bold px-0">
           寄付
         </v-card-title>
-        <v-divider/>
-  
+        <v-divider />
+
         <v-card-text class="terms-content mt-3">
           <section class="mb-4">
             <p>このサイトはゑふまいかの家の電気代によって成り立っています。</p>
-            <p><a href="https://ofuse.me/wefmaika">ここ</a>からゑふまいかに寄付を送ることができます。</p>
+            <p>
+              <a href="https://ofuse.me/wefmaika">ここ</a
+              >からゑふまいかに寄付を送ることができます。
+            </p>
           </section>
         </v-card-text>
-
       </v-card>
     </v-container>
   </v-main>

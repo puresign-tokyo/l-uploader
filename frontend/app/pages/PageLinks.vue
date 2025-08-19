@@ -10,25 +10,24 @@
             :key="externalLink.path"
             link
           >
-          <a
-            :href="externalLink.path"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <v-list-item-title>{{ externalLink.label }}</v-list-item-title>
-          </a>
+            <a
+              :href="externalLink.path"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <v-list-item-title>{{ externalLink.label }}</v-list-item-title>
+            </a>
           </v-list-item>
         </v-list>
       </v-card>
     </v-container>
   </v-main>
 </template>
-  
 
 <script setup>
-const externalLinks=[
-  {path: "https://wefma.net", label: "開発者のホームページ"},
-  {path: "https://info.puresign.tokyo", label: "運用者のホームページ"},
-  {path: "http://silentselene.net", label: "silentselene.net"}
-]
+const externalLinks = [
+  { path: "https://wefma.net", label: "開発者のホームページ" },
+  { path: "https://info.puresign.tokyo", label: "運用者のホームページ" },
+  { path: "http://silentselene.net", label: "silentselene.net" },
+];
 </script>

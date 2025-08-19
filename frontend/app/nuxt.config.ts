@@ -1,102 +1,103 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
-import { el } from "vuetify/locale"
+import { el } from "vuetify/locale";
 
 export default defineNuxtConfig({
-  compatibilityDate: '2024-11-01',
+  compatibilityDate: "2024-11-01",
   ssr: true,
   app: {
     head: {
       meta: [
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' }
-      ]
-    }
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+      ],
+    },
   },
   devtools: { enabled: true },
-  modules: [
-    '@nuxtjs/seo',
-  ],
+  modules: ["@nuxtjs/seo"],
   site: {
-    url: 'https://l-uploader.puresign.tokyo',
-    name: 'えるろだ',
-    defaultLocale: 'ja',
-    indexable: true
+    url: "https://l-uploader.puresign.tokyo",
+    name: "えるろだ",
+    defaultLocale: "ja",
+    indexable: true,
   },
-  css: [
-    "vuetify/styles"
-  ],
+  css: ["vuetify/styles"],
   build: {
-    transpile: ["vuetify"]
+    transpile: ["vuetify"],
   },
-  plugins: ['@/plugins/vuetify'],
+  plugins: ["@/plugins/vuetify"],
   runtimeConfig: {
     backend_url: (() => {
-      const protocol = process.env.NUXT_PUBLIC_HTTP_PROTOCOL || 'http'
-      const host = process.env.NUXT_PUBLIC_BACKEND_HOST || 'localhost'
-      const port = process.env.NUXT_PUBLIC_BACKEND_PORT || (protocol === 'https' ? '443' : '80')
+      const protocol = process.env.NUXT_PUBLIC_HTTP_PROTOCOL || "http";
+      const host = process.env.NUXT_PUBLIC_BACKEND_HOST || "localhost";
+      const port =
+        process.env.NUXT_PUBLIC_BACKEND_PORT ||
+        (protocol === "https" ? "443" : "80");
 
-      const omitPort = (protocol === 'http' && port === '80') || (protocol === 'https' && port === '443')
-      return `${protocol}://${host}${omitPort ? '' : `:${port}`}`
+      const omitPort =
+        (protocol === "http" && port === "80") ||
+        (protocol === "https" && port === "443");
+      return `${protocol}://${host}${omitPort ? "" : `:${port}`}`;
     })(),
     pagination_size: (() => {
-        return process.env.NUXT_PUBLIC_PAGINATION_LIMIT
+      return process.env.NUXT_PUBLIC_PAGINATION_LIMIT;
     })(),
     public: {
       backend_url: (() => {
-        const protocol = process.env.NUXT_PUBLIC_HTTP_PROTOCOL || 'http'
-        const host = process.env.NUXT_PUBLIC_BACKEND_HOST || 'localhost'
-        const port = process.env.NUXT_PUBLIC_BACKEND_PORT || (protocol === 'https' ? '443' : '80')
+        const protocol = process.env.NUXT_PUBLIC_HTTP_PROTOCOL || "http";
+        const host = process.env.NUXT_PUBLIC_BACKEND_HOST || "localhost";
+        const port =
+          process.env.NUXT_PUBLIC_BACKEND_PORT ||
+          (protocol === "https" ? "443" : "80");
 
-        const omitPort = (protocol === 'http' && port === '80') || (protocol === 'https' && port === '443')
-        return `${protocol}://${host}${omitPort ? '' : `:${port}`}`
+        const omitPort =
+          (protocol === "http" && port === "80") ||
+          (protocol === "https" && port === "443");
+        return `${protocol}://${host}${omitPort ? "" : `:${port}`}`;
       })(),
       pagination_size: (() => {
-        return process.env.NUXT_PUBLIC_POSTS_PER_PAGE
+        return process.env.NUXT_PUBLIC_POSTS_PER_PAGE;
       })(),
       username_length_limit: (() => {
-        return process.env.NUXT_PUBLIC_USERNAME_LENGTH_LIMIT
+        return process.env.NUXT_PUBLIC_USERNAME_LENGTH_LIMIT;
       })(),
       upload_comment_length_limit: (() => {
-        return process.env.NUXT_PUBLIC_UPLOAD_COMMENT_LENGTH_LIMIT
+        return process.env.NUXT_PUBLIC_UPLOAD_COMMENT_LENGTH_LIMIT;
       })(),
       filesize_kb_limit: (() => {
-        return process.env.NUXT_PUBLIC_FILESIZE_KB_LIMIT
+        return process.env.NUXT_PUBLIC_FILESIZE_KB_LIMIT;
       })(),
       delete_password_length_limit: (() => {
-        return process.env.NUXT_PUBLIC_DELETE_PASSWORD_LENGTH_LIMIT
+        return process.env.NUXT_PUBLIC_DELETE_PASSWORD_LENGTH_LIMIT;
       })(),
       optional_tag_length_limit: (() => {
-        return process.env.NUXT_PUBLIC_OPTIONAL_TAG_LENGTH_LIMIT
+        return process.env.NUXT_PUBLIC_OPTIONAL_TAG_LENGTH_LIMIT;
       })(),
       recaptcha_sitekey: (() => {
-        return process.env.NUXT_PUBLIC_RECAPTCHA_SITEKEY
+        return process.env.NUXT_PUBLIC_RECAPTCHA_SITEKEY;
       })(),
       recaptcha_enabled: (() => {
-        if (process.env.NUXT_PUBLIC_RECAPTCHA_ENABLED==="True"){
-          return true
-        }else{
-          return false
+        if (process.env.NUXT_PUBLIC_RECAPTCHA_ENABLED === "True") {
+          return true;
+        } else {
+          return false;
         }
       })(),
-    }
+    },
   },
   vite: {
     define: {
-      "process.env.DEBUG": false
+      "process.env.DEBUG": false,
     },
     server: {
-      allowedHosts: [
-        process.env.NUXT_PUBLIC_FRONTEND_HOST || "localhost"
-      ],
+      allowedHosts: [process.env.NUXT_PUBLIC_FRONTEND_HOST || "localhost"],
       watch: {
-        usePolling: true
+        usePolling: true,
       },
       hmr: {
         host: process.env.NUXT_PUBLIC_FRONTEND_HOST || "localhost",
-        protocol: 'ws',
-        port: 80
-      }
-
-    }
-  }
-})
+        protocol: "ws",
+        port: 80,
+      },
+    },
+  },
+});
