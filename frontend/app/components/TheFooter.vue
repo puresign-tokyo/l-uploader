@@ -6,8 +6,8 @@
     >
       <p>
         Copyright
-        <a href="https://info.puresign.tokyo">project puresign-tokyo</a> All
-        Rights Reserved.
+        <a href="https://info.puresign.tokyo">project puresign</a> All Rights
+        Reserved.
       </p>
     </v-container>
   </v-footer>
