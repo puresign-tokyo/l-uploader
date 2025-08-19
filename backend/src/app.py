@@ -48,6 +48,7 @@ from games.th15.th15_parser import TH15Parser
 from games.th16.th16_parser import TH16Parser
 from games.th17.th17_parser import TH17Parser
 from games.th18.th18_parser import TH18Parser
+from games.th20.th20_parser import TH20Parser
 from games.th95.th95_parser import TH95Parser
 from games.th125.th125_parser import TH125Parser
 from games.th128.th128_parser import TH128Parser
