@@ -93,6 +93,13 @@
             <ul class="pl-6 text-body-1" style="line-height: 1.8">
               <li>開発委託</li>
             </ul>
+
+            <h3 class="text-subtitle-1 font-weight-medium mt-4">
+              <p>OM</p>
+            </h3>
+            <ul class="pl-6 text-body-1" style="line-height: 1.8">
+              <li>ロゴ作成</li>
+            </ul>
           </section>
         </v-card-text>
       </v-card>
