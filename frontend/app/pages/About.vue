@@ -63,6 +63,48 @@
         class="mb-5 px-6"
       >
         <v-card-title class="text-h5 font-weight-bold px-0">
+          ライセンス
+        </v-card-title>
+        <v-divider />
+
+        <v-card-text class="terms-content mt-3">
+          <section class="mb-4">
+            <h3 class="text-subtitle-1 font-weight-medium">ソースコード</h3>
+            <p>
+              <a
+                href="https://www16.big.or.jp/~zun/"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Apache License 2.0
+              </a>
+              にて
+              <a
+                href="https://github.com/puresign-tokyo/l-uploader"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Github
+              </a>
+              で公開されています。
+            </p>
+          </section>
+          <section class="mb-4">
+            <h3 class="text-subtitle-1 font-weight-medium">ロゴ</h3>
+            <p>OMに依頼して作成しています。</p>
+            <p>ユーザのロゴの改変を禁じます。</p>
+          </section>
+        </v-card-text>
+      </v-card>
+
+      <v-card
+        elevation="4"
+        :style="{
+          alignItems: 'stretch',
+          minHeight: '170px',
+          minWidth: '0',
+        }"
+        class="mb-5 px-6"
+      >
+        <v-card-title class="text-h5 font-weight-bold px-0">
           スタッフ紹介
         </v-card-title>
 
