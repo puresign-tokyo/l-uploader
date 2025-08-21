@@ -61,7 +61,7 @@ const shareToTweet = () => {
 const shareToLink = async () => {
   try {
     await navigator.clipboard.writeText(
-      encodeURIComponent(`${window.location.origin}/replays/${props.replay_id}`)
+      `${window.location.origin}/replays/${props.replay_id}`
     );
     emit("result", {
       success: true,
