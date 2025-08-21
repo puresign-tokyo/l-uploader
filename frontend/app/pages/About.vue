@@ -32,6 +32,7 @@
               <li>東方天空璋 〜 Hidden Star in Four Seasons.</li>
               <li>東方鬼形獣 〜 Wily Beast and Weakest Creature.</li>
               <li>東方虹龍洞 〜 Unconnected Marketeers.</li>
+              <li>東方錦上京 〜 Fossilized Wonders.</li>
             </ul>
           </section>
           <section class="mb-4">
