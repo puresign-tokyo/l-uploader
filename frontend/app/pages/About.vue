@@ -113,7 +113,7 @@
         <v-card-text class="terms-content mt-3">
           <section class="mb-4">
             <h3 class="text-subtitle-1 font-weight-medium">
-              <a href="https://wefma.net">ゑふまいか</a>
+              <a href="https://wefma.net" target="_blank" rel="noopener noreferrer">ゑふまいか</a>
             </h3>
             <ul class="pl-6 text-body-1" style="line-height: 1.8">
               <li>開発</li>
@@ -122,7 +122,7 @@
             </ul>
 
             <h3 class="text-subtitle-1 font-weight-medium mt-4">
-              <a href="https://info.puresign.tokyo">irckk</a>
+              <a href="https://info.puresign.tokyo" target="_blank" rel="noopener noreferrer">irckk</a>
             </h3>
             <ul class="pl-6 text-body-1" style="line-height: 1.8">
               <li>ドメイン管理</li>
@@ -130,7 +130,7 @@
             </ul>
 
             <h3 class="text-subtitle-1 font-weight-medium mt-4">
-              <a href="https://x.com/kamoneko_nonaku">かも猫</a>
+              <a href="https://x.com/kamoneko_nonaku" target="_blank" rel="noopener noreferrer">かも猫</a>
             </h3>
             <ul class="pl-6 text-body-1" style="line-height: 1.8">
               <li>開発委託</li>
@@ -163,14 +163,14 @@
         <v-card-text class="terms-content mt-3">
           <section class="mb-4">
             <h3 class="text-subtitle-1 font-weight-medium">
-              <a href="https://www.silentselene.net/">silentselene.net</a>
-              (Apache2.0ライセンス)
+              <a href="https://www.silentselene.net/" target="_blank" rel="noopener noreferrer">silentselene.net</a>
+              (Apache License 2.0)
             </h3>
             <ul class="pl-6 text-body-1" style="line-height: 1.8">
               <li>リプレイファイルパース定義</li>
             </ul>
             <h3 class="text-subtitle-1 font-weight-medium">
-              <a href="https://pypi.org/project/tsadecode/">tsadecode</a>
+              <a href="https://pypi.org/project/tsadecode/" target="_blank" rel="noopener noreferrer">tsadecode</a>
               (パブリックドメイン)
             </h3>
             <ul class="pl-6 text-body-1" style="line-height: 1.8">
