@@ -95,6 +95,7 @@
                 persistent-hint
                 hint="必ず入力してください"
                 required
+                inputmode="latin"
                 :counter="config.delete_password_length_limit"
                 :rules="[validateDeletePassword]"
                 :type="showPassword ? 'text' : 'password'"
@@ -211,15 +212,33 @@ const categoryTags = {
   その他: "others",
 };
 
+function isUseNonVisibleASCII(val) {
+  const STRIP_NON_ASCII_VISIBLE_RE = /[^\x20-\x7E]/g;
+  const filtered = val.replace(STRIP_NON_ASCII_VISIBLE_RE, "");
+  return filtered !== val;
+}
+
 const validateUserName = (value) =>
   value.length <= config.username_length_limit ||
   config.username_length_limit + "文字以内で入力してください";
 const validateUploadComment = (value) =>
   value.length <= config.upload_comment_length_limit ||
   config.upload_comment_length_limit + "文字以内で入力してください";
-const validateDeletePassword = (value) =>
-  value.length <= config.delete_password_length_limit ||
-  config.delete_password_length_limit + "文字以内で入力してください";
+const validateDeletePassword = (value) => {
+  if (value.length === 0) {
+    return "必ず入力してください";
+  }
+  if (value.length > config.delete_password_length_limit) {
+    return config.delete_password_length_limit + "文字以内で入力してください";
+  }
+  if (isUseNonVisibleASCII(value)) {
+    return "半角のASCII可視文字のみが許容されています。";
+  }
+  if (value.trim().length === 0) {
+    return "スペースのみの入力はしないでください";
+  }
+  return true;
+};
 const validateReplayFile = (value) => {
   if (!value) return true;
   if (value.size > config.filesize_kb_limit * 1024) {
@@ -264,6 +283,13 @@ async function sendPostReplay() {
     snackbar.value.color = "error";
     return;
   }
+  if (isUseNonVisibleASCII(deletePassword.value)) {
+    snackbar.value.visible = true;
+    snackbar.value.message =
+      "パスワードは半角のASCII可視文字のみが許容されています。";
+    snackbar.value.color = "error";
+    return;
+  }
   if (deletePassword.value.length > config.delete_password_length_limit) {
     snackbar.value.visible = true;
     snackbar.value.message = `パスワードの文字数が${config.delete_password_length_limit}文字より多いです`;
@@ -273,6 +299,12 @@ async function sendPostReplay() {
   if (deletePassword.value === "") {
     snackbar.value.visible = true;
     snackbar.value.message = "パスワードを入力してください";
+    snackbar.value.color = "error";
+    return;
+  }
+  if (deletePassword.value.trim().length === 0) {
+    snackbar.value.visible = true;
+    snackbar.value.message = "空白文字のみのパスワードは禁止されています";
     snackbar.value.color = "error";
     return;
   }

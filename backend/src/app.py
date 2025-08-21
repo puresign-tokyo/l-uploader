@@ -28,6 +28,7 @@ from log.client_ip import client_ip_context
 
 
 import io
+import re
 import os
 
 from pathlib import Path
@@ -129,6 +130,8 @@ app.add_middleware(
 
 log_manager.init_logger_alcostg(logging.INFO)
 logger = log_manager.get_logger()
+
+ASCII_VISIBLE_RE = re.compile(r"^[\x20-\x7E]*$")
 
 
 def request_detail(request: Request):
@@ -362,6 +365,19 @@ def post_replays(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Delete password is empty. A non-empty password is required for replay deletion authentication.",
         )
+    if len(delete_password.strip()) == 0:
+        logger.info("Delete password is made with only space characters.")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Delete password is made with only space characters.",
+        )
+
+    if not ASCII_VISIBLE_RE.fullmatch(delete_password):
+        logger.info("Delete password includes non-visible ascii characters.")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Delete password includes non-visible ascii characters.",
+        )
 
     rep_raw = replay_file.file.read()
     replay_file.file.close()
@@ -409,6 +425,35 @@ def post_replays(
 
 @app.delete("/replays/{replay_id}")
 def delete_replays_replay_id(request: Request, replay_id: int, body: DeleteReplays):
+    if len(body.delete_password) > DELETE_PASSWORD_LENGTH_LIMIT:
+        logger.exception(
+            f"Delete password length exceeds the maximum allowed characters. Length: {len(body.delete_password)}, limit: {DELETE_PASSWORD_LENGTH_LIMIT}. Upload rejected."
+        )
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Delete password length exceeds the maximum allowed characters",
+        )
+    if len(body.delete_password) <= 0:
+        logger.info(
+            "Delete password is empty. A non-empty password is required for replay deletion authentication."
+        )
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Delete password is empty. A non-empty password is required for replay deletion authentication.",
+        )
+    if len(body.delete_password.strip()) == 0:
+        logger.info("Delete password is made with only space characters.")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Delete password is made with only space characters.",
+        )
+
+    if not ASCII_VISIBLE_RE.fullmatch(body.delete_password):
+        logger.info("Delete password includes non-visible ascii characters.")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Delete password includes non-visible ascii characters.",
+        )
     if (client_ip := get_client_ip(request)) is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

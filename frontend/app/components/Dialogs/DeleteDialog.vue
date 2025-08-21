@@ -18,6 +18,9 @@
               max-width="360px"
               label="削除用パスワード"
               required
+              inputmode="latin"
+              :counter="config.delete_password_length_limit"
+              :rules="[validateDeletePassword]"
               :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
               :type="showPassword ? 'text' : 'password'"
               @click:append="showPassword = !showPassword"
@@ -62,6 +65,28 @@ const config = useRuntimeConfig().public;
 const recaptchaRef = ref<HTMLElement | null>(null);
 let widgetId: number | null = null;
 
+function isUseNonVisibleASCII(val: string) {
+  const STRIP_NON_ASCII_VISIBLE_RE = /[^\x20-\x7E]/g;
+  const filtered = val.replace(STRIP_NON_ASCII_VISIBLE_RE, "");
+  return filtered !== val;
+}
+
+const validateDeletePassword = (value: string) => {
+  if (value.length === 0) {
+    return "必ず入力してください";
+  }
+  if (value.length > Number(config.delete_password_length_limit)) {
+    return config.delete_password_length_limit + "文字以内で入力してください";
+  }
+  if (isUseNonVisibleASCII(value)) {
+    return "半角のASCII可視文字のみが許容されています。";
+  }
+  if (value.trim().length === 0) {
+    return "スペースのみの入力はしないでください";
+  }
+  return true;
+};
+
 const props = defineProps<{
   filename: string;
   replay_id: string;
@@ -78,6 +103,41 @@ async function sendDeleteReplay() {
   // 同じrecaptchaキーは再度削除リクエストに使えないがダイアログをつけっぱなしだとさもパスワードを間違えた後も使えるように見えてしまう
   // そのため削除リクエストを送る度に毎回削除ダイアログを消すようにする
   deleteDialog.value = false;
+
+  if (isUseNonVisibleASCII(deletePassword.value)) {
+    emit("result", {
+      success: false,
+      message: "パスワードは半角のASCII可視文字のみが許容されています。",
+      page_reload: false,
+    });
+    return;
+  }
+  if (deletePassword.value === "") {
+    emit("result", {
+      success: false,
+      message: "パスワードを入力してください",
+      page_reload: false,
+    });
+    return;
+  }
+  if (
+    deletePassword.value.length > Number(config.delete_password_length_limit)
+  ) {
+    emit("result", {
+      success: false,
+      message: `パスワードの文字数が${config.delete_password_length_limit}文字より多いです`,
+      page_reload: false,
+    });
+    return;
+  }
+  if (deletePassword.value.trim().length === 0) {
+    emit("result", {
+      success: false,
+      message: "空白文字のみのパスワードは禁止されています",
+      page_reload: false,
+    });
+    return;
+  }
 
   let response = "";
   if (config.recaptcha_enabled) {
