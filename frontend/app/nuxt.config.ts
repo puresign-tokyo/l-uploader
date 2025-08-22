@@ -9,6 +9,22 @@ export default defineNuxtConfig({
     head: {
       meta: [
         { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { name: "description", content: "東方 リプレイ アップローダ" },
+        { property: "og:title", content: "えるろだ" },
+        { property: "og:type", content: "website" },
+        { property: "og:locale", content: "ja_JP" },
+        { property: "og:site_name", content: "えるろだ" },
+        { property: "og:description", content: "東方 リプレイ アップローダ" },
+        {
+          property: "og:image",
+          content: "https://l-uploader.puresign.tokyo/images/logo/ogp.png",
+        },
+        { property: "og:url", content: "https://l-uploader.puresign.tokyo/" },
+        { name: "twitter:card", content: "summary_large_image" },
+        {
+          name: "twitter:image",
+          content: "https://l-uploader.puresign.tokyo/images/logo/ogp.png",
+        },
       ],
     },
   },
@@ -19,7 +35,7 @@ export default defineNuxtConfig({
     name: "えるろだ",
     defaultLocale: "ja",
     indexable: true,
-    image: "/images/logo/ogp.png",
+    image: "https://l-uploader.puresign.tokyo/images/logo/ogp.png",
   },
   css: ["vuetify/styles"],
   build: {
