@@ -154,7 +154,7 @@
             <v-icon small class="mr-1" title="オプションタグ"
               >mdi-tag-outline</v-icon
             >
-            <v-chip color="grey" small>
+            <v-chip v-if="props.replayTable.optional_tag" color="grey" small>
               {{ props.replayTable.optional_tag }}
             </v-chip>
           </v-col>
