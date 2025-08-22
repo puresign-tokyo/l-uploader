@@ -19,6 +19,7 @@ export default defineNuxtConfig({
     name: "えるろだ",
     defaultLocale: "ja",
     indexable: true,
+    image: "/images/logo/ogp.png",
   },
   css: ["vuetify/styles"],
   build: {
