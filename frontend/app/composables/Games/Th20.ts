@@ -1,20 +1,20 @@
 import { useTableUtils } from "./TableUtils";
 const spellCardMap: Record<string, { ja: string; en: string }> = {
-  0: { 
-    ja: "塵符「コズミックダスト」", 
-    en: 'Dust Sign "Cosmic Dust"' 
+  0: {
+    ja: "塵符「コズミックダスト」",
+    en: 'Dust Sign "Cosmic Dust"',
   },
-  1: { 
-    ja: "塵符「コズミックダスト」", 
-    en: 'Dust Sign "Cosmic Dust"' 
+  1: {
+    ja: "塵符「コズミックダスト」",
+    en: 'Dust Sign "Cosmic Dust"',
   },
   2: {
-    ja: "塵符「宇宙塵」", 
-    en: 'Dust Sign "Space Dust"' 
+    ja: "塵符「宇宙塵」",
+    en: 'Dust Sign "Space Dust"',
   },
-  3: { 
-    ja: "塵符「宇宙塵」", 
-    en: 'Dust Sign "Space Dust"' 
+  3: {
+    ja: "塵符「宇宙塵」",
+    en: 'Dust Sign "Space Dust"',
   },
   4: {
     ja: "塵符「唐櫃返し」",
@@ -48,13 +48,13 @@ const spellCardMap: Record<string, { ja: string; en: string }> = {
     ja: "塵符「塵のすみか」",
     en: 'Dust Sign "Dwelling of Dust"',
   },
-  12: { 
-    ja: "魅符「まつろわぬ沢の気」", 
-    en: 'Bewitching Sign "Qi of an Unruly Swamp"' 
+  12: {
+    ja: "魅符「まつろわぬ沢の気」",
+    en: 'Bewitching Sign "Qi of an Unruly Swamp"',
   },
-  13: { 
-    ja: "魅符「まつろわぬ沢の気」", 
-    en: 'Bewitching Sign "Qi of an Unruly Swamp"' 
+  13: {
+    ja: "魅符「まつろわぬ沢の気」",
+    en: 'Bewitching Sign "Qi of an Unruly Swamp"',
   },
   14: {
     ja: "魅符「荒くれる沢の気」",
@@ -64,21 +64,21 @@ const spellCardMap: Record<string, { ja: string; en: string }> = {
     ja: "魅符「荒くれる沢の気」",
     en: 'Bewitching Sign "Qi of an Abusive Swamp"',
   },
-  16: { 
-    ja: "魅符「うなされる森の気」", 
-    en: 'Bewitching Sign "Qi of a Restless Forest"' 
+  16: {
+    ja: "魅符「うなされる森の気」",
+    en: 'Bewitching Sign "Qi of a Restless Forest"',
   },
-  17: { 
-    ja: "魅符「うなされる森の気」", 
-    en: 'Bewitching Sign "Qi of a Restless Forest"' 
+  17: {
+    ja: "魅符「うなされる森の気」",
+    en: 'Bewitching Sign "Qi of a Restless Forest"',
   },
-  18: { 
-    ja: "魅符「息苦しい森の気」", 
-    en: 'Bewitching Sign "Qi of an Suffocating Forest"' 
+  18: {
+    ja: "魅符「息苦しい森の気」",
+    en: 'Bewitching Sign "Qi of an Suffocating Forest"',
   },
-  19: { 
-    ja: "魅符「息苦しい森の気」", 
-    en: 'Bewitching Sign "Qi of an Suffocating Forest"' 
+  19: {
+    ja: "魅符「息苦しい森の気」",
+    en: 'Bewitching Sign "Qi of an Suffocating Forest"',
   },
   20: {
     ja: "魑符「荒ぶる山の気」",
@@ -140,9 +140,9 @@ const spellCardMap: Record<string, { ja: string; en: string }> = {
     ja: "謎符「エンシャントトラップ」",
     en: 'Riddle Sign "Ancient Trap"',
   },
-  35: { 
-    ja: "謎符「エンシャントトラップ」", 
-    en: 'Riddle Sign "Ancient Trap"' 
+  35: {
+    ja: "謎符「エンシャントトラップ」",
+    en: 'Riddle Sign "Ancient Trap"',
   },
   36: {
     ja: "金符「弾幕の金字塔」",
@@ -160,21 +160,21 @@ const spellCardMap: Record<string, { ja: string; en: string }> = {
     ja: "金符「弾幕の金字塔」",
     en: 'Gold Sign "Danmaku Pyramid"',
   },
-  40: { 
-    ja: "虚符「ストリーミングドール」", 
-    en: 'Void Sign "Streaming Doll"' 
+  40: {
+    ja: "虚符「ストリーミングドール」",
+    en: 'Void Sign "Streaming Doll"',
   },
-  41: { 
-    ja: "虚符「ストリーミングドール」", 
-    en: 'Void Sign "Streaming Doll"' 
+  41: {
+    ja: "虚符「ストリーミングドール」",
+    en: 'Void Sign "Streaming Doll"',
   },
-  42: { 
-    ja: "虚符「ストリーミングマリオネット」", 
-    en: 'Void Sign "Streaming Marionette"' 
+  42: {
+    ja: "虚符「ストリーミングマリオネット」",
+    en: 'Void Sign "Streaming Marionette"',
   },
-  43: { 
-    ja: "虚符「ストリーミングマリオネット」", 
-    en: 'Void Sign "Streaming Marionette"' 
+  43: {
+    ja: "虚符「ストリーミングマリオネット」",
+    en: 'Void Sign "Streaming Marionette"',
   },
   44: {
     ja: "群符「ラブルデータ」",
@@ -240,109 +240,109 @@ const spellCardMap: Record<string, { ja: string; en: string }> = {
     ja: "宝珠「潮盈珠」",
     en: 'Precious Gem "Tide-Flowing Jewel"',
   },
-  60: { 
-    ja: "災禍「山津波」", 
-    en: 'Disaster "Landslide"' 
+  60: {
+    ja: "災禍「山津波」",
+    en: 'Disaster "Landslide"',
   },
-  61: { 
-    ja: "災禍「山津波」", 
-    en: 'Disaster "Landslide"' 
+  61: {
+    ja: "災禍「山津波」",
+    en: 'Disaster "Landslide"',
   },
-  62: { 
-    ja: "災禍「長い山津波」", 
-    en: 'Disaster "Lengthy Landslide"' 
+  62: {
+    ja: "災禍「長い山津波」",
+    en: 'Disaster "Lengthy Landslide"',
   },
-  63: { 
-    ja: "災禍「終わらない山津波」", 
-    en: 'Disaster "Never-ending Landslide"' 
+  63: {
+    ja: "災禍「終わらない山津波」",
+    en: 'Disaster "Never-ending Landslide"',
   },
-  64: { 
-    ja: "宝珠「潮乾珠」", 
-    en: 'Precious Gem "Tide-Ebbing Jewel"' 
+  64: {
+    ja: "宝珠「潮乾珠」",
+    en: 'Precious Gem "Tide-Ebbing Jewel"',
   },
-  65: { 
-    ja: "宝珠「潮乾珠」", 
-    en: 'Precious Gem "Tide-Ebbing Jewel"' 
+  65: {
+    ja: "宝珠「潮乾珠」",
+    en: 'Precious Gem "Tide-Ebbing Jewel"',
   },
-  66: { 
-    ja: "宝珠「潮乾珠」", 
-    en: 'Precious Gem "Tide-Ebbing Jewel"' 
+  66: {
+    ja: "宝珠「潮乾珠」",
+    en: 'Precious Gem "Tide-Ebbing Jewel"',
   },
-  67: { 
-    ja: "宝珠「潮乾珠」", 
-    en: 'Precious Gem "Tide-Ebbing Jewel"' 
+  67: {
+    ja: "宝珠「潮乾珠」",
+    en: 'Precious Gem "Tide-Ebbing Jewel"',
   },
-  68: { 
-    ja: "「ムーンドラゴン」", 
-    en: '"Moon Dragon"' 
+  68: {
+    ja: "「ムーンドラゴン」",
+    en: '"Moon Dragon"',
   },
-  69: { 
-    ja: "「ムーンドラゴン」", 
-    en: '"Moon Dragon"' 
+  69: {
+    ja: "「ムーンドラゴン」",
+    en: '"Moon Dragon"',
   },
   70: {
     ja: "「ムーンドラゴン」",
     en: '"Moon Dragon"',
   },
-  71: { 
-    ja: "「ムーンドラゴン」", 
-    en: '"Moon Dragon"' 
+  71: {
+    ja: "「ムーンドラゴン」",
+    en: '"Moon Dragon"',
   },
-  72: { 
-    ja: "石神「巌となるさざれ石」", 
-    en: 'Stone God "Small Pebbles Forming a Boulder"' 
+  72: {
+    ja: "石神「巌となるさざれ石」",
+    en: 'Stone God "Small Pebbles Forming a Boulder"',
   },
-  73: { 
-    ja: "石神「巌となるさざれ石」", 
-    en: 'Stone God "Small Pebbles Forming a Boulder"' 
+  73: {
+    ja: "石神「巌となるさざれ石」",
+    en: 'Stone God "Small Pebbles Forming a Boulder"',
   },
-  74: { 
-    ja: "石神「巌となるさざれ石」", 
-    en: 'Stone God "Small Pebbles Forming a Boulder"' 
+  74: {
+    ja: "石神「巌となるさざれ石」",
+    en: 'Stone God "Small Pebbles Forming a Boulder"',
   },
-  75: { 
-    ja: "石神「巌となるさざれ石」", 
-    en: 'Stone God "Small Pebbles Forming a Boulder"' 
+  75: {
+    ja: "石神「巌となるさざれ石」",
+    en: 'Stone God "Small Pebbles Forming a Boulder"',
   },
-  76: { 
-    ja: "死符「永遠の冬」", 
-    en: 'Death Sign "Eternal Winter"' 
+  76: {
+    ja: "死符「永遠の冬」",
+    en: 'Death Sign "Eternal Winter"',
   },
-  77: { 
-    ja: "死符「永遠の冬」", 
-    en: 'Death Sign "Eternal Winter"' 
+  77: {
+    ja: "死符「永遠の冬」",
+    en: 'Death Sign "Eternal Winter"',
   },
   78: {
     ja: "死符「恒久の冬」",
     en: 'Death Sign "Permanent Winter"',
   },
-  79: { 
-    ja: "死符「恒久の冬」", 
-    en: 'Death Sign "Permanent Winter"' 
+  79: {
+    ja: "死符「恒久の冬」",
+    en: 'Death Sign "Permanent Winter"',
   },
-  80: { 
-    ja: "生符「混沌の冬」", 
-    en: 'Life Sign "Chaotic Winter"' 
+  80: {
+    ja: "生符「混沌の冬」",
+    en: 'Life Sign "Chaotic Winter"',
   },
-  81: { 
-    ja: "生符「混沌の冬」", 
-    en: 'Life Sign "Chaotic Winter"' 
+  81: {
+    ja: "生符「混沌の冬」",
+    en: 'Life Sign "Chaotic Winter"',
   },
-  82: { 
-    ja: "生符「混沌の冬」", 
-    en: 'Life Sign "Chaotic Winter"' 
+  82: {
+    ja: "生符「混沌の冬」",
+    en: 'Life Sign "Chaotic Winter"',
   },
-  83: { 
-    ja: "生符「混沌の冬」", 
-    en: 'Life Sign "Chaotic Winter"' 
+  83: {
+    ja: "生符「混沌の冬」",
+    en: 'Life Sign "Chaotic Winter"',
   },
-  84: { 
-    ja: "「弾幕の化石」", 
-    en: '"Danmaku Fossil"' 
+  84: {
+    ja: "「弾幕の化石」",
+    en: '"Danmaku Fossil"',
   },
-  85: { 
-    ja: "「弾幕の化石」", 
-    en: '"Danmaku Fossil"' 
+  85: {
+    ja: "「弾幕の化石」",
+    en: '"Danmaku Fossil"',
   },
   86: {
     ja: "「弾幕の化石」",
@@ -352,37 +352,37 @@ const spellCardMap: Record<string, { ja: string; en: string }> = {
     ja: "「弾幕の化石」",
     en: '"Danmaku Fossil"',
   },
-  88: { 
-    ja: "地符「幻想のリリクウィ」", 
-    en: 'Land Sign "illusionary Reliquae"' 
+  88: {
+    ja: "地符「幻想のリリクウィ」",
+    en: 'Land Sign "illusionary Reliquae"',
   },
-  89: { 
-    ja: "地符「幻想のリリクウィ」", 
-    en: 'Land Sign "illusionary Reliquae"' 
+  89: {
+    ja: "地符「幻想のリリクウィ」",
+    en: 'Land Sign "illusionary Reliquae"',
   },
   90: {
     ja: "地符「幻想のリリクウィ」",
     en: 'Land Sign "illusionary Reliquae"',
   },
-  91: { 
-    ja: "地符「幻想のリリクウィ」", 
-    en: 'Land Sign "illusionary Reliquae"' 
+  91: {
+    ja: "地符「幻想のリリクウィ」",
+    en: 'Land Sign "illusionary Reliquae"',
   },
   92: {
     ja: "月符「錦の上のイマジナリー」",
     en: 'Moon Sign "Imaginary Atop the Brocade"',
   },
-  93: { 
-    ja: "月符「錦の上のイマジナリー」", 
-    en: 'Moon Sign "Imaginary Atop the Brocade"'
+  93: {
+    ja: "月符「錦の上のイマジナリー」",
+    en: 'Moon Sign "Imaginary Atop the Brocade"',
   },
-  94: { 
-    ja: "月符「錦の上のイマジナリー」", 
-    en: 'Moon Sign "Imaginary Atop the Brocade"' 
+  94: {
+    ja: "月符「錦の上のイマジナリー」",
+    en: 'Moon Sign "Imaginary Atop the Brocade"',
   },
-  95: { 
-    ja: "月符「錦の上のイマジナリー」", 
-    en: 'Moon Sign "Imaginary Atop the Brocade"' 
+  95: {
+    ja: "月符「錦の上のイマジナリー」",
+    en: 'Moon Sign "Imaginary Atop the Brocade"',
   },
   96: {
     ja: "「ストーンゴッデス」",
@@ -590,4 +590,3 @@ export function Th20Table(replay: Th20Replay) {
     },
   };
 }
-
