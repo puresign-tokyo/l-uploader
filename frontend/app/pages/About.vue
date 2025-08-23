@@ -73,7 +73,7 @@
             <h3 class="text-subtitle-1 font-weight-medium">ソースコード</h3>
             <p>
               <a
-                href="https://www16.big.or.jp/~zun/"
+                href="https://www.apache.org/licenses/LICENSE-2.0"
                 target="_blank"
                 rel="noopener noreferrer"
                 >Apache License 2.0
