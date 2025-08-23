@@ -20,7 +20,7 @@ from enum import StrEnum
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
-from getenv import getenv_secure
+from getenv import getenv_secure, get_env_secure_bool
 
 import logging
 import log.log_manager as log_manager
@@ -29,7 +29,6 @@ from log.client_ip import client_ip_context
 
 import io
 import re
-import os
 
 from pathlib import Path
 import uvicorn
@@ -62,15 +61,7 @@ from game_registry import GameRegistry
 
 from usecase import Usecase, AdminUsecase
 
-ALLOW_ORIGIN = os.getenv("ALLOW_FRONTEND_ORIGIN")
-if ALLOW_ORIGIN == None:
-    raise ValidationError("not set ALLOW_FRONTEND_ORIGIN")
-
-
-def getenv_secure(envname: str) -> str:
-    if (const_var := os.getenv(envname)) is not None:
-        return str(const_var)
-    raise ValueError(f"{envname} is not defineded")
+ALLOW_ORIGIN = getenv_secure("ALLOW_FRONTEND_ORIGIN")
 
 
 USERNAME_LENGTH_LIMIT = int(getenv_secure("USERNAME_LENGTH_LIMIT"))
@@ -161,10 +152,10 @@ def get_client_ip(request: Request):
     ):
         return "localhost"
 
-    if os.getenv("USE_REVERSE_PROXY") != "True":
+    if get_env_secure_bool("USE_REVERSE_PROXY") != True:
         return direct_client_ip(request)
 
-    if os.getenv("USE_CLOUDFLARE_PROXY") == "True":
+    if get_env_secure_bool("USE_CLOUDFLARE_PROXY") == True:
         header_name = "CF-Connecting-IP"
     else:
         header_name = "X-Forwarded-For"
