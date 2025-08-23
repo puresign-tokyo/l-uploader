@@ -2,6 +2,11 @@ export function Releases() {
   // 要素番号が小さいものほど最新であるようにすること
   const releases = [
     {
+      version: "1.0.2",
+      date: "2025-08-23",
+      changes: ["虹龍洞と錦上京のスペカ名が間違って表示されることの修正"],
+    },
+    {
       version: "1.0.1",
       date: "2025-08-23",
       changes: ["錦上京のスペカ名が表示されるようになった"],
