@@ -18,7 +18,7 @@
           <v-sheet
             v-for="(release, index) in releases"
             :key="index"
-            class="mx-4 my-2 pa-4"
+            class="mx-4 my-4 pa-4"
             color="grey-lighten-4"
             elevation="1"
             rounded
