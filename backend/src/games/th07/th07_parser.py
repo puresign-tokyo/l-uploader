@@ -8,7 +8,7 @@ from games.th07.th07_replay_info import TH07ReplayInfo, TH07StageDetail
 class TH07Parser(BaseParser):
 
     def get_supported_game_id(self) -> str:
-        return "th07"
+        return "th7"
 
     def can_parse(self, rep_raw: bytes) -> bool:
         return rep_raw[:4] == b"T7RP"

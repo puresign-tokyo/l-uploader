@@ -265,10 +265,10 @@ const dropMenuCategories = {
 
 // コンポーネントの取得
 const tableComponents = {
-  th06: Th06Table,
-  th07: Th07Table,
-  th08: Th08Table,
-  th09: Th09Table,
+  th6: Th06Table,
+  th7: Th07Table,
+  th8: Th08Table,
+  th9: Th09Table,
   th10: Th10Table,
   th11: Th11Table,
   th12: Th12Table,
