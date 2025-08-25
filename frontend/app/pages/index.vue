@@ -110,7 +110,7 @@
           </v-col>
         </v-row>
 
-        <template v-if="!loading">
+        <template v-if="!loadingReplayMeta && !loadingReplayCounts">
           <component
             v-for="replay in replays"
             :key="replay.replay_id"
@@ -126,6 +126,9 @@
             rounded="circle"
           />
         </template>
+        <div v-else class="d-flex align-center justify-center">
+          <v-progress-circular color="#8255C8" indeterminate />
+        </div>
       </ClientOnly>
     </v-container>
 
@@ -192,7 +195,8 @@ import { AlcoTable } from "~/composables/Games/Alco";
 import { Releases } from "~/composables/ReleaseNotes";
 
 const replays = ref([]);
-const loading = ref(true);
+const loadingReplayMeta = ref(true);
+const loadingReplayCounts = ref(true);
 const deleteDialog = ref(false);
 const shareDialog = ref(false);
 
@@ -304,10 +308,12 @@ await useFetch(`${config.backend_url}/replays/count`, {
       1,
       Math.floor((Number(countData.count) - 1) / config.pagination_size) + 1
     );
+    loadingReplayCounts.value = false;
   },
   onResponseError({ error }) {
     console.error(error);
     replayPagination.value = 1;
+    loadingReplayCounts.value = false;
     openSnackBar({ success: false, message: String(error) });
   },
 });
@@ -321,12 +327,12 @@ await useFetch(`${config.backend_url}/replays?order=desc&page=0`, {
       ...item,
       uploaded_at: formatDate(item.uploaded_at),
     }));
-    loading.value = false;
+    loadingReplayMeta.value = false;
   },
   onResponseError({ error }) {
     console.error(error);
     replays.value = [];
-    loading.value = false;
+    loadingReplayMeta.value = false;
     openSnackBar({ success: false, message: String(error) });
   },
 });
