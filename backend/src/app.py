@@ -540,7 +540,20 @@ def get_alcohol():
 def get_teapot():
     raise HTTPException(
         status_code=status.HTTP_418_IM_A_TEAPOT,
-        detail="I can't give you alcohol, because I am a little teapot.",
+        detail="I can't serve you alcohol, because I am a little teapot. But I can pour you some Returner Liqueur instead.",
+    )
+
+
+@app.get("/returner")
+def get_returner():
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={
+            "name": "Returner Liqueur",
+            "type": "tea liqueur",
+            "abv": "24%",
+            "note": "A smooth black tea spirit served only by little teapots.",
+        },
     )
 
 
