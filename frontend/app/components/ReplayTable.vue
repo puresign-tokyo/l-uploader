@@ -236,6 +236,10 @@
                     size="large"
                     @click="
                       emit('confirmShare', {
+                        user_name:
+                          props.replayTable.user_name ?? '不明なユーザ',
+                        upload_comment:
+                          props.replayTable.upload_comment ?? '不明なコメント',
                         filename:
                           props.replayTable.filename ?? '不明なファイル',
                         game_name:
@@ -340,7 +344,13 @@ const emit = defineEmits<{
   (e: "confirmDelete", payload: { filename: string; replay_id: string }): void;
   (
     e: "confirmShare",
-    payload: { filename: string; game_name: string; replay_id: string }
+    payload: {
+      user_name: string;
+      upload_comment: string;
+      filename: string;
+      game_name: string;
+      replay_id: string;
+    }
   ): void;
 }>();
 </script>

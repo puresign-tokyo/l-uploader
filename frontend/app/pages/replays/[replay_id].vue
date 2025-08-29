@@ -314,6 +314,8 @@
       <!-- 共有ダイアログ -->
       <ShareDialog
         v-if="!loading"
+        :user_name="replayTable.user_name ?? '不明なユーザ'"
+        :upload_comment="replayTable.upload_comment ?? '不明なコメント'"
         :game_name="replayTable.game_meta.name"
         :filename="replayTable.filename ?? '不明なファイル'"
         :replay_id="replayTable.replay_id ?? 'error'"

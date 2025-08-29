@@ -99,6 +99,12 @@ export default defineNuxtConfig({
           return false;
         }
       })(),
+      username_share_length_limit: (() => {
+        return process.env.NUXT_PUBLIC_USERNAME_SHARE_LENGTH_LIMIT;
+      })(),
+      upload_comment_share_length_limit: (() => {
+        return process.env.NUXT_PUBLIC_UPLOAD_COMMENT_SHARE_LENGTH_LIMIT;
+      })(),
     },
   },
   vite: {

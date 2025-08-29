@@ -28,9 +28,12 @@
 
 <script setup lang="ts">
 const shareDialog = defineModel<boolean>();
+const config = useRuntimeConfig().public;
 
 const props = defineProps<{
   game_name: string;
+  user_name: string;
+  upload_comment: string;
   filename: string;
   replay_id: string;
 }>();
@@ -42,9 +45,33 @@ const emit = defineEmits<{
   ): void;
 }>();
 
+function truncateGameSubTitle(game_name: string) {
+  return game_name.split(" 〜")[0];
+}
+
+function truncateWithEllipsis(str: string, maxLength: number) {
+  if (str.length <= maxLength) {
+    return str;
+  }
+  return str.slice(0, maxLength - 1) + "…";
+}
+
 const shareToTweet = () => {
+  const game_name = truncateGameSubTitle(props.game_name);
+
+  const user_name = truncateWithEllipsis(
+    props.user_name,
+    Number(config.username_share_length_limit)
+  );
+  const upload_comment = truncateWithEllipsis(
+    props.upload_comment,
+    Number(config.upload_comment_share_length_limit)
+  );
   const text = encodeURIComponent(
-    `#えるろだ\n${props.filename}\n${props.game_name}のリプレイ\n詳細はこちらから！`
+    `#えるろだ
+${props.filename}
+${game_name} ${user_name}
+${upload_comment}`
   );
   const url = encodeURIComponent(
     `${window.location.origin}/replays/${props.replay_id}`
@@ -60,8 +87,21 @@ const shareToTweet = () => {
 
 const shareToLink = async () => {
   try {
+    const game_name = truncateGameSubTitle(props.game_name);
+
+    const user_name = truncateWithEllipsis(
+      props.user_name,
+      Number(config.username_share_length_limit)
+    );
+    const upload_comment = truncateWithEllipsis(
+      props.upload_comment,
+      Number(config.upload_comment_share_length_limit)
+    );
     await navigator.clipboard.writeText(
-      `${window.location.origin}/replays/${props.replay_id}`
+      `${props.filename}
+${game_name} ${user_name}
+${upload_comment}
+${window.location.origin}/replays/${props.replay_id}`
     );
     emit("result", {
       success: true,

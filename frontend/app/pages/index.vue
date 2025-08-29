@@ -142,6 +142,8 @@
 
     <!-- 共有ダイアログ -->
     <ShareDialog
+      :user_name="pendingShareItem.user_name"
+      :upload_comment="pendingShareItem.upload_comment"
       :game_name="pendingShareItem.game_name"
       :filename="pendingShareItem.filename"
       :replay_id="pendingShareItem.replay_id"
