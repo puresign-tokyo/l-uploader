@@ -7,17 +7,28 @@
   >
     <v-card
       :title="`${props.filename}をシェアする`"
-      text="どこでシェアしますか？"
+      text="どのようにシェアしますか？"
       class="elevation-0"
     >
       <v-row justify="center" align="center" class="my-4">
-        <v-btn icon="mdi-link" class="mx-4" @click="shareToLink" />
         <v-btn
-          icon="mdi-clipboard-text"
+          icon="mdi-link"
           class="mx-4"
-          @click="shareToMetaLink"
+          @click="shareToLink"
+          title="リンク"
         />
-        <v-btn icon="mdi-twitter" class="mx-4" @click="shareToTweet" />
+        <v-btn
+          icon="mdi-text-box-multiple"
+          class="mx-4"
+          title="情報一覧コピー"
+          @click="shareMeta"
+        />
+        <v-btn
+          icon="mdi-twitter"
+          class="mx-4"
+          title="Twitter共有"
+          @click="shareToTweet"
+        />
       </v-row>
 
       <v-divider />
@@ -50,7 +61,7 @@ const emit = defineEmits<{
 }>();
 
 function truncateGameSubTitle(game_name: string) {
-  return game_name.split(" 〜")[0];
+  return game_name.split(" ")[0];
 }
 
 function truncateWithEllipsis(str: string, maxLength: number) {
@@ -89,7 +100,7 @@ ${upload_comment}`
   });
 };
 
-const shareToMetaLink = async () => {
+const shareMeta = async () => {
   try {
     const game_name = truncateGameSubTitle(props.game_name);
 
@@ -102,14 +113,12 @@ const shareToMetaLink = async () => {
       Number(config.upload_comment_share_length_limit)
     );
     await navigator.clipboard.writeText(
-      `${props.filename}
-${game_name} ${user_name}
-${upload_comment}
-${window.location.origin}/replays/${props.replay_id}`
+      `${game_name} ${user_name}
+${upload_comment}`
     );
     emit("result", {
       success: true,
-      message: "リンクをコピーしました",
+      message: "情報一覧をコピーしました",
       page_reload: false,
     });
   } catch (err) {

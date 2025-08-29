@@ -28,7 +28,7 @@ export function AlcoTable(replay: AlcoReplay) {
         full: "/images/full/alco.png",
         alt: "alco",
       },
-      name: "黄昏酒場 ～Uwabami Breakers～",
+      name: "黄昏酒場 〜Uwabami Breakers～",
     },
     filename: replay.filename,
     uploaded_at: new Date(replay.uploaded_at).toLocaleString("ja-JP", {

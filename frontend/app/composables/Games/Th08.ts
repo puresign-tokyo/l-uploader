@@ -719,7 +719,7 @@ export function Th08Table(replay: Th08Replay) {
         full: "/images/full/th08.png",
         alt: "th08",
       },
-      name: "東方永夜抄 ～ Imperishable Night.",
+      name: "東方永夜抄 〜 Imperishable Night.",
     },
     filename: replay.filename,
     uploaded_at: new Date(replay.uploaded_at).toLocaleString("ja-JP", {
