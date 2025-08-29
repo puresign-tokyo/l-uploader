@@ -2,6 +2,11 @@ export function Releases() {
   // 要素番号が小さいものほど最新であるようにすること
   const releases = [
     {
+      version: "1.0.7",
+      date: "2025-08-30",
+      changes: ["メタリンクコピーと単なるリンクコピーに分けた"],
+    },
+    {
       version: "1.0.6",
       date: "2025-08-30",
       changes: [

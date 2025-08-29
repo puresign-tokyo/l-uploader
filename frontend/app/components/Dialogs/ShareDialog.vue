@@ -12,7 +12,11 @@
     >
       <v-row justify="center" align="center" class="my-4">
         <v-btn icon="mdi-link" class="mx-4" @click="shareToLink" />
-
+        <v-btn
+          icon="mdi-clipboard-text"
+          class="mx-4"
+          @click="shareToMetaLink"
+        />
         <v-btn icon="mdi-twitter" class="mx-4" @click="shareToTweet" />
       </v-row>
 
@@ -85,7 +89,7 @@ ${upload_comment}`
   });
 };
 
-const shareToLink = async () => {
+const shareToMetaLink = async () => {
   try {
     const game_name = truncateGameSubTitle(props.game_name);
 
@@ -102,6 +106,25 @@ const shareToLink = async () => {
 ${game_name} ${user_name}
 ${upload_comment}
 ${window.location.origin}/replays/${props.replay_id}`
+    );
+    emit("result", {
+      success: true,
+      message: "リンクをコピーしました",
+      page_reload: false,
+    });
+  } catch (err) {
+    emit("result", {
+      success: false,
+      message: String(err),
+      page_reload: false,
+    });
+  }
+};
+
+const shareToLink = async () => {
+  try {
+    await navigator.clipboard.writeText(
+      `${window.location.origin}/replays/${props.replay_id}`
     );
     emit("result", {
       success: true,
