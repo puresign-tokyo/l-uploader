@@ -2,6 +2,11 @@ export function Releases() {
   // 要素番号が小さいものほど最新であるようにすること
   const releases = [
     {
+      version: "1.0.8",
+      date: "2025-09-02",
+      changes: ["作品限定検索でth6～th9までが正常に検索できなかったことの修正"],
+    },
+    {
       version: "1.0.7",
       date: "2025-08-30",
       changes: ["メタリンクコピーと単なるリンクコピーに分けた"],
