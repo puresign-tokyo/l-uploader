@@ -36,19 +36,19 @@ services:
       - POSTGRES_APP_USER=${POSTGRES_APP_USER}
       - POSTGRES_APP_PASS=${POSTGRES_APP_PASS}
       - POSTGRES_HOST=${POSTGRES_HOST}
-      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_PORT=5432
       - STRETCH_NUMBER=${STRETCH_NUMBER}
       - HASH_PEPPER=${HASH_PEPPER}
       - FRONTEND_HOST=${FRONTEND_HOST_EXTERNAL}
       - FRONTEND_PORT=${FRONTEND_PORT_EXTERNAL}
       - ALLOW_DUPLICATE_POSTS=${ALLOW_DUPLICATE_POSTS}
       - MONGO_HOST=${MONGO_HOST}
-      - MONGO_PORT=${MONGO_PORT}
+      - MONGO_PORT=27017
       - MONGO_APP_USER=${MONGO_APP_USER}
       - MONGO_APP_PASS=${MONGO_APP_PASS}
       - MONGO_DATABASE=${MONGO_DATABASE}
       - REDIS_HOST=${REDIS_HOST}
-      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PORT=6379
       - REDIS_USER=${REDIS_USER}
       - REDIS_PASS=${REDIS_PASS}
       - HTTP_PROTOCOL=${HTTP_PROTOCOL}
@@ -84,8 +84,8 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASS}
       - POSTGRES_APP_USER=${POSTGRES_APP_USER}
       - POSTGRES_APP_PASS=${POSTGRES_APP_PASS}
-    ports:
-      - ${POSTGRES_PORT}:5432
+    expose:
+      - 5432
 
   mongodb:
     image: mongo:8.0.9
@@ -101,8 +101,8 @@ services:
       - MONGO_APP_USER=${MONGO_APP_USER}
       - MONGO_APP_PASS=${MONGO_APP_PASS}
       - MONGO_DATABASE=${MONGO_DATABASE}
-    ports:
-      - ${MONGO_PORT}:27017
+    expose:
+      - 27017
 
   redis:
     build: ./redis
@@ -110,8 +110,8 @@ services:
     environment:
       - REDIS_USER=${REDIS_USER}
       - REDIS_PASS=${REDIS_PASS}
-    ports:
-      - ${REDIS_PORT}:6379
+    expose:
+      - 6379
     volumes:
       - redis_data:/data
 

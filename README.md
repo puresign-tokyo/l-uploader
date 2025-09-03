@@ -28,12 +28,10 @@
    POSTGRES_APP_USER={アプリ用ユーザ}
    POSTGRES_APP_PASS={アプリ用ユーザのパスワード}
    POSTGRES_HOST=postgres
-   POSTGRES_PORT=5432
 
    # MongoDB
    MONGO_DATABASE={DB名}
    MONGO_HOST=mongo
-   MONGO_PORT=27017
    MONGO_ROOT_USER={rootユーザ}
    MONGO_ROOT_PASS={rootパスワード}
    MONGO_APP_USER={アプリ用ユーザ}
@@ -41,7 +39,6 @@
 
    # Redis
    REDIS_HOST=redis
-   REDIS_PORT=6379
    REDIS_USER={ユーザ名}
    REDIS_PASS={パスワード}
    REDIS_LOCK_TIMEOUT_SEC=10
