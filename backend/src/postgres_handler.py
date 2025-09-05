@@ -38,8 +38,8 @@ def build_postgres_kwargs() -> str:
     "dbname=sample_db user=test password=test host=localhost port=5432"
     return f"""
                 dbname={getenv_secure("POSTGRES_DB")}
-                user={getenv_secure("POSTGRES_USER")}
-                password={getenv_secure("POSTGRES_PASS")}
+                user={getenv_secure("POSTGRES_APP_USER")}
+                password={getenv_secure("POSTGRES_APP_PASS")}
                 host={getenv_secure("POSTGRES_HOST")}
                 port={int(getenv_secure("POSTGRES_PORT"))}
             """
