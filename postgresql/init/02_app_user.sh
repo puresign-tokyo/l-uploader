@@ -10,4 +10,5 @@ psql -v ON_ERROR_STOP=1 \
      --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<'EOSQL'
 CREATE ROLE :"app_user" LOGIN PASSWORD :'app_pass';
 GRANT SELECT, INSERT, DELETE ON TABLE public.posts TO :"app_user";
+GRANT USAGE, SELECT ON SEQUENCE public.posts_replay_id_seq TO :"app_user";
 EOSQL
