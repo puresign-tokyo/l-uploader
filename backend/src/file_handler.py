@@ -17,7 +17,7 @@ class FileHandler:
             raise FileExistsError(
                 f"Cannot save file {replay_id} — file already exists."
             )
-        with replay_file_path.open("wb") as fp:
+        with replay_file_path.open("xb") as fp:
             fp.write(rep_raw)
         logger.info(f"filename {replay_file_path} is stored")
         return {"state": "success"}
