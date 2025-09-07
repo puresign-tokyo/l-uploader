@@ -145,13 +145,6 @@ class Usecase:
 
         # read処理なのでトランザクション外でも許される
         result_file = FileHandler.get_replay_file_path(str(replay_id))
-        if result_file["state"] != "success":
-            cache_client.insert_if_not_exists(
-                f"{CACHE_NAMESPACE_DOWNLOAD_REPLAY_ID}:{replay_id}",
-                result_file,
-                CACHE_EXPIRE_SEC,
-            )
-            return result_file
 
         returning = {
             "state": "success",
