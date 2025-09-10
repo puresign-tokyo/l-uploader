@@ -2,6 +2,11 @@ export function Releases() {
   // 要素番号が小さいものほど最新であるようにすること
   const releases = [
     {
+      version: "1.0.9",
+      date: "2025-09-11",
+      changes: ["利用規約の修正：リプレイ保持期間を最大1年とした。"],
+    },
+    {
       version: "1.0.8",
       date: "2025-09-02",
       changes: ["作品限定検索でth6～th9までが正常に検索できなかったことの修正"],
