@@ -4,106 +4,78 @@
 
 ### リプレイ投稿時ユーザ入力
 
-* ユーザ名
-  * 30文字以下
-* コメント
-  * 300文字以下
-* パスワード
-  * 100文字以下
-* リプレイファイル
-  * 200KB以下
+- ユーザ名
+  - 30 文字以下
+- コメント
+  - 300 文字以下
+- パスワード
+  - 100 文字以下
+- リプレイファイル
+  - 200KB 以下
+- オプションタグ
+  - 英数字のみ、20 文字以下
+- reCAPTCHA トークン
+  - サーバ設定により必須（エンドポイントは常に受け付け）
 
-## HTTPリクエスト内容
+## HTTP リクエスト内容
 
 ### `GET /replays`
 
-- ```
-  GET /replays?
-  sort={sort_kind}&
-  order={order_kind}&
-  uploaded_date_since={uploaded_date_since}&
-  uploaded_date_until={uploaded_date_until}&
-  created_date_since={created_date_since}&
-  created_date_until={created_date_until}&
-  offset={offset_num}&
-  limit={limit_num}&
-  <!-- game_id={game_id}& -->
-  mode={mode}&
-  shot_type={shot_type}&
-  category={category}&
-  optional_tag={optional_tag}
-  ```
-- `sort_kind`
-  - `uploaded_at` (デフォルト)
-  - `created_at`
-- `order_kind`
-  - `asc` (デフォルト)
-  - `desc`
-- `[created | uploaded]_date_[since | until]`
-  - 日付指定
-  - 以上、以下を使用する
-- `offset`
-  - 0始まり開始数値
-- `limit`
-  - 50以下
-- `game_id`
-  - `all` (デフォルト)
-  - `thXX`
-  - 黄昏酒場対応後 `alco` も入れる予定
-- `mode`
-  - `all` (デフォルト)
-  - `full_game`
-  - `stage_practice`
-  - `spell_practice`
-  - `player_vs_player`
-- `shot_type`
-  - `all`
-  - 各作品のキャラ等
-  - 対応していないキャラはエラーを返したい(願望)
-- `category`
-  - `all`
-  - `score_run`
-  - `clear`
-  - `no_bomb`
-  - `no_miss`
-  - `other`
-- `optional_tag`
-  - 英数字のみ、1つだけ設定可
+- 概要: リプレイのメタデータ一覧を返す
+- リクエスト
+  - ```
+    GET /replays?
+    game_id={game_id}&
+    category={category}&
+    optional_tag={optional_tag}&
+    order={order}&
+    page={page}
+    ```
+  - `game_id`: `all`(デフォルト) または対応作品 ID
+  - `category`: `all`(デフォルト) | `score_run` | `no_bomb` | `no_miss` | `clear` | `others`
+  - `optional_tag`: 任意。英数字のみ。
+  - `order`: `asc`(デフォルト) | `desc`
+  - `page`: 0 始まりのページ番号。`-1` で最大ページ分をまとめて取得（上限あり）
 - 応答
-  - `JSON`
-    - 当てはまるリプレイについて `JSONリプレイメタデータ` の配列が返る
+  - `JSON`: `JSONリプレイメタデータ` の配列
+  - エラー
+    - 400: パラメータ不正（例: 未対応 `game_id`、不正な `page`）
+    - 500: サーバ内部エラー
 
 ### `GET /replays/count`
 
-- ```
-  GET /replays/count?
-  uploaded_after={upload_after}&
-  uploaded_before={end_time}&
-  created_after={created_after}&
-  created_before={created_before}&
-  offset={offset_num}&
-  limit={limit_num}&
-  game_id={game_id}&
-  mode={mode}&
-  shot_type={shot_type}
-  category={category}&
-  optional_tag={optional_tag}
-  ```
-- 基本的に `GET /replays` リクエストと同じ
+- 概要: 条件に合致するリプレイ件数を返す
+- リクエスト
+  - ```
+    GET /replays/count?
+    game_id={game_id}&
+    category={category}&
+    optional_tag={optional_tag}&
+    uploaded_date_since={ISO-8601}&
+    uploaded_date_until={ISO-8601}
+    ```
+  - `game_id`: `all`(デフォルト) または対応作品 ID
+  - `category`: `all`(デフォルト) | `score_run` | `no_bomb` | `no_miss` | `clear` | `others`
+  - `optional_tag`: 任意。英数字のみ、20 文字以下
+  - `uploaded_date_since`: 既定は `1970-01-01T00:00:00+09:00`（Asia/Tokyo）
+  - `uploaded_date_until`: 既定は現在時刻（Asia/Tokyo）
 - 応答
-  - `JSON`
-    - `count`
-    - フィルタ内容に当てはまるリプレイの個数が数値で返る
+  - `JSON`: `{ "count": number }`
+  - エラー
+    - 400: パラメータ不正（例: 未対応 `game_id`）
+    - 500: サーバ内部エラー
 
 ### `GET /replays/{replay_id}`
 
 - ```
   GET /replays/{replay_id}
   ```
-- 1個のリプレイファイルのメタデータを返す
+- 1 個のリプレイファイルのメタデータを返す
 - 応答
-  - `JSON`
-    - 対応するリプレイの `JSONリプレイメタデータ` が返る
+  - `JSON`: 対応する `JSONリプレイメタデータ`
+  - エラー
+    - 404: 指定 ID のリプレイなし
+    - 400: 不正リクエスト
 
 ### `GET /replays/{replay_id}/file`
 
@@ -112,7 +84,9 @@
   ```
 - リプレイファイルを返す
 - 応答
-  - ファイル応答
+  - ファイル応答（`filename` は `{game_id}_ud{replay_id変換}.rpy`）
+  - エラー
+    - 404: ファイルまたはレコードが存在しない
 
 ### `POST /replays`
 
@@ -120,27 +94,28 @@
   POST /replays
   ```
 - リクエストボディ
-  - user_name
+  - user_name (form)
     - ユーザネーム
-    - 30文字以下
-  - category
-    - `score_run`
-    - `clear`
-    - `no_bomb`
-    - `no_miss`
-    - `other`
-  - optional_tag
-    - 英数字のみ、1つだけ可
-    - 50文字以下
-  - upload_comment
-    - 300文字以下
-  - delete_password
-    - 100文字以下
-  - replay_file
-    - 200KB以下
+    - 30 文字以下
+  - category (form)
+    - `score_run` | `no_bomb` | `no_miss` | `clear` | `others`
+  - optional_tag (form)
+    - 英数字のみ、1 つだけ可
+  - upload_comment (form)
+    - 300 文字以下
+  - delete_password (form)
+    - 100 文字以下、可読文字の US-ASCII 互換のみ、空白のみは不可
+  - replay_file (file)
+    - 200KB 以下
+  - recaptcha_token (form)
+    - reCAPTCHA 検証用トークン
 - 応答
-  - `JSON`
-    - 投稿したリプレイに対応する `JSONリプレイメタデータ`
+  - 成功: `200 OK`, `JSON`: `{ "replay_id": number }`
+  - 競合: `409 Conflict`, `JSON`: `{ "replay_id": number }`（重複投稿）
+    - オプションで Conflict しないように設定可
+  - 認証失敗: `401 Unauthorized`（reCAPTCHA 失敗）
+  - レート制限: `429 Too Many Requests`
+  - 入力不正: `400 Bad Request`（長さ超過、ファイルサイズ超過 等）
 
 ### `DELETE /replays/{replay_id}`
 
@@ -148,11 +123,16 @@
   DELETE /replays/{replay_id}
   ```
 - リクエストボディ
-  - delete_password
-    - 100文字以下
+  - delete_password (json)
+    - 100 文字以下
+  - recaptcha_token (json)
+    - reCAPTCHA 検証用トークン
 - 応答
-  - 成功応答だけを返す
-
+  - 成功: `200 OK`（空レスポンス）
+  - 404: リプレイが存在しない
+  - 403: パスワード不一致
+  - 401: reCAPTCHA 失敗
+  - 429: レート制限
 
 ### `DELETE /internal/replays/{replay_id}`
 
@@ -161,19 +141,53 @@
   ```
 - 削除パスワード無しでリプレイ削除できる
 - 応答
-  - 成功応答だけを返す
+  - `200 OK`（空レスポンス）
+
+### `DELETE /internal/replays`
+
+- ```
+  DELETE /internal/replays?uploaded_until={ISO-8601}
+  ```
+- 指定日時（既定: 現在-365 日, Asia/Tokyo）以前の投稿を一括削除
+- 応答: `200 OK`（空レスポンス）
+
+### `DELETE /internal/cache/ratelimit_ip`
+
+- ```
+  DELETE /internal/cache/ratelimit_ip?ip_addr={IPv4/IPv6}
+  ```
+- 指定 IP のレート制限カウンタを削除
+- 応答: `200 OK`（空レスポンス）
+
+### `POST /internal/integrity_sync`
+
+- ```
+  POST /internal/integrity_sync
+  ```
+- 内部整合性チェック・同期を実行
+- 応答: `200 OK`（空レスポンス）
 
 ### `GET /alcohol`
 
 - ```
   GET /alcohol
   ```
-- `418 I'm a teapot` を返す
-- detail は `I can't give you alcohol, because I am a little teapot.`
-- `cooktail` `wine` `sake` `beer` も同じ挙動を取る
+- `/teapot` にリダイレクトし、結果的に `418 I'm a teapot` を返す
+- `cocktail` `wine` `sake` `beer` も同様に `/teapot` へリダイレクト
 
-## JSONリプレイメタデータ
-- `game_id` と `stage_details` というキーを含んでいるJSONデータ
+### `GET /teapot`
+
+- `418 I'm a teapot` を返す
+- `detail`: `I can't serve you alcohol, because I am a little teapot. But I can pour you some Returner Liqueur instead.`
+
+### `GET /returner`
+
+- `200 OK` を返す
+- `JSON`: `{ "name": "Returner Liqueur", "type": "tea liqueur", "abv": "24%", "note": "..." }`
+
+## JSON リプレイメタデータ
+
+- `game_id` と `stage_details` というキーを含んでいる JSON データ
   - `game_id` は `thXX` 等から始まるゲーム識別子
   - `stage_details` は各面の詳細データが辞書形式で詰まった配列
     - スペルカードのリプレイや、小数作品でそもそも面の概念がない場合は空のリストが入る
@@ -181,11 +195,3 @@
     - 各作品毎に任意のキーが入るのでクライアント側で良しなに解釈する
 - `game_id` と `stage_details` 以外は各作品によって入るキーが異なる。
   - クライアント側で良しなに解釈する
-
-
-## フロントエンドの概要
-
-- 投稿一覧ページの仕様
-  - 作品ごちゃまぜ
-  - ゲーム毎
-    - 機体
