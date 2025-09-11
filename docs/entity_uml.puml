@@ -1,0 +1,79 @@
+@startuml エンティティ図
+title TH Uploader — エンティティ概要
+
+' データストア全体像
+skinparam classAttributeIconSize 0
+skinparam classAttributeSortAlphabetically false
+
+package "PostgreSQL" {
+  class posts {
+    + replay_id: SERIAL <<主キー>>
+    + game_id: TEXT
+    + user_name: TEXT
+    + uploaded_at: TIMESTAMPTZ
+    + upload_comment: TEXT
+    + category: TEXT <<enum>>
+    + optional_tag: TEXT
+    + delete_password: TEXT
+    + salt: TEXT
+    + file_digest: TEXT
+  }
+
+  note top of posts
+    delete_password は PBKDF2(pepper付き) で保存。
+  end note
+
+  enum category_values {
+    score_run
+    no_bomb
+    no_miss
+    clear
+    others
+  }
+
+  posts .. category_values : category ∈
+}
+
+package "MongoDB" {
+  class replays {
+    + _id: string <<主キー>>   ' posts.replay_id を文字列化
+    + game_id: string
+    + stage_details: list<StageDetail>
+    .. 可変(ゲーム依存) ..
+    + version?: string
+    + player?: string
+    + score?: number
+    + difficulty?: string
+    + character?: string
+    + etc...
+  }
+
+  note bottom of replays
+    単一コレクション(replays)で全ての作品の
+    メタデータを保持。詳細フィールドは
+    作品ごとに異なるためここでは代表例のみを記載。
+    backend/src/games/thXX/thXX_replay_info.pyがデータの定義。
+    それに従ってparseした結果をMongoDBに入れている。
+  end note
+}
+
+' File System（/home/app/replays）
+package "File System" {
+  class replay_files {
+    + path: "/home/app/replays"
+    + filename: string <<主キー>>  ' replay_id と同一
+    + content: binary (.rpy)
+  }
+
+  note bottom of replay_files
+    ファイル名は数値のみ(1〜32桁)。
+    例:  "12345" → /home/app/replays/12345
+    パストラバーサル防止と存在確認を実装。
+  end note
+}
+
+' Cross-store リレーション（すべて1:1）
+posts "1" -- "1" replays : replay_id = _id
+posts "1" -- "1" replay_files : replay_id = filename
+
+@enduml
