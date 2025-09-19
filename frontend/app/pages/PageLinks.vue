@@ -26,8 +26,21 @@
 
 <script setup>
 const externalLinks = [
-  { path: "https://wefma.net", label: "開発者のホームページ" },
-  { path: "https://info.puresign.tokyo", label: "運用者のホームページ" },
-  { path: "http://silentselene.net", label: "silentselene.net" },
+  {
+    path: "https://blog.l-uploader.puresign.tokyo",
+    label: "えるろだ開発ブログ",
+  },
+  {
+    path: "https://wefma.net",
+    label: "開発者のホームページ",
+  },
+  {
+    path: "https://info.puresign.tokyo",
+    label: "運用者のホームページ",
+  },
+  {
+    path: "http://silentselene.net",
+    label: "silentselene.net",
+  },
 ];
 </script>
