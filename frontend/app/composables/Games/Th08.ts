@@ -820,6 +820,7 @@ export function Th08Table(replay: Th08Replay) {
             break;
           case "9":
             stageLabel = "Ex";
+            break;
           default:
             stageLabel = stage.stage;
         }
