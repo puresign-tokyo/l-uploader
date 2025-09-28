@@ -23,7 +23,21 @@
                 accept=".rpy"
                 label="リプレイファイル(*.rpy)"
                 :rules="[validateReplayFile]"
-              ></v-file-input>
+                persistent-hint
+              >
+                <template #details>
+                  <div class="text-caption">
+                    リプレイファイルの場所は
+                    <NuxtLink
+                      to="/About#explain-replay-path"
+                      class="text-primary"
+                    >
+                      リプレイファイルの保存場所
+                    </NuxtLink>
+                    をご覧ください。
+                  </div>
+                </template>
+              </v-file-input>
             </v-col>
           </v-row>
 
