@@ -34,9 +34,11 @@
               ダブルスポイラー以降
             </h3>
             <ul class="pl-6 text-body-1" style="line-height: 1.8">
-              <v-code>
-                C:\Users\(ユーザー名)\AppData\Roaming\ShanghaiAlice
-              </v-code>
+              <li>
+                <v-code>
+                  C:\Users\(ユーザー名)\AppData\Roaming\ShanghaiAlice
+                </v-code>
+              </li>
             </ul>
             <p>
               ただしAppDataフォルダは隠しフォルダのため、
