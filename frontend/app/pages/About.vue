@@ -9,6 +9,52 @@
           minWidth: '0',
         }"
         class="mb-5 px-6"
+        id="explain-replay-path"
+      >
+        <v-card-title class="text-h5 font-weight-bold px-0">
+          リプレイファイルの場所
+        </v-card-title>
+        <v-divider />
+
+        <v-card-text class="terms-content mt-3">
+          <section class="mb-4">
+            <h3 class="text-subtitle-1 font-weight-medium">星蓮船までの作品</h3>
+            <p>次のいずれか</p>
+            <ul class="pl-6 text-body-1" style="line-height: 1.8">
+              <li>ゲーム内の<v-code>replay</v-code>フォルダ</li>
+              <li>
+                <v-code>
+                  C:\Users\(ユーザー名)\AppData\Local\VirtualStore
+                </v-code>
+              </li>
+            </ul>
+          </section>
+          <section class="mb-4">
+            <h3 class="text-subtitle-1 font-weight-medium">
+              ダブルスポイラー以降
+            </h3>
+            <ul class="pl-6 text-body-1" style="line-height: 1.8">
+              <v-code>
+                C:\Users\(ユーザー名)\AppData\Roaming\ShanghaiAlice
+              </v-code>
+            </ul>
+            <p>
+              ただしAppDataフォルダは隠しフォルダのため、
+              <v-code>Windows 隠しフォルダ 表示</v-code>
+              等で調べて表示できるようにしておくこと
+            </p>
+          </section>
+        </v-card-text>
+      </v-card>
+
+      <v-card
+        elevation="4"
+        :style="{
+          alignItems: 'stretch',
+          minHeight: '170px',
+          minWidth: '0',
+        }"
+        class="mb-5 px-6"
       >
         <v-card-title class="text-h5 font-weight-bold px-0">
           対応作品一覧

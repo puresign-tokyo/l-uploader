@@ -41,12 +41,12 @@
             新規投稿
           </v-btn>
           <v-btn
-            to="/About"
+            to="/About#explain-replay-path"
             color="secondary"
             variant="outlined"
             prepend-icon="mdi-information-outline"
           >
-            対応作品
+            リプレイファイルの場所
           </v-btn>
         </v-card-actions>
 
