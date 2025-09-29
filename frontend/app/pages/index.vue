@@ -32,22 +32,29 @@
         </v-card-text>
 
         <v-card-actions class="mt-3">
-          <v-btn
-            to="/NewPost"
-            color="primary"
-            variant="elevated"
-            prepend-icon="mdi-upload"
-          >
-            新規投稿
-          </v-btn>
-          <v-btn
-            to="/About#explain-replay-path"
-            color="secondary"
-            variant="outlined"
-            prepend-icon="mdi-information-outline"
-          >
-            リプレイファイルの場所
-          </v-btn>
+          <v-row dense>
+            <v-col cols="12" md="auto">
+              <v-btn
+                to="/NewPost"
+                color="primary"
+                variant="elevated"
+                prepend-icon="mdi-upload"
+              >
+                新規投稿
+              </v-btn>
+            </v-col>
+
+            <v-col cols="12" md="auto">
+              <v-btn
+                to="/About#explain-replay-path"
+                color="secondary"
+                variant="outlined"
+                prepend-icon="mdi-information-outline"
+              >
+                リプレイファイルの保存場所
+              </v-btn>
+            </v-col>
+          </v-row>
         </v-card-actions>
 
         <v-divider class="my-4" />
@@ -165,6 +172,7 @@
 
 <script setup>
 import { ref, watch } from "vue";
+import { useDisplay } from "vuetify";
 import { ClientOnly } from "#components";
 
 import ReplayTable from "~/components/ReplayTable.vue";
@@ -197,6 +205,7 @@ import { AlcoTable } from "~/composables/Games/Alco";
 import { Releases } from "~/composables/ReleaseNotes";
 
 const replays = ref([]);
+const display = useDisplay();
 const loadingReplayMeta = ref(true);
 const loadingReplayCounts = ref(true);
 const deleteDialog = ref(false);

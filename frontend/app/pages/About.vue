@@ -12,7 +12,7 @@
         id="explain-replay-path"
       >
         <v-card-title class="text-h5 font-weight-bold px-0">
-          リプレイファイルの場所
+          リプレイファイルの保存場所
         </v-card-title>
         <v-divider />
 
