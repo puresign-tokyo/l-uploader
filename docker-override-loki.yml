@@ -1,0 +1,17 @@
+x-logging-loki: &logging_loki
+  driver: loki
+  options:
+    loki-url: ${LOKI_URL}
+    loki-external-labels: ${LOKI_LABEL}
+
+services:
+  backend:
+    logging: *logging_loki
+  frontend:
+    logging: *logging_loki
+  redis:
+    logging: *logging_loki
+  mongodb:
+    logging: *logging_loki
+  postgresql:
+    logging: *logging_loki

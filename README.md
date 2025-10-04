@@ -71,10 +71,19 @@
    RECAPTCHA_ENABLED={True/False}
    RECAPTCHA_SITEKEY={サイトキー}
    RECAPTCHA_SECRET={シークレット}
+
+   # loki環境がある場合のみ
+   LOG_DRIVER=loki
+   LOKI_URL=http://loki.example.com/loki/api/v1/push
+   LOKI_LABEL="env=DEV"
    ```
 
    補足: `STRETCH_NUMBER` は 600000 以上を指定してください（セキュリティ要件）。
 
 2. ソースの変更は不要です。CORS の許可元は `.env` の `ALLOW_FRONTEND_ORIGIN` で設定されます。
 
-3. `sudo docker compose up --build`
+3. コンテナを起動する
+   - loki 環境がない場合
+     - `sudo docker compose up --build`
+   - loki 環境がある場合
+     - `sudo docker compose -f docker-compose.yml -f docker-override-loki.yml up --build`
