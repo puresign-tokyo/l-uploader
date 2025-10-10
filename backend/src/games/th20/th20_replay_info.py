@@ -9,7 +9,7 @@ class TH20ReplayInfo(BaseModel, ReplayInfo):
     shot_type: str = ""
     equipment: list[str] = []
     difficulty: int = -1
-    total_score: int = Field(..., ge=0, le=20000000000)
+    total_score: int = Field(..., ge=0, le=30000000000)
     timestamp: datetime
     slowdown: float = Field(..., ge=0, le=100)
 
