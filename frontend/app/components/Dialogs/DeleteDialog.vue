@@ -6,8 +6,12 @@
     attach="body"
   >
     <v-card
-      :title="`${props.filename}を削除する`"
-      text="削除用パスワードを入力してください"
+      :title="
+        i18nT('components.dialogs.delete_dialog.template.delete.title', {
+          filename: props.filename,
+        })
+      "
+      :text="i18nT('components.dialogs.delete_dialog.template.delete.text')"
       class="elevation-0"
     >
       <v-card-text>
@@ -16,7 +20,11 @@
             <v-text-field
               v-model="deletePassword"
               max-width="360px"
-              label="削除用パスワード"
+              :label="
+                i18nT(
+                  'components.dialogs.delete_dialog.template.delete.contents.password_text_field.label'
+                )
+              "
               required
               inputmode="latin"
               :counter="config.delete_password_length_limit"
@@ -42,10 +50,22 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn text="閉じる" variant="plain" @click="deleteDialog = false" />
+        <v-btn
+          :text="
+            i18nT(
+              'components.dialogs.delete_dialog.template.delete.contents.button_close'
+            )
+          "
+          variant="plain"
+          @click="deleteDialog = false"
+        />
         <v-btn
           color="error"
-          text="削除"
+          :text="
+            i18nT(
+              'components.dialogs.delete_dialog.template.delete.contents.button_delete'
+            )
+          "
           variant="tonal"
           @click="sendDeleteReplay"
         />
@@ -56,7 +76,8 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-
+import { useI18n } from "#imports";
+const { t: i18nT } = useI18n();
 const deletePassword = ref("");
 const showPassword = ref(false);
 const deleteDialog = defineModel<boolean>();
@@ -73,16 +94,25 @@ function isUseNonVisibleASCII(val: string) {
 
 const validateDeletePassword = (value: string) => {
   if (value.length === 0) {
-    return "必ず入力してください";
+    return i18nT(
+      "components.dialogs.delete_dialog.scripts.validation.delete_password_required"
+    );
   }
   if (value.length > Number(config.delete_password_length_limit)) {
-    return config.delete_password_length_limit + "文字以内で入力してください";
+    return i18nT(
+      "components.dialogs.delete_dialog.scripts.validation.delete_password_length_limit_exceed",
+      { delete_password_length_limit: config.delete_password_length_limit }
+    );
   }
   if (isUseNonVisibleASCII(value)) {
-    return "半角のASCII可視文字のみが許容されています。";
+    return i18nT(
+      "components.dialogs.delete_dialog.scripts.validation.delete_password_is_only_ascii"
+    );
   }
   if (value.trim().length === 0) {
-    return "スペースのみの入力はしないでください";
+    return i18nT(
+      "components.dialogs.delete_dialog.scripts.validation.delete_password_do_not_only_space"
+    );
   }
   return true;
 };
@@ -107,7 +137,9 @@ async function sendDeleteReplay() {
   if (isUseNonVisibleASCII(deletePassword.value)) {
     emit("result", {
       success: false,
-      message: "パスワードは半角のASCII可視文字のみが許容されています。",
+      message: i18nT(
+        "components.dialogs.delete_dialog.scripts.validation.delete_password_is_only_ascii"
+      ),
       page_reload: false,
     });
     return;
@@ -115,7 +147,9 @@ async function sendDeleteReplay() {
   if (deletePassword.value === "") {
     emit("result", {
       success: false,
-      message: "パスワードを入力してください",
+      message: i18nT(
+        "components.dialogs.delete_dialog.scripts.validation.delete_password_required"
+      ),
       page_reload: false,
     });
     return;
@@ -125,7 +159,10 @@ async function sendDeleteReplay() {
   ) {
     emit("result", {
       success: false,
-      message: `パスワードの文字数が${config.delete_password_length_limit}文字より多いです`,
+      message: i18nT(
+        "components.dialogs.delete_dialog.scripts.validation.delete_password_length_limit_exceed",
+        { delete_password_length_limit: config.delete_password_length_limit }
+      ),
       page_reload: false,
     });
     return;
@@ -133,7 +170,9 @@ async function sendDeleteReplay() {
   if (deletePassword.value.trim().length === 0) {
     emit("result", {
       success: false,
-      message: "空白文字のみのパスワードは禁止されています",
+      message: i18nT(
+        "components.dialogs.delete_dialog.scripts.validation.delete_password_do_not_only_space"
+      ),
       page_reload: false,
     });
     return;
@@ -148,7 +187,9 @@ async function sendDeleteReplay() {
   if (config.recaptcha_enabled && !response) {
     emit("result", {
       success: false,
-      message: "reCAPTCHAを確認してください",
+      message: i18nT(
+        "components.dialogs.delete_dialog.scripts.validation.recaptcha_required"
+      ),
       page_reload: false,
     });
     return;
@@ -168,7 +209,9 @@ async function sendDeleteReplay() {
           deleteDialog.value = false;
           emit("result", {
             success: true,
-            message: "削除しました",
+            message: i18nT(
+              "components.dialogs.delete_dialog.scripts.http_requested.success"
+            ),
             page_reload: true,
           });
         }
@@ -182,10 +225,13 @@ async function sendDeleteReplay() {
     };
     let msg;
     if (e?.data?.detail === "password mismatch") {
-      msg = "パスワードが違います";
+      msg = i18nT(
+        "components.dialogs.delete_dialog.scripts.http_requested.password_mismatch"
+      );
     } else if (e?.statusCode === 429) {
-      msg =
-        "短時間で何回もパスワードを間違えています。時間を置いて削除してください。";
+      msg = i18nT(
+        "components.dialogs.delete_dialog.scripts.http_requested.too_many_requested"
+      );
     } else {
       msg = `${e.statusCode};${e.statusMessage};${e.data?.detail}`;
     }

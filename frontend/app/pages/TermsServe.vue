@@ -2,232 +2,566 @@
   <v-main>
     <v-container class="fill-height d-flex align-center justify-center">
       <v-card class="pa-4" elevation="3" rounded="lg" max-width="800">
-        <v-card-title class="text-h6 font-weight-bold"> 利用規約 </v-card-title>
+        <v-card-title class="text-h6 font-weight-bold">
+          {{ i18nT("pages.terms_serve.template.terms_serve.title") }}
+        </v-card-title>
         <v-card-subtitle class="text-caption mb-2">
-          最終更新日：2025年9月11日
+          {{ i18nT("pages.terms_serve.template.terms_serve.subtitle") }}
         </v-card-subtitle>
         <v-divider />
 
         <v-card-text class="terms-content mt-3">
           <section class="mb-4">
-            <h3 class="text-subtitle-2 font-weight-medium">第1条（適用）</h3>
-            <ol class="pl-6">
-              <li>
-                本規約は，ユーザーと管理者との間の本サービスの利用に係る一切の関係に適用されるものとします。
-              </li>
-              <li>
-                本サービスは日本国内向けであり、EU域内からの利用は禁止します。管理者は、EU域内の利用者についてGDPR上の義務を負いません。
-              </li>
-            </ol>
-          </section>
-          <section class="mb-4">
             <h3 class="text-subtitle-2 font-weight-medium">
-              第2条（リプレイの登録）
+              {{
+                i18nT(
+                  "pages.terms_serve.template.terms_serve.sections.article01.title"
+                )
+              }}
             </h3>
             <ol class="pl-6">
               <li>
-                本サービスにおいては，ユーザーが本規約に同意の上，管理者の定める方法によってリプレイを投稿することができます。
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article01.contents.lists.scope"
+                  )
+                }}
               </li>
               <li>
-                本サービスにおいては，1ユーザーにつき複数投稿をすることができます。ただし，1ユーザーが短時間に複数投稿をした場合は管理者の判断によって一定時間投稿停止させることがあります。
-              </li>
-              <li>
-                投稿されたリプレイの保持期間は原則として投稿日から1年間とし、期間経過後はユーザーによる削除の有無にかかわらず自動的に削除されます。
-                ただし、システム障害その他の事由により、保持期間に満たない時点でリプレイが削除または消失する場合があります。
-                この場合に生じた損害について、管理者は一切の責任を負わないものとします。
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article01.contents.lists.only_japan"
+                  )
+                }}
               </li>
             </ol>
           </section>
           <section class="mb-4">
             <h3 class="text-subtitle-2 font-weight-medium">
-              第3条（リプレイの削除・パスワードの管理）
+              {{
+                i18nT(
+                  "pages.terms_serve.template.terms_serve.sections.article02.title"
+                )
+              }}
             </h3>
             <ol class="pl-6">
               <li>
-                ユーザーは，自己の責任において，リプレイ投稿時に設定した削除用パスワードを適切に管理するものとします。
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article02.contents.lists.replay_post_enable"
+                  )
+                }}
               </li>
               <li>
-                管理者は，リプレイと削除パスワードの組み合わせが登録情報と一致したうえで削除要求された場合には，そのリプレイを登録しているユーザー自身による削除要求とみなしリプレイを削除します。
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article02.contents.lists.multi_post_enable"
+                  )
+                }}
               </li>
               <li>
-                削除パスワードが第三者によって使用されたことによって生じた損害は，管理者に故意又は重大な過失がある場合を除き，管理者は一切の責任を負わないものとします。
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article02.contents.lists.replay_store_limit"
+                  )
+                }}
               </li>
             </ol>
           </section>
           <section class="mb-4">
             <h3 class="text-subtitle-2 font-weight-medium">
-              第4条（禁止事項）
+              {{
+                i18nT(
+                  "pages.terms_serve.template.terms_serve.sections.article03.title"
+                )
+              }}
+            </h3>
+            <ol class="pl-6">
+              <li>
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article03.contents.lists.user_stores_password"
+                  )
+                }}
+              </li>
+              <li>
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article03.contents.lists.delete_with_password"
+                  )
+                }}
+              </li>
+              <li>
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article03.contents.lists.third_person_use_password"
+                  )
+                }}
+              </li>
+            </ol>
+          </section>
+          <section class="mb-4">
+            <h3 class="text-subtitle-2 font-weight-medium">
+              {{
+                i18nT(
+                  "pages.terms_serve.template.terms_serve.sections.article04.title"
+                )
+              }}
             </h3>
             <p>
-              ユーザーは本サービスの利用にあたり、以下の行為をしてはなりません。これらの行為が確認されたユーザーに対して，管理者はユーザーが投稿したリプレイの削除，及びユーザの利用停止を行うことが可能です。ただし，当該行為が明らかにジョークやパロディ等の『ネタ』であり，かつ他者の権利侵害や迷惑を伴わないと管理者が判断した場合は，この限りではありません。
+              {{
+                i18nT(
+                  "pages.terms_serve.template.terms_serve.sections.article04.contents.paragraph"
+                )
+              }}
             </p>
             <ol class="pl-6">
-              <li>法令または公序良俗に違反する行為</li>
-              <li>犯罪行為に関連する行為</li>
               <li>
-                管理者，本サービスの他のユーザー，または第三者のサーバーまたはネットワークの機能を破壊したり，妨害したりする行為
-              </li>
-              <li>管理者の管理するサービスの運営を妨害するおそれのある行為</li>
-              <li>他のユーザーに関する個人情報等を収集または蓄積する行為</li>
-              <li>不正アクセスをし，またはこれを試みる行為</li>
-              <li>他のユーザーに成りすます行為</li>
-              <li>
-                管理者の管理するサービスに関連して，反社会的勢力に対して直接または間接に利益を供与する行為
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article04.contents.lists.illegal"
+                  )
+                }}
               </li>
               <li>
-                管理者，本サービスの他のユーザーまたは第三者の知的財産権，肖像権，プライバシー，名誉その他の権利または利益を侵害する行為
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article04.contents.lists.crime"
+                  )
+                }}
               </li>
               <li>
-                以下の表現を含み，または含むと管理者が判断する内容を本サービス上に投稿し，または送信する行為
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article04.contents.lists.cyber_attack"
+                  )
+                }}
+              </li>
+              <li>
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article04.contents.lists.obstruct_service"
+                  )
+                }}
+              </li>
+              <li>
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article04.contents.lists.steal_personal_info"
+                  )
+                }}
+              </li>
+              <li>
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article04.contents.lists.unauthorized_access"
+                  )
+                }}
+              </li>
+              <li>
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article04.contents.lists.impersonation"
+                  )
+                }}
+              </li>
+              <li>
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article04.contents.lists.anti_social"
+                  )
+                }}
+              </li>
+              <li>
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article04.contents.lists.violation_of_rights"
+                  )
+                }}
+              </li>
+              <li>
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article04.contents.lists.posts_contents.text"
+                  )
+                }}
                 <ul class="pl-6">
-                  <li>過度に暴力的な表現</li>
-                  <li>露骨な性的表現</li>
                   <li>
-                    人種，国籍，信条，性別，社会的身分，門地等による差別につながる表現
+                    {{
+                      i18nT(
+                        "pages.terms_serve.template.terms_serve.sections.article04.contents.lists.posts_contents.lists.violence"
+                      )
+                    }}
                   </li>
-                  <li>自殺，自傷行為，薬物乱用を誘引または助長する表現</li>
-                  <li>その他反社会的な内容を含み他人に不快感を与える表現</li>
+                  <li>
+                    {{
+                      i18nT(
+                        "pages.terms_serve.template.terms_serve.sections.article04.contents.lists.posts_contents.lists.sexual"
+                      )
+                    }}
+                  </li>
+                  <li>
+                    {{
+                      i18nT(
+                        "pages.terms_serve.template.terms_serve.sections.article04.contents.lists.posts_contents.lists.discrimination"
+                      )
+                    }}
+                  </li>
+                  <li>
+                    {{
+                      i18nT(
+                        "pages.terms_serve.template.terms_serve.sections.article04.contents.lists.posts_contents.lists.suicide"
+                      )
+                    }}
+                  </li>
+                  <li>
+                    {{
+                      i18nT(
+                        "pages.terms_serve.template.terms_serve.sections.article04.contents.lists.posts_contents.lists.others"
+                      )
+                    }}
+                  </li>
                 </ul>
               </li>
-              <li>宗教活動または宗教団体への勧誘行為</li>
-              <li>その他，管理者が不適切と判断する行為</li>
+              <li>
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article04.contents.lists.religion"
+                  )
+                }}
+              </li>
+              <li>
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article04.contents.lists.others"
+                  )
+                }}
+              </li>
             </ol>
           </section>
           <section class="mb-4">
             <h3 class="text-subtitle-2 font-weight-medium">
-              第5条（本サービスの提供の停止等）
+              {{
+                i18nT(
+                  "pages.terms_serve.template.terms_serve.sections.article05.title"
+                )
+              }}
             </h3>
             <ol class="pl-6">
               <li>
-                管理者は，以下のいずれかの事由があると判断した場合，ユーザーに事前に通知することなく本サービスの全部または一部の提供を停止または中断することができるものとします。
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article05.contents.lists.conditions_of_service_stop.text"
+                  )
+                }}
                 <ul class="pl-6">
                   <li>
-                    本サービスにかかるコンピュータシステムの保守点検または更新を行う場合
+                    {{
+                      i18nT(
+                        "pages.terms_serve.template.terms_serve.sections.article05.contents.lists.conditions_of_service_stop.lists.maintenance"
+                      )
+                    }}
                   </li>
                   <li>
-                    地震，落雷，火災，停電または天災などの不可抗力により，本サービスの提供が困難となった場合
+                    {{
+                      i18nT(
+                        "pages.terms_serve.template.terms_serve.sections.article05.contents.lists.conditions_of_service_stop.lists.disaster"
+                      )
+                    }}
                   </li>
-                  <li>コンピュータまたは通信回線等が事故により停止した場合</li>
-                  <li>その他，管理者が本サービスの提供が困難と判断した場合</li>
+                  <li>
+                    {{
+                      i18nT(
+                        "pages.terms_serve.template.terms_serve.sections.article05.contents.lists.conditions_of_service_stop.lists.cyber_incident"
+                      )
+                    }}
+                  </li>
+                  <li>
+                    {{
+                      i18nT(
+                        "pages.terms_serve.template.terms_serve.sections.article05.contents.lists.conditions_of_service_stop.lists.others"
+                      )
+                    }}
+                  </li>
                 </ul>
               </li>
               <li>
-                管理者は，本サービスの提供の停止または中断により，ユーザーまたは第三者が被ったいかなる不利益または損害についても，一切の責任を負わないものとします。
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article05.contents.lists.user_disadvantage"
+                  )
+                }}
               </li>
               <li>
-                本サービスが終了する場合，第10条に示す個人情報等を含む、本サービス運営により取得・保存したユーザー関連データをすべて破棄します。なお、本サービスの運営に用いたプログラムやソースコードは削除対象に含まれません。
-              </li>
-            </ol>
-          </section>
-          <section class="mb-4">
-            <h3 class="text-subtitle-2 font-weight-medium">第6条（著作権）</h3>
-            <ol class="pl-6">
-              <li>
-                ユーザーは，自ら作成したリプレイ，及び第三者の作成したリプレイを投稿することができます。ただしこれはリプレイ作成を行った第三者とリプレイを投稿した人の間で合意があって投稿したと管理者はみなし，当事者間で起きたトラブルには管理者は一切責任を負わないものとします。
-              </li>
-              <li>
-                ユーザーが本サービスを利用して投稿ないしアップロードしたリプレイ，文章等については，当該ユーザーに留保されるものとします。ただし，管理者は，本サービスを利用して投稿ないしアップロードされたリプレイ，文章等について，本サービスの改良，品質の向上，または不備の是正等ならびに本サービスの周知宣伝等に必要な範囲で利用できるものとし，ユーザーは，この利用に関して，著作者人格権を行使しないものとします。
-              </li>
-              <li>
-                本サービスは東方Project二次創作ガイドラインに準拠して運営されます。ユーザーは，リプレイの投稿にあたり，当該ガイドラインその他関係する著作権規定に従うものとし，原作権利者または権利管理者から削除要請があった場合には，管理者は当該リプレイを削除できるものとします。
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article05.contents.lists.service_end"
+                  )
+                }}
               </li>
             </ol>
           </section>
           <section class="mb-4">
             <h3 class="text-subtitle-2 font-weight-medium">
-              第7条（保証の否認および免責事項）
+              {{
+                i18nT(
+                  "pages.terms_serve.template.terms_serve.sections.article06.title"
+                )
+              }}
             </h3>
             <ol class="pl-6">
               <li>
-                管理者は，本サービスに事実上または法律上の瑕疵（安全性，信頼性，正確性，完全性，有効性，特定の目的への適合性，セキュリティなどに関する欠陥，エラーやバグ，権利侵害などを含みます。）がないことを明示的にも黙示的にも保証しておりません。
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article06.contents.lists.enable_posts_replays"
+                  )
+                }}
               </li>
               <li>
-                管理者は，本サービスに起因してユーザーに生じたあらゆる損害について，管理者の故意又は重過失による場合を除き，一切の責任を負いません。ただし，本サービスに関する管理者とユーザーとの間の契約（本規約を含みます。）が消費者契約法に定める消費者契約となる場合，この免責規定は適用されません。
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article06.contents.lists.posts_info_rights"
+                  )
+                }}
               </li>
               <li>
-                前項ただし書に定める場合であっても，管理者は，管理者の過失（重過失を除きます。）による債務不履行または不法行為によりユーザーに生じた損害のうち特別な事情から生じた損害（管理者またはユーザーが損害発生につき予見し，または予見し得た場合を含みます。）について一切の責任を負いません。
-              </li>
-              <li>
-                管理者は，本サービスに関して，ユーザーと他のユーザーまたは第三者との間において生じた取引，連絡または紛争等について一切責任を負いません。
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article06.contents.lists.compatible_fun_work_guideline"
+                  )
+                }}
               </li>
             </ol>
           </section>
           <section class="mb-4">
             <h3 class="text-subtitle-2 font-weight-medium">
-              第8条（サービス内容の変更など）
+              {{
+                i18nT(
+                  "pages.terms_serve.template.terms_serve.sections.article07.title"
+                )
+              }}
+            </h3>
+            <ol class="pl-6">
+              <li>
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article07.contents.lists.disclaimer_of_warranties"
+                  )
+                }}
+              </li>
+              <li>
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article07.contents.lists.user_damage"
+                  )
+                }}
+              </li>
+              <li>
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article07.contents.lists.special_circumstance"
+                  )
+                }}
+              </li>
+              <li>
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article07.contents.lists.user_and_third_person"
+                  )
+                }}
+              </li>
+            </ol>
+          </section>
+          <section class="mb-4">
+            <h3 class="text-subtitle-2 font-weight-medium">
+              {{
+                i18nT(
+                  "pages.terms_serve.template.terms_serve.sections.article08.title"
+                )
+              }}
             </h3>
             <p>
-              管理者は，ユーザーへの予告なく，本サービスの内容を変更，追加または廃止することがあり，ユーザーはこれを承諾するものとします。
+              {{
+                i18nT(
+                  "pages.terms_serve.template.terms_serve.sections.article08.contents.paragraph"
+                )
+              }}
             </p>
           </section>
           <section class="mb-4">
             <h3 class="text-subtitle-2 font-weight-medium">
-              第9条（利用規約の変更）
+              {{
+                i18nT(
+                  "pages.terms_serve.template.terms_serve.sections.article09.title"
+                )
+              }}
             </h3>
             <ol class="pl-6">
               <li>
-                管理者は以下の場合には，ユーザーの個別の同意を要せず，本規約を変更することができるものとします。
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article09.contents.lists.conditions_of_change_terms_serve.text"
+                  )
+                }}
                 <ol class="pl-6">
-                  <li>本規約の変更がユーザーの一般の利益に適合するとき。</li>
                   <li>
-                    本規約の変更が本サービス利用契約の目的に反せず，かつ，変更の必要性，変更後の内容の相当性その他の変更に係る事情に照らして合理的なものであるとき。
+                    {{
+                      i18nT(
+                        "pages.terms_serve.template.terms_serve.sections.article09.contents.lists.conditions_of_change_terms_serve.lists.compatible_user_advantage"
+                      )
+                    }}
+                  </li>
+                  <li>
+                    {{
+                      i18nT(
+                        "pages.terms_serve.template.terms_serve.sections.article09.contents.lists.conditions_of_change_terms_serve.lists.rationality"
+                      )
+                    }}
                   </li>
                 </ol>
               </li>
               <li>
-                管理者は，ユーザーに対し，X(旧Twitter)，または適切な方法により，事前に本規約を変更する旨および変更後の内容並びにその効力発生時期を通知します。
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article09.contents.lists.press_release"
+                  )
+                }}
               </li>
             </ol>
           </section>
           <section class="mb-4">
             <h3 class="text-subtitle-2 font-weight-medium">
-              第10条（個人情報の取り扱い）
+              {{
+                i18nT(
+                  "pages.terms_serve.template.terms_serve.sections.article10.title"
+                )
+              }}
             </h3>
             <ol class="pl-6">
               <li>
-                管理者は，ユーザーから提供された削除パスワード，またはその他個人を特定できる情報（以下「個人情報等」といいます）を、適切に取り扱うものとし、プライバシーの保護に関して安全管理措置を講じます。
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article10.contents.lists.store_personal_info_secure"
+                  )
+                }}
               </li>
               <li>
-                管理者は、取得した個人情報等を以下の目的のために利用します。
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article10.contents.lists.personal_info_usecase.text"
+                  )
+                }}
                 <ol class="pl-6">
-                  <li>本サービスの提供および運営のため</li>
                   <li>
-                    利用状況の分析やサービス改善のため（個人を特定しない範囲での統計データ作成を含む）
+                    {{
+                      i18nT(
+                        "pages.terms_serve.template.terms_serve.sections.article10.contents.lists.personal_info_usecase.lists.operation"
+                      )
+                    }}
+                  </li>
+                  <li>
+                    {{
+                      i18nT(
+                        "pages.terms_serve.template.terms_serve.sections.article10.contents.lists.personal_info_usecase.lists.improve_service"
+                      )
+                    }}
                   </li>
                 </ol>
               </li>
               <li>
-                管理者は，次のいずれかに該当する場合を除き，個人情報等を第三者に開示または提供しません。
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article10.contents.lists.exception_of_disclosure_personal_info.text"
+                  )
+                }}
                 <ol class="pl-6">
-                  <li>ユーザー本人の同意がある場合</li>
-                  <li>法令に基づき開示を求められた場合</li>
                   <li>
-                    人の生命、身体または財産の保護のために必要があり、本人の同意を得ることが困難な場合
+                    {{
+                      i18nT(
+                        "pages.terms_serve.template.terms_serve.sections.article10.contents.lists.exception_of_disclosure_personal_info.lists.users_consent"
+                      )
+                    }}
+                  </li>
+                  <li>
+                    {{
+                      i18nT(
+                        "pages.terms_serve.template.terms_serve.sections.article10.contents.lists.exception_of_disclosure_personal_info.lists.based_on_laws"
+                      )
+                    }}
+                  </li>
+                  <li>
+                    {{
+                      i18nT(
+                        "pages.terms_serve.template.terms_serve.sections.article10.contents.lists.exception_of_disclosure_personal_info.lists.emergency"
+                      )
+                    }}
                   </li>
                 </ol>
               </li>
               <li>
-                ユーザーは、自己の個人情報等について、開示、訂正、利用停止等を希望する場合は、管理者所定の手続により請求することができます。管理者は、本人確認のうえ、合理的な期間内に対応します。
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article10.contents.lists.disclosure_request"
+                  )
+                }}
               </li>
             </ol>
           </section>
           <section class="mb-4">
             <h3 class="text-subtitle-2 font-weight-medium">
-              第11条（権利義務の譲渡の禁止）
+              {{
+                i18nT(
+                  "pages.terms_serve.template.terms_serve.sections.article11.title"
+                )
+              }}
             </h3>
             <p>
-              ユーザーは，管理者の書面による事前の承諾なく，利用契約上の地位または本規約に基づく権利もしくは義務を第三者に譲渡し，または担保に供することはできません。
+              {{
+                i18nT(
+                  "pages.terms_serve.template.terms_serve.sections.article11.contents.paragraph"
+                )
+              }}
             </p>
           </section>
           <section>
-            <h3 class="text-subtitle-2 font-weight-medium">第12条（準拠法）</h3>
-            <p>本規約の解釈には日本法を準拠法とします。</p>
+            <h3 class="text-subtitle-2 font-weight-medium">
+              {{
+                i18nT(
+                  "pages.terms_serve.template.terms_serve.sections.article12.title"
+                )
+              }}
+            </h3>
+            <ol class="pl-6">
+              <li>
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article12.contents.lists.governing_law"
+                  )
+                }}
+              </li>
+              <li>
+                {{
+                  i18nT(
+                    "pages.terms_serve.template.terms_serve.sections.article12.contents.lists.mismatch_intentions"
+                  )
+                }}
+              </li>
+            </ol>
           </section>
         </v-card-text>
       </v-card>
     </v-container>
   </v-main>
 </template>
+
+<script setup lang="ts">
+import { useI18n } from "#imports";
+const { t: i18nT } = useI18n();
+
+useHead({
+  title: i18nT("pages.terms_serve.title"),
+});
+</script>
 
 <style scoped>
 .terms-content {

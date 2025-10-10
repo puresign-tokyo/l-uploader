@@ -12,39 +12,92 @@
         id="explain-replay-path"
       >
         <v-card-title class="text-h5 font-weight-bold px-0">
-          リプレイファイルの保存場所
+          {{ i18nT("pages.about.template.replay_path.title") }}
         </v-card-title>
         <v-divider />
 
         <v-card-text class="terms-content mt-3">
           <section class="mb-4">
-            <h3 class="text-subtitle-1 font-weight-medium">星蓮船までの作品</h3>
-            <p>次のいずれか</p>
+            <h3 class="text-subtitle-1 font-weight-medium">
+              {{
+                i18nT(
+                  "pages.about.template.replay_path.sections.until_th12.title"
+                )
+              }}
+            </h3>
+            <p>
+              {{
+                i18nT(
+                  "pages.about.template.replay_path.sections.until_th12.contents.paragraph"
+                )
+              }}
+            </p>
             <ul class="pl-6 text-body-1" style="line-height: 1.8">
-              <li>ゲーム内の<v-code>replay</v-code>フォルダ</li>
+              <I18nT
+                keypath="pages.about.template.replay_path.sections.until_th12.contents.lists.games_replay_folder.text"
+                tag="li"
+              >
+                <template #replay>
+                  <v-code>
+                    {{
+                      i18nT(
+                        "pages.about.template.replay_path.sections.until_th12.contents.lists.games_replay_folder.tags.replay"
+                      )
+                    }}
+                  </v-code>
+                </template>
+              </I18nT>
               <li>
                 <v-code>
-                  C:\Users\(ユーザー名)\AppData\Local\VirtualStore
+                  {{
+                    i18nT(
+                      "pages.about.template.replay_path.sections.until_th12.contents.lists.virtual_store.text"
+                    )
+                  }}
                 </v-code>
               </li>
             </ul>
           </section>
           <section class="mb-4">
             <h3 class="text-subtitle-1 font-weight-medium">
-              ダブルスポイラー以降
+              {{
+                i18nT(
+                  "pages.about.template.replay_path.sections.since_th125.title"
+                )
+              }}
             </h3>
             <ul class="pl-6 text-body-1" style="line-height: 1.8">
               <li>
                 <v-code>
-                  C:\Users\(ユーザー名)\AppData\Roaming\ShanghaiAlice
+                  {{
+                    i18nT(
+                      "pages.about.template.replay_path.sections.since_th125.contents.text"
+                    )
+                  }}
                 </v-code>
               </li>
             </ul>
-            <p>
-              ただしAppDataフォルダは隠しフォルダのため、
-              <v-code>Windows 隠しフォルダ 表示</v-code>
-              等で調べて表示できるようにしておくこと
-            </p>
+          </section>
+          <section class="mb4">
+            <h3 class="text-subtitle-1 font-weight-medium">
+              {{
+                i18nT("pages.about.template.replay_path.sections.note.title")
+              }}
+            </h3>
+            <I18nT
+              keypath="pages.about.template.replay_path.sections.note.contents.text"
+              tag="p"
+            >
+              <template #search_query>
+                <v-code>
+                  {{
+                    i18nT(
+                      "pages.about.template.replay_path.sections.note.contents.tags.search_query"
+                    )
+                  }}
+                </v-code>
+              </template>
+            </I18nT>
           </section>
         </v-card-text>
       </v-card>
@@ -59,13 +112,19 @@
         class="mb-5 px-6"
       >
         <v-card-title class="text-h5 font-weight-bold px-0">
-          対応作品一覧
+          {{ i18nT("pages.about.template.compatible_games.title") }}
         </v-card-title>
         <v-divider />
 
         <v-card-text class="terms-content mt-3">
           <section class="mb-4">
-            <h3 class="text-subtitle-1 font-weight-medium">整数作品</h3>
+            <h3 class="text-subtitle-1 font-weight-medium">
+              {{
+                i18nT(
+                  "pages.about.template.compatible_games.sections.mainline_games.title"
+                )
+              }}
+            </h3>
             <ul class="pl-6 text-body-1" style="line-height: 1.8">
               <li>東方紅魔郷 〜 the Embodiment of Scarlet Devil.</li>
               <li>東方妖々夢 〜 Perfect Cherry Blossom.</li>
@@ -84,7 +143,13 @@
             </ul>
           </section>
           <section class="mb-4">
-            <h3 class="text-subtitle-1 font-weight-medium">小数作品</h3>
+            <h3 class="text-subtitle-1 font-weight-medium">
+              {{
+                i18nT(
+                  "pages.about.template.compatible_games.sections.side_games.title"
+                )
+              }}
+            </h3>
             <ul class="pl-6 text-body-1" style="line-height: 1.8">
               <li>東方文花帖 〜 Shoot the Bullet.</li>
               <li>ダブルスポイラー 〜 東方文花帖</li>
@@ -94,7 +159,13 @@
             </ul>
           </section>
           <section class="mb-4">
-            <h3 class="text-subtitle-1 font-weight-medium">その他</h3>
+            <h3 class="text-subtitle-1 font-weight-medium">
+              {{
+                i18nT(
+                  "pages.about.template.compatible_games.sections.other_games.title"
+                )
+              }}
+            </h3>
             <ul class="pl-6 text-body-1" style="line-height: 1.8">
               <li>黄昏酒場 ～Uwabami Breakers～</li>
             </ul>
@@ -112,34 +183,67 @@
         class="mb-5 px-6"
       >
         <v-card-title class="text-h5 font-weight-bold px-0">
-          ライセンス
+          {{ i18nT("pages.about.template.license.title") }}
         </v-card-title>
         <v-divider />
 
         <v-card-text class="terms-content mt-3">
           <section class="mb-4">
-            <h3 class="text-subtitle-1 font-weight-medium">ソースコード</h3>
-            <p>
-              <a
-                href="https://www.apache.org/licenses/LICENSE-2.0"
-                target="_blank"
-                rel="noopener noreferrer"
-                >Apache License 2.0
-              </a>
-              にて
-              <a
-                href="https://github.com/puresign-tokyo/l-uploader"
-                target="_blank"
-                rel="noopener noreferrer"
-                >Github
-              </a>
-              で公開されています。
-            </p>
+            <h3 class="text-subtitle-1 font-weight-medium">
+              {{
+                i18nT("pages.about.template.license.sections.source_code.title")
+              }}
+            </h3>
+            <I18nT
+              keypath="pages.about.template.license.sections.source_code.contents.text"
+              tag="p"
+            >
+              <template #apache_license_2_0>
+                <a
+                  href="https://www.apache.org/licenses/LICENSE-2.0"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {{
+                    i18nT(
+                      "pages.about.template.license.sections.source_code.tags.apache_license_2_0"
+                    )
+                  }}
+                </a>
+              </template>
+              <template #github>
+                <a
+                  href="https://github.com/puresign-tokyo/l-uploader"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {{
+                    i18nT(
+                      "pages.about.template.license.sections.source_code.tags.github"
+                    )
+                  }}
+                </a>
+              </template>
+            </I18nT>
           </section>
           <section class="mb-4">
-            <h3 class="text-subtitle-1 font-weight-medium">ロゴ</h3>
-            <p>OMに依頼して作成しています。</p>
-            <p>ユーザのロゴの改変を禁じます。</p>
+            <h3 class="text-subtitle-1 font-weight-medium">
+              {{ i18nT("pages.about.template.license.sections.logo.title") }}
+            </h3>
+            <p>
+              {{
+                i18nT(
+                  "pages.about.template.license.sections.logo.contents.creator"
+                )
+              }}
+            </p>
+            <p>
+              {{
+                i18nT(
+                  "pages.about.template.license.sections.logo.contents.do_not_modify"
+                )
+              }}
+            </p>
           </section>
         </v-card-text>
       </v-card>
@@ -154,7 +258,7 @@
         class="mb-5 px-6"
       >
         <v-card-title class="text-h5 font-weight-bold px-0">
-          スタッフ紹介
+          {{ i18nT("pages.about.template.staff.title") }}
         </v-card-title>
 
         <v-divider />
@@ -166,13 +270,34 @@
                 href="https://wefma.net"
                 target="_blank"
                 rel="noopener noreferrer"
-                >ゑふまいか</a
               >
+                {{
+                  i18nT("pages.about.template.staff.sections.wefmaika.title")
+                }}
+              </a>
             </h3>
             <ul class="pl-6 text-body-1" style="line-height: 1.8">
-              <li>開発</li>
-              <li>サーバ管理</li>
-              <li>運用管理</li>
+              <li>
+                {{
+                  i18nT(
+                    "pages.about.template.staff.sections.wefmaika.contents.lists.developper"
+                  )
+                }}
+              </li>
+              <li>
+                {{
+                  i18nT(
+                    "pages.about.template.staff.sections.wefmaika.contents.lists.server_management"
+                  )
+                }}
+              </li>
+              <li>
+                {{
+                  i18nT(
+                    "pages.about.template.staff.sections.wefmaika.contents.lists.operation_management"
+                  )
+                }}
+              </li>
             </ul>
 
             <h3 class="text-subtitle-1 font-weight-medium mt-4">
@@ -180,12 +305,25 @@
                 href="https://info.puresign.tokyo"
                 target="_blank"
                 rel="noopener noreferrer"
-                >irckk</a
               >
+                {{ i18nT("pages.about.template.staff.sections.irckk.title") }}
+              </a>
             </h3>
             <ul class="pl-6 text-body-1" style="line-height: 1.8">
-              <li>ドメイン管理</li>
-              <li>運用</li>
+              <li>
+                {{
+                  i18nT(
+                    "pages.about.template.staff.sections.irckk.contents.lists.domain_management"
+                  )
+                }}
+              </li>
+              <li>
+                {{
+                  i18nT(
+                    "pages.about.template.staff.sections.irckk.contents.lists.operation"
+                  )
+                }}
+              </li>
             </ul>
 
             <h3 class="text-subtitle-1 font-weight-medium mt-4">
@@ -193,18 +331,33 @@
                 href="https://x.com/kamoneko_nonaku"
                 target="_blank"
                 rel="noopener noreferrer"
-                >かも猫</a
               >
+                {{
+                  i18nT("pages.about.template.staff.sections.kamo_kun.title")
+                }}
+              </a>
             </h3>
             <ul class="pl-6 text-body-1" style="line-height: 1.8">
-              <li>開発委託</li>
+              <li>
+                {{
+                  i18nT(
+                    "pages.about.template.staff.sections.kamo_kun.contents.lists.develop_consign"
+                  )
+                }}
+              </li>
             </ul>
 
             <h3 class="text-subtitle-1 font-weight-medium mt-4">
-              <p>OM</p>
+              <p>{{ i18nT("pages.about.template.staff.sections.om.title") }}</p>
             </h3>
             <ul class="pl-6 text-body-1" style="line-height: 1.8">
-              <li>ロゴ作成</li>
+              <li>
+                {{
+                  i18nT(
+                    "pages.about.template.staff.sections.om.contents.lists.create_logo"
+                  )
+                }}
+              </li>
             </ul>
           </section>
         </v-card-text>
@@ -220,35 +373,68 @@
         class="mb-5 px-6"
       >
         <v-card-title class="text-h5 font-weight-bold px-0">
-          使用した主なサードパーティ成果物
+          {{ i18nT("pages.about.template.third_parties.title") }}
         </v-card-title>
         <v-divider />
 
         <v-card-text class="terms-content mt-3">
           <section class="mb-4">
-            <h3 class="text-subtitle-1 font-weight-medium">
-              <a
-                href="https://www.silentselene.net/"
-                target="_blank"
-                rel="noopener noreferrer"
-                >silentselene.net</a
-              >
-              (Apache License 2.0)
-            </h3>
+            <I18nT
+              tag="h3"
+              keypath="pages.about.template.third_parties.sections.silentselene.title.text"
+              class="text-subtitle-1 font-weight-medium"
+            >
+              <template #silentselene>
+                <a
+                  href="https://www.silentselene.net/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {{
+                    i18nT(
+                      "pages.about.template.third_parties.sections.silentselene.title.tags.silentselene"
+                    )
+                  }}
+                </a>
+              </template>
+            </I18nT>
             <ul class="pl-6 text-body-1" style="line-height: 1.8">
-              <li>リプレイファイルパース定義</li>
+              <li>
+                {{
+                  i18nT(
+                    "pages.about.template.third_parties.sections.silentselene.contents.lists.parse_replay"
+                  )
+                }}
+              </li>
             </ul>
-            <h3 class="text-subtitle-1 font-weight-medium">
-              <a
-                href="https://pypi.org/project/tsadecode/"
-                target="_blank"
-                rel="noopener noreferrer"
-                >tsadecode</a
-              >
-              (パブリックドメイン)
-            </h3>
+            <I18nT
+              tags="h3"
+              keypath="pages.about.template.third_parties.sections.tsadecode.title.text"
+              class="text-subtitle-1 font-weight-medium"
+            >
+              <template #tsadecode>
+                <a
+                  href="https://pypi.org/project/tsadecode/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {{
+                    i18nT(
+                      "pages.about.template.third_parties.sections.tsadecode.title.tags.tsadecode"
+                    )
+                  }}
+                </a>
+              </template>
+            </I18nT>
+
             <ul class="pl-6 text-body-1" style="line-height: 1.8">
-              <li>リプレイファイルデコーダ</li>
+              <li>
+                {{
+                  i18nT(
+                    "pages.about.template.third_parties.sections.tsadecode.contents.lists.decode_replay"
+                  )
+                }}
+              </li>
             </ul>
           </section>
         </v-card-text>
@@ -264,24 +450,47 @@
         class="mb-5 px-6"
       >
         <v-card-title class="text-h5 font-weight-bold px-0">
-          寄付
+          {{ i18nT("pages.about.template.donation.title") }}
         </v-card-title>
         <v-divider />
 
         <v-card-text class="terms-content mt-3">
           <section class="mb-4">
-            <p>このサイトはゑふまいかの家の電気代によって成り立っています。</p>
             <p>
-              <a
-                href="https://ofuse.me/wefmaika"
-                target="_blank"
-                rel="noopener noreferrer"
-                >ここ</a
-              >からゑふまいかに寄付を送ることができます。
+              {{
+                i18nT(
+                  "pages.about.template.donation.sections.donation.contents.cause"
+                )
+              }}
             </p>
+            <I18nT
+              tag="p"
+              keypath="pages.about.template.donation.sections.donation.contents.donation_page.text"
+            >
+              <template #here>
+                <a
+                  href="https://ofuse.me/wefmaika"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {{
+                    i18nT(
+                      "pages.about.template.donation.sections.donation.contents.donation_page.tags.here"
+                    )
+                  }}
+                </a>
+              </template>
+            </I18nT>
           </section>
         </v-card-text>
       </v-card>
     </v-container>
   </v-main>
 </template>
+<script setup lang="ts">
+import { I18nT, useI18n } from "vue-i18n";
+const { t: i18nT } = useI18n();
+useHead({
+  title: i18nT("pages.about.title"),
+});
+</script>

@@ -1,0 +1,533 @@
+components:
+  dialogs:
+    delete_dialog:
+      template:
+        delete:
+          title: "Delete {filename}"
+          text: Please enter the deletion password.
+          contents:
+            password_text_field:
+              label: Deletion password
+            button_close: Close
+            button_delete: Delete
+      scripts:
+        validation:
+          delete_password_is_only_ascii: Passwords may only contain visible half-width ASCII characters.
+          delete_password_length_limit_exceed: The password exceeds {delete_password_length_limit} characters.
+          delete_password_required: A password is required.
+          delete_password_do_not_only_space: Passwords consisting only of spaces are not allowed.
+          recaptcha_required: Please verify the reCAPTCHA.
+        http_requested:
+          success: Successfully deleted.
+          password_mismatch: Incorrect password.
+          too_many_requested: Too many incorrect attempts in a short time. Please wait before trying again.
+    share_dialog:
+      template:
+        share:
+          title: "Share {filename}"
+          text: How would you like to share it?
+          contents:
+            button_link: Link
+            button_meta: Copy info list
+            button_twitter: Share on Twitter
+            button_close: Close
+      scripts:
+        share_to_tweet:
+          text: |-
+            #L_Uploader
+            {filename}
+            {game_name} {user_name}
+            {upload_comment}
+          action_message: Opened Twitter link.
+        share_meta:
+          text: |-
+            {game_name} {user_name}
+            {upload_comment}
+          action_message: Copied information list.
+        share_to_link:
+          action_message: Copied link.
+  replay_table:
+    template:
+      main:
+        user_name: Username
+        game_name: Game
+        total_score: Score
+        replay_name: Replay Name
+        slowdown: Slowdown Rate
+        timestamp: Replay Date
+        division: Difficulty / Shot Type
+        optional_tag: Optional Tag
+        upload_comment: Comment
+      sub:
+        detail_info:
+          title: Details
+        delete:
+          title: Delete
+          unknown:
+            filename: Unknown File
+            replay_id: error
+        share:
+          title: Share
+          unknown:
+            user_name: Unknown User
+            upload_comment: Unknown Comment
+            filename: Unknown File
+            game_name: Unknown Game
+            replay_id: error
+        download:
+          title: Download
+  the_footer:
+    template:
+      contents:
+        text: Copyright {project_puresign} All Rights Reserved.
+        tags:
+          project_puresign: project puresign
+pages:
+  replays:
+    replay_id:
+      title: Replay Details
+      template:
+        card:
+          replay_fetch_error: |-
+            An error occurred while retrieving the data.{br}
+            Please reload or try again later.
+          user_name: Username
+          game_name: Game
+          total_score: Score
+          division: Division
+          category: Category
+          optional_tag: Optional Tag
+          replay_name: Replay Name
+          timestamp: Replay Date
+          slowdown: Slowdown Rate
+          upload_comment: Comment
+          stage_splits: Stage Progress
+          cant_show_stage_splits: This replay cannot display stage progress.
+        dialog:
+          unknown:
+            filename: Unknown File
+            user: Unknown User
+            upload_comment: Unknown Comment
+            replay_id: error
+        snack_bar:
+          close: Close
+      scripts:
+        snack_bar:
+          payload:
+            success: Success
+            error: An error occurred
+  about:
+    title: About
+    template:
+      replay_path:
+        title: Replay File Location
+        sections:
+          until_th12:
+            title: Up to Undefined Fantastic Object
+            contents:
+              paragraph: One of the following
+              lists:
+                games_replay_folder:
+                  text: "{replay} folder inside the game directory"
+                  tags:
+                    replay: replay
+                virtual_store:
+                  text: C:\Users\(username)\AppData\Local\VirtualStore
+          since_th125:
+            title: Double Spoiler and later
+            contents:
+              text: C:\Users\(username)\AppData\Roaming\ShanghaiAlice
+          note:
+            title: Note
+            contents:
+              text: |-
+                The AppData folder is hidden by default.{br}
+                You can enable its visibility by searching for {search_query}.
+              tags:
+                search_query: Show hidden folders in Windows
+      compatible_games:
+        title: Supported Titles
+        sections:
+          mainline_games:
+            title: Mainline Works
+          side_games:
+            title: Side Works
+          other_games:
+            title: Others
+      license:
+        title: License
+        sections:
+          source_code:
+            title: Source Code
+            contents:
+              text: |-
+                Released on {github} under the {apache_license_2_0}.
+              tags:
+                apache_license_2_0: Apache License 2.0
+                github: Github
+          logo:
+            title: Logo
+            contents:
+              creator: Created by OM upon request.
+              do_not_modify: Users are prohibited from modifying the logo.
+      staff:
+        title: Staff
+        sections:
+          wefmaika:
+            title: WEF
+            contents:
+              lists:
+                developper: Development
+                server_management: Server Management
+                operation_management: Operations Management
+          irckk:
+            title: irckk
+            contents:
+              lists:
+                domain_management: Domain Management
+                operation: Operations
+          kamo_kun:
+            title: Kamo Neko
+            contents:
+              lists:
+                develop_consign: Contracted Development
+          om:
+            title: OM
+            contents:
+              lists:
+                create_logo: Logo Creation
+      third_parties:
+        title: Third-Party Works Used
+        sections:
+          silentselene:
+            title:
+              text: "{silentselene} (Apache License 2.0)"
+              tags:
+                silentselene: silentselene.net
+            contents:
+              lists:
+                parse_replay: Replay File Parsing Definitions
+          tsadecode:
+            title:
+              text: "{tsadecode} (Public Domain)"
+              tags:
+                tsadecode: tsadecode
+            contents:
+              lists:
+                decode_replay: Replay File Decoder
+      donation:
+        title: Donation
+        sections:
+          donation:
+            contents:
+              cause: This site is maintained by Wefmaika’s household electricity bill.
+              donation_page:
+                text: "You can send a donation to Wefmaika from {here}."
+                tags:
+                  here: here
+  index:
+    title: Home
+    template:
+      welcome:
+        title: Welcome to L-Uploader!
+        contents:
+          text: |-
+            This is an uploader for replay files of the Touhou Project series created by {shanghai_alice}.{br}
+            You can upload, view, share, and download analyzed replay files.{br}
+            Start by uploading a replay file from New Post!
+          tags:
+            shanghai_alice: Team Shanghai Alice
+        buttons:
+          new_post: New Post
+          replay_path: Replay File Location
+        latest_updates:
+          title: Latest Updates
+      search_components:
+        tag_search:
+          title: Tag Search
+          place_holder: For Replay Meetings
+        gamename_search:
+          title: Select a Game
+        category_search:
+          title: Category
+      snack_bar:
+        close: Close
+    scripts:
+      open_snack_bar:
+        payload:
+          success: Success
+          error: An error occurred
+      validation:
+        string_length_limit_exceed: Please enter within {string_length_limit} characters.
+  new_post:
+    title: New Post
+    template:
+      new_post:
+        title: New Post
+        sections:
+          replay_file:
+            title: Replay File
+            contents:
+              file_input:
+                label: Replay File (.rpy)
+                details:
+                  text: See {replay_path} for where replay files are stored.
+                  tags:
+                    replay_path: Replay File Location
+          detail_info:
+            title: Details
+            contents:
+              user_name:
+                label: Username
+                place_holder: ZUN
+              category:
+                label: Playstyle
+              optional_tag:
+                label: Tag
+                place_holder: For Replay Meetings
+              upload_comment:
+                label: Comment
+                place_holder: Achieved with great effort!!
+          delete_password:
+            title: Deletion Password
+            contents:
+              delete_password:
+                label: Deletion Password
+                hint: Required
+          submit:
+            text: Submit
+      dialog:
+        title: Replay Uploaded
+        contents:
+          share_to_tweet: Share on Twitter
+          return_home: Return to Home
+      snack_bar:
+        close: Close
+    scripts:
+      validations:
+        string_length_limit: Please enter within {string_length_limit} characters.
+        input_required: This field is required.
+        only_ascii: Only visible half-width ASCII characters are allowed.
+        do_not_only_space: Input consisting only of spaces is not allowed.
+        too_large_file: File size is too large.
+      snack_bar:
+        validations:
+          username_required: Please enter a username.
+          username_length_limit_exceed: Username exceeds {username_length_limit} characters.
+          upload_comment_length_limit_exceed: Comment exceeds {upload_comment_length_limit} characters.
+          replay_file_required: Please select a replay file.
+          delete_password_is_only_ascii: Password may only contain visible half-width ASCII characters.
+          delete_password_length_limit_exceed: Password exceeds {delete_password_length_limit} characters.
+          delete_password_required: Please enter a password.
+          delete_password_do_not_only_space: Passwords consisting only of spaces are not allowed.
+          optional_tag_length_limit_exceed: Tag exceeds {optional_tag_length_limit} characters.
+          recaptcha_required: Please verify the reCAPTCHA.
+        http_requested:
+          replay_submitted: Replay successfully uploaded.
+          too_many_requested: Upload limit exceeded. Please wait and try again.
+      share:
+        tweet: |-
+          #えるろだ
+          I’ve uploaded a replay!
+
+          Check it out here:
+          {url}
+  page_links:
+    title: External Links
+    template:
+      page_links:
+        title: External Links
+    scripts:
+      links:
+        lblog: L-Uploader Dev Blog
+        wefmaika: Developer Homepage
+        puresign: Operator Homepage
+        silentselene: silentselene.net
+  release_note:
+    title: Release Notes
+    template:
+      release_note:
+        title: Release Notes
+  terms_serve:
+    title: Terms Serve
+    template:
+      terms_serve:
+        title: Terms Serve
+        subtitle: Last updated date 09/11/2025
+        sections:
+          article01:
+            title: 第1条（適用）
+            contents:
+              lists:
+                scope: |-
+                  本規約は，ユーザーと管理者との間の本サービスの利用に係る一切の関係に適用されるものとします。
+                only_japan: |-
+                  本サービスは日本国内向けであり、EU域内からの利用は禁止します。
+                  管理者は、EU域内の利用者についてGDPR上の義務を負いません。
+          article02:
+            title: 第2条（リプレイの登録）
+            contents:
+              lists:
+                replay_post_enable: |-
+                  本サービスにおいては，ユーザーが本規約に同意の上，管理者の定める方法によってリプレイを投稿することができます。
+                multi_post_enable: |-
+                  本サービスにおいては，1ユーザーにつき複数投稿をすることができます。
+                  ただし，1ユーザーが短時間に複数投稿をした場合は管理者の判断によって一定時間投稿停止させることがあります。
+                replay_store_limit: |-
+                  稿されたリプレイの保持期間は原則として投稿日から1年間とし、期間経過後はユーザーによる削除の有無にかかわらず自動的に削除されます。
+                  ただし、システム障害その他の事由により、保持期間に満たない時点でリプレイが削除または消失する場合があります。
+                  この場合に生じた損害について、管理者は一切の責任を負わないものとします。
+          article03:
+            title: 第3条（リプレイの削除・パスワードの管理）
+            contents:
+              lists:
+                user_stores_password: |-
+                  ユーザーは，自己の責任において，リプレイ投稿時に設定した削除用パスワードを適切に管理するものとします。
+                delete_with_password: |-
+                  管理者は，リプレイと削除パスワードの組み合わせが登録情報と一致したうえで削除要求された場合には，
+                  そのリプレイを登録しているユーザー自身による削除要求とみなしリプレイを削除します。
+                third_person_use_password: |-
+                  削除パスワードが第三者によって使用されたことによって生じた損害は，
+                  管理者に故意又は重大な過失がある場合を除き，管理者は一切の責任を負わないものとします。
+          article04:
+            title: 第4条（禁止事項）
+            contents:
+              paragraph: |-
+                ユーザーは本サービスの利用にあたり、以下の行為をしてはなりません。
+                これらの行為が確認されたユーザーに対して，管理者はユーザーが投稿したリプレイの削除，及びユーザの利用停止を行うことが可能です。
+                ただし，当該行為が明らかにジョークやパロディ等の『ネタ』であり，かつ他者の権利侵害や迷惑を伴わないと管理者が判断した場合は，
+                この限りではありません。
+              lists:
+                illegal: 法令または公序良俗に違反する行為
+                crime: 犯罪行為に関連する行為
+                cyber_attack: 管理者，本サービスの他のユーザー，または第三者のサーバーまたはネットワークの機能を破壊したり，妨害したりする行為
+                obstruct_service: 管理者の管理するサービスの運営を妨害するおそれのある行為
+                steal_personal_info: 他のユーザーに関する個人情報等を収集または蓄積する行為
+                unauthorized_access: 不正アクセスをし，またはこれを試みる行為
+                impersonation: 他のユーザーに成りすます行為
+                anti_social: 管理者の管理するサービスに関連して，反社会的勢力に対して直接または間接に利益を供与する行為
+                violation_of_rights: 管理者，本サービスの他のユーザーまたは第三者の知的財産権，肖像権，プライバシー，名誉その他の権利または利益を侵害する行為
+                posts_contents:
+                  text: 以下の表現を含み，または含むと管理者が判断する内容を本サービス上に投稿し，または送信する行為
+                  lists:
+                    violence: 過度に暴力的な表現
+                    sexual: 露骨な性的表現
+                    discrimination: 人種，国籍，信条，性別，社会的身分，門地等による差別につながる表現
+                    suicide: 自殺，自傷行為，薬物乱用を誘引または助長する表現
+                    others: その他反社会的な内容を含み他人に不快感を与える表現
+                religion: 宗教活動または宗教団体への勧誘行為
+                others: その他，管理者が不適切と判断する行為
+          article05:
+            title: 第5条（本サービスの提供の停止等）
+            contents:
+              lists:
+                conditions_of_service_stop:
+                  text: |-
+                    管理者は，以下のいずれかの事由があると判断した場合，
+                    ユーザーに事前に通知することなく本サービスの全部または一部の提供を停止または中断することができるものとします。
+                  lists:
+                    maintenance: 本サービスにかかるコンピュータシステムの保守点検または更新を行う場合
+                    disaster: 地震，落雷，火災，停電または天災などの不可抗力により，本サービスの提供が困難となった場合
+                    cyber_incident: コンピュータまたは通信回線等が事故により停止した場合
+                    others: その他，管理者が本サービスの提供が困難と判断した場合
+                user_disadvantage: |-
+                  管理者は，本サービスの提供の停止または中断により，ユーザーまたは第三者が被ったいかなる不利益または損害についても，
+                  一切の責任を負わないものとします。
+                service_end: |-
+                  本サービスが終了する場合，第10条に示す個人情報等を含む、
+                  本サービス運営により取得・保存したユーザー関連データをすべて破棄します。
+                  なお、本サービスの運営に用いたプログラムやソースコードは削除対象に含まれません。
+          article06:
+            title: 第6条（著作権）
+            contents:
+              lists:
+                enable_posts_replays: |-
+                  ユーザーは，自ら作成したリプレイ，及び第三者の作成したリプレイを投稿することができます。
+                  ただしこれはリプレイ作成を行った第三者とリプレイを投稿した人の間で合意があって投稿したと管理者はみなし，
+                  当事者間で起きたトラブルには管理者は一切責任を負わないものとします。
+                posts_info_rights: |-
+                  ユーザーが本サービスを利用して投稿ないしアップロードしたリプレイ，文章等については，当該ユーザーに留保されるものとします。
+                  ただし，管理者は，本サービスを利用して投稿ないしアップロードされたリプレイ，文章等について，
+                  本サービスの改良，品質の向上，または不備の是正等ならびに本サービスの周知宣伝等に必要な範囲で利用できるものとし，
+                  ユーザーは，この利用に関して，著作者人格権を行使しないものとします。
+                compatible_fun_work_guideline: |-
+                  本サービスは東方Project二次創作ガイドラインに準拠して運営されます。
+                  ユーザーは，リプレイの投稿にあたり，当該ガイドラインその他関係する著作権規定に従うものとし，
+                  原作権利者または権利管理者から削除要請があった場合には，管理者は当該リプレイを削除できるものとします。
+          article07:
+            title: 第7条（保証の否認および免責事項）
+            contents:
+              lists:
+                disclaimer_of_warranties: |-
+                  管理者は，本サービスに事実上または法律上の瑕疵
+                  （安全性，信頼性，正確性，完全性，有効性，特定の目的への適合性，セキュリティなどに関する欠陥，エラーやバグ，権利侵害などを含みます。）
+                  がないことを明示的にも黙示的にも保証しておりません。
+                user_damage: |-
+                  管理者は，本サービスに起因してユーザーに生じたあらゆる損害について，
+                  管理者の故意又は重過失による場合を除き，一切の責任を負いません。
+                  ただし，本サービスに関する管理者とユーザーとの間の契約（本規約を含みます。）が
+                  消費者契約法に定める消費者契約となる場合，この免責規定は適用されません。
+                special_circumstance: |-
+                  前項ただし書に定める場合であっても，管理者は，管理者の過失（重過失を除きます。）による債務不履行または不法行為によりユーザーに生じた損害のうち
+                  特別な事情から生じた損害（管理者またはユーザーが損害発生につき予見し，または予見し得た場合を含みます。）について一切の責任を負いません。
+                user_and_third_person: |-
+                  管理者は，本サービスに関して，ユーザーと他のユーザーまたは第三者との間において生じた取引，連絡または紛争等について一切責任を負いません。
+          article08:
+            title: 第8条（サービス内容の変更など）
+            contents:
+              paragraph: |-
+                管理者は，ユーザーへの予告なく，本サービスの内容を変更，追加または廃止することがあり，ユーザーはこれを承諾するものとします。
+          article09:
+            title: 第9条（利用規約の変更）
+            contents:
+              lists:
+                conditions_of_change_terms_serve:
+                  text: |-
+                    管理者は以下の場合には，ユーザーの個別の同意を要せず，本規約を変更することができるものとします。
+                  lists:
+                    compatible_user_advantage: 本規約の変更がユーザーの一般の利益に適合するとき。
+                    rationality: |-
+                      本規約の変更が本サービス利用契約の目的に反せず，
+                      かつ，変更の必要性，変更後の内容の相当性その他の変更に係る事情に照らして合理的なものであるとき。
+                press_release: |-
+                  管理者は，ユーザーに対し，X(旧Twitter)，または適切な方法により，
+                  事前に本規約を変更する旨および変更後の内容並びにその効力発生時期を通知します。
+          article10:
+            title: 第10条（個人情報の取り扱い）
+            contents:
+              lists:
+                store_personal_info_secure: |-
+                  管理者は，ユーザーから提供された削除パスワード，
+                  またはその他個人を特定できる情報（以下「個人情報等」といいます）を、適切に取り扱うものとし、
+                  プライバシーの保護に関して安全管理措置を講じます。
+                personal_info_usecase:
+                  text: 管理者は、取得した個人情報等を以下の目的のために利用します。
+                  lists:
+                    operation: 本サービスの提供および運営のため
+                    improve_service: 利用状況の分析やサービス改善のため（個人を特定しない範囲での統計データ作成を含む）
+                exception_of_disclosure_personal_info:
+                  text: |-
+                    管理者は，次のいずれかに該当する場合を除き，個人情報等を第三者に開示または提供しません。
+                  lists:
+                    users_consent: ユーザー本人の同意がある場合
+                    based_on_laws: 法令に基づき開示を求められた場合
+                    emergency: 人の生命、身体または財産の保護のために必要があり、本人の同意を得ることが困難な場合
+                disclosure_request: |-
+                  ユーザーは、自己の個人情報等について、開示、訂正、利用停止等を希望する場合は、
+                  管理者所定の手続により請求することができます。
+                  管理者は、本人確認のうえ、合理的な期間内に対応します。
+          article11:
+            title: 第11条（権利義務の譲渡の禁止）
+            contents:
+              paragraph: |-
+                ユーザーは，管理者の書面による事前の承諾なく，
+                利用契約上の地位または本規約に基づく権利もしくは義務を第三者に譲渡し，
+                または担保に供することはできません。
+          article12:
+            title: 第12条（準拠法）
+            contents:
+              lists:
+                governing_law: 本規約の解釈には日本法を準拠法とします。
+                mismatch_intentions: |-
+                  本規約は日本語で作成されており、
+                  翻訳版と日本語版との間に相違があるときは、日本語版の内容を優先します。

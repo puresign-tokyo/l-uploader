@@ -58,19 +58,40 @@
               v-if="replayTable.user_name"
               class="text-caption text--secondary ml-2"
             >
-              <v-icon small class="mr-1" title="ユーザ名">mdi-account</v-icon>
+              <v-icon
+                small
+                class="mr-1"
+                :title="
+                  i18nT('components.replay_table.template.main.user_name')
+                "
+              >
+                mdi-account
+              </v-icon>
               {{ props.replayTable.user_name }}
             </span>
           </v-col>
 
           <v-col cols="12" class="d-flex align-center">
-            <v-icon small class="mr-1" title="ゲーム名">mdi-controller</v-icon>
+            <v-icon
+              small
+              class="mr-1"
+              :title="i18nT('components.replay_table.template.main.game_name')"
+              >mdi-controller</v-icon
+            >
             <strong>{{ props.replayTable.game_meta.name }}</strong>
           </v-col>
 
           <!-- スコア -->
           <v-col cols="12" md="3" class="d-flex align-center mt-1">
-            <v-icon small class="mr-1" title="スコア">mdi-trophy</v-icon>
+            <v-icon
+              small
+              class="mr-1"
+              :title="
+                i18nT('components.replay_table.template.main.total_score')
+              "
+            >
+              mdi-trophy
+            </v-icon>
             <span class="text-h5 font-weight-bold">
               {{
                 props.replayTable.total_score
@@ -81,26 +102,40 @@
           </v-col>
 
           <v-col cols="4" md="3" class="d-flex align-center mt-1">
-            <v-icon small class="mr-1" title="リプレイ名"
-              >mdi-badge-account-outline</v-icon
+            <v-icon
+              small
+              class="mr-1"
+              :title="
+                i18nT('components.replay_table.template.main.replay_name')
+              "
             >
+              mdi-badge-account-outline
+            </v-icon>
             <p v-if="props.replayTable.replay_name">
               {{ props.replayTable.replay_name }}
             </p>
           </v-col>
 
           <v-col cols="4" md="3" class="d-flex align-center mt-1">
-            <v-icon small class="mr-1" title="処理落ち率"
-              >mdi-play-speed</v-icon
+            <v-icon
+              small
+              class="mr-1"
+              :title="i18nT('components.replay_table.template.main.slowdown')"
             >
-            処理落ち率:
+              mdi-play-speed
+            </v-icon>
+            {{ i18nT("components.replay_table.template.main.slowdown") }}:
             {{ props.replayTable.slowdown ? props.replayTable.slowdown : "-" }}
           </v-col>
 
           <v-col cols="4" md="3" class="d-flex align-center mt-1">
-            <v-icon small class="mr-1" title="リプレイ作成日"
-              >mdi-calendar-clock</v-icon
+            <v-icon
+              small
+              class="mr-1"
+              :title="i18nT('components.replay_table.template.main.timestamp')"
             >
+              mdi-calendar-clock
+            </v-icon>
             {{
               props.replayTable.timestamp ? props.replayTable.timestamp : "-"
             }}
@@ -113,7 +148,13 @@
             class="d-flex align-center mt-1"
             style="min-width: 0"
           >
-            <v-icon small class="mr-1" title="難易度 機体">mdi-flag</v-icon>
+            <v-icon
+              small
+              class="mr-1"
+              :title="i18nT('components.replay_table.template.main.division')"
+            >
+              mdi-flag
+            </v-icon>
             <div class="d-flex flex-wrap" style="gap: 8px; min-width: 0">
               <v-chip
                 v-if="props.replayTable.difficulty"
@@ -151,9 +192,15 @@
           <!-- オプションタグ -->
 
           <v-col cols="12" md="3" class="d-flex align-center mt-1">
-            <v-icon small class="mr-1" title="オプションタグ"
-              >mdi-tag-outline</v-icon
+            <v-icon
+              small
+              class="mr-1"
+              :title="
+                i18nT('components.replay_table.template.main.optional_tag')
+              "
             >
+              mdi-tag-outline
+            </v-icon>
             <v-chip v-if="props.replayTable.optional_tag" color="grey" small>
               {{ props.replayTable.optional_tag }}
             </v-chip>
@@ -171,9 +218,12 @@
                 small
                 class="ms-1 me-2 text-body-1"
                 style="flex-shrink: 0"
-                title="投稿コメント"
-                >mdi-comment</v-icon
+                :title="
+                  i18nT('components.replay_table.template.main.upload_comment')
+                "
               >
+                mdi-comment
+              </v-icon>
 
               <!-- コメントテキスト + 右側アイコン群 -->
               <div
@@ -208,7 +258,11 @@
                       icon="mdi-information-outline"
                       variant="tonal"
                       size="large"
-                      title="詳細情報"
+                      :title="
+                        i18nT(
+                          'components.replay_table.template.sub.detail_info.title'
+                        )
+                      "
                       :class="{ 'text-disabled': !props.replayTable.replay_id }"
                     />
                   </NuxtLink>
@@ -223,11 +277,20 @@
                       props.replayTable.replay_id &&
                         emit('confirmDelete', {
                           filename:
-                            props.replayTable.filename ?? '不明なファイル',
-                          replay_id: props.replayTable.replay_id ?? 'error',
+                            props.replayTable.filename ??
+                            i18nT(
+                              'components.replay_table.template.sub.delete.unknown.filename'
+                            ),
+                          replay_id:
+                            props.replayTable.replay_id ??
+                            i18nT(
+                              'components.replay_table.template.sub.delete.unknown.replay_id'
+                            ),
                         })
                     "
-                    title="削除"
+                    :title="
+                      i18nT('components.replay_table.template.sub.delete.title')
+                    "
                   />
 
                   <v-icon
@@ -237,17 +300,35 @@
                     @click="
                       emit('confirmShare', {
                         user_name:
-                          props.replayTable.user_name ?? '不明なユーザ',
+                          props.replayTable.user_name ??
+                          i18nT(
+                            'components.replay_table.template.sub.share.unknown.user_name'
+                          ),
                         upload_comment:
-                          props.replayTable.upload_comment ?? '不明なコメント',
+                          props.replayTable.upload_comment ??
+                          i18nT(
+                            'components.replay_table.template.sub.share.unknown.upload_comment'
+                          ),
                         filename:
-                          props.replayTable.filename ?? '不明なファイル',
+                          props.replayTable.filename ??
+                          i18nT(
+                            'components.replay_table.template.sub.share.unknown.filename'
+                          ),
                         game_name:
-                          props.replayTable.game_meta.name ?? '不明なゲーム',
-                        replay_id: props.replayTable.replay_id ?? 'error',
+                          props.replayTable.game_meta.name ??
+                          i18nT(
+                            'components.replay_table.template.sub.share.unknown.game_name'
+                          ),
+                        replay_id:
+                          props.replayTable.replay_id ??
+                          i18nT(
+                            'components.replay_table.template.sub.share.unknown.replay_id'
+                          ),
                       })
                     "
-                    title="シェア"
+                    :title="
+                      i18nT('components.replay_table.template.sub.share.title')
+                    "
                   />
 
                   <a
@@ -263,7 +344,11 @@
                       icon="mdi-tray-arrow-down"
                       variant="tonal"
                       size="large"
-                      title="ダウンロード"
+                      :title="
+                        i18nT(
+                          'components.replay_table.template.sub.download.title'
+                        )
+                      "
                     />
                   </a>
                 </div>
@@ -306,6 +391,8 @@
 
 <script setup lang="ts">
 import { useDisplay } from "vuetify";
+import { useI18n } from "#imports";
+const { t: i18nT } = useI18n();
 const display = useDisplay();
 
 interface ReplayTable {

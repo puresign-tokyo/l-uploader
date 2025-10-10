@@ -7,13 +7,20 @@
         elevation="4"
         style="align-items: stretch; min-height: 170px"
       >
-        <v-card-title>新規投稿</v-card-title>
+        <v-card-title>
+          {{ i18nT("pages.new_post.template.new_post.title") }}
+        </v-card-title>
         <v-divider />
         <v-card-text class="pa-4">
           <div
             class="text-subtitle-1 font-weight-medium text-grey-darken-3 mb-4 mt-6 d-flex align-center"
           >
-            <v-icon icon="mdi-file-outline" />リプレイファイル
+            <v-icon icon="mdi-file-outline" />
+            {{
+              i18nT(
+                "pages.new_post.template.new_post.sections.replay_file.title"
+              )
+            }}
           </div>
 
           <v-row dense>
@@ -21,21 +28,33 @@
               <v-file-input
                 v-model="replayFile"
                 accept=".rpy"
-                label="リプレイファイル(*.rpy)"
+                :label="
+                  i18nT(
+                    'pages.new_post.template.new_post.sections.replay_file.contents.file_input.label'
+                  )
+                "
                 :rules="[validateReplayFile]"
                 persistent-hint
               >
                 <template #details>
-                  <div class="text-caption">
-                    リプレイファイルの場所は
-                    <NuxtLink
-                      to="/About#explain-replay-path"
-                      class="text-primary"
-                    >
-                      リプレイファイルの保存場所
-                    </NuxtLink>
-                    をご覧ください。
-                  </div>
+                  <I18nT
+                    tag="div"
+                    keypath="pages.new_post.template.new_post.sections.replay_file.contents.file_input.details.text"
+                    class="text-caption"
+                  >
+                    <template #replay_path>
+                      <NuxtLink
+                        to="/About#explain-replay-path"
+                        class="text-primary"
+                      >
+                        {{
+                          i18nT(
+                            "pages.new_post.template.new_post.sections.replay_file.contents.file_input.details.tags.replay_path"
+                          )
+                        }}
+                      </NuxtLink>
+                    </template>
+                  </I18nT>
                 </template>
               </v-file-input>
             </v-col>
@@ -44,16 +63,29 @@
           <div
             class="text-subtitle-1 font-weight-medium text-grey-darken-3 mb-4 mt-6 d-flex align-center"
           >
-            <v-icon icon="mdi-information-outline" />詳細情報
+            <v-icon icon="mdi-information-outline" />
+            {{
+              i18nT(
+                "pages.new_post.template.new_post.sections.detail_info.title"
+              )
+            }}
           </div>
 
           <v-row dense>
             <v-col cols="12">
               <v-text-field
                 v-model="userName"
-                label="ユーザ名"
+                :label="
+                  i18nT(
+                    'pages.new_post.template.new_post.sections.detail_info.contents.user_name.label'
+                  )
+                "
                 required
-                placeholder="ZUN"
+                :placeholder="
+                  i18nT(
+                    'pages.new_post.template.new_post.sections.detail_info.contents.user_name.place_holder'
+                  )
+                "
                 :rules="[validateUserName]"
                 :counter="config.username_length_limit"
               ></v-text-field>
@@ -63,7 +95,11 @@
           <v-row dense>
             <v-col cols="12">
               <v-select
-                label="プレイスタイル"
+                :label="
+                  i18nT(
+                    'pages.new_post.template.new_post.sections.detail_info.contents.category.label'
+                  )
+                "
                 v-model="categoryTag"
                 :items="Object.keys(categoryTags)"
               />
@@ -74,8 +110,16 @@
             <v-col cols="12">
               <v-text-field
                 v-model="optionalTag"
-                label="タグ"
-                placeholder="リプ会用"
+                :label="
+                  i18nT(
+                    'pages.new_post.template.new_post.sections.detail_info.contents.optional_tag.label'
+                  )
+                "
+                :placeholder="
+                  i18nT(
+                    'pages.new_post.template.new_post.sections.detail_info.contents.optional_tag.place_holder'
+                  )
+                "
                 :rules="[validateOptionalTag]"
                 :counter="config.optional_tag_length_limit"
               ></v-text-field>
@@ -86,8 +130,16 @@
             <v-col cols="12">
               <v-textarea
                 v-model="uploadComment"
-                label="コメント"
-                placeholder="頑張って達成しました！！"
+                :label="
+                  i18nT(
+                    'pages.new_post.template.new_post.sections.detail_info.contents.upload_comment.label'
+                  )
+                "
+                :placeholder="
+                  i18nT(
+                    'pages.new_post.template.new_post.sections.detail_info.contents.upload_comment.place_holder'
+                  )
+                "
                 :rules="[validateUploadComment]"
                 :counter="config.upload_comment_length_limit"
                 rows="3"
@@ -98,16 +150,29 @@
           <v-subheader
             class="text-subtitle-1 font-weight-medium text-grey-darken-3 mb-4 mt-6 d-flex align-center"
           >
-            <v-icon icon="mdi-trash-can-outline" color="error" />削除パスワード
+            <v-icon icon="mdi-trash-can-outline" color="error" />
+            {{
+              i18nT(
+                "pages.new_post.template.new_post.sections.delete_password.title"
+              )
+            }}
           </v-subheader>
 
           <v-row>
             <v-col cols="12">
               <v-text-field
                 v-model="deletePassword"
-                label="削除用パスワード"
+                :label="
+                  i18nT(
+                    'pages.new_post.template.new_post.sections.delete_password.contents.delete_password.label'
+                  )
+                "
                 persistent-hint
-                hint="必ず入力してください"
+                :hint="
+                  i18nT(
+                    'pages.new_post.template.new_post.sections.delete_password.contents.delete_password.hint'
+                  )
+                "
                 required
                 inputmode="latin"
                 :counter="config.delete_password_length_limit"
@@ -139,7 +204,9 @@
             <v-col cols="12" class="d-flex justify-center mt-4">
               <v-btn
                 color="primary"
-                text="送信"
+                :text="
+                  i18nT('pages.new_post.template.new_post.sections.submit.text')
+                "
                 variant="tonal"
                 @click="sendPostReplay"
               ></v-btn>
@@ -156,20 +223,27 @@
         scrim="rgba(0, 0, 0, 0.5)"
       >
         <v-card class="elevation-0">
-          <v-card-title>リプレイを投稿しました</v-card-title>
+          <v-card-title>{{
+            i18nT("pages.new_post.template.dialog.title")
+          }}</v-card-title>
           <v-container class="d-flex justify-center">
             <v-btn
               prepend-icon="mdi-twitter"
               color="blue darken-1"
               max-width="200"
               @click="shareToTweet"
-              >Twitterでシェアする</v-btn
             >
+              {{
+                i18nT("pages.new_post.template.dialog.contents.share_to_tweet")
+              }}
+            </v-btn>
           </v-container>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn
-              text="ホーム画面に戻る"
+              :text="
+                i18nT('pages.new_post.template.dialog.contents.return_home')
+              "
               variant="plain"
               @click="router.push('/')"
             />
@@ -182,9 +256,9 @@
     <v-snackbar v-model="snackbar.visible" :color="snackbar.color">
       {{ snackbar.message }}
       <template #actions>
-        <v-btn variant="outlined" @click="snackbar.visible = false"
-          >閉じる</v-btn
-        >
+        <v-btn variant="outlined" @click="snackbar.visible = false">
+          {{ i18nT("pages.new_post.template.snack_bar.close") }}
+        </v-btn>
       </template>
     </v-snackbar>
   </v-main>
@@ -193,6 +267,7 @@
 <script setup>
 import { ClientOnly } from "#components";
 import { ref } from "vue";
+import { useI18n } from "#imports";
 
 const router = useRouter();
 
@@ -206,6 +281,8 @@ const optionalTag = ref("");
 const dialogSuccessPost = ref(false);
 const pendingTweetText = ref("");
 const showPassword = ref(false);
+
+const { t: i18nT } = useI18n();
 
 const config = useRuntimeConfig().public;
 
@@ -234,35 +311,43 @@ function isUseNonVisibleASCII(val) {
 
 const validateUserName = (value) =>
   value.length <= config.username_length_limit ||
-  config.username_length_limit + "文字以内で入力してください";
+  i18nT("pages.new_post.scripts.validations.string_length_limit", {
+    string_length_limit: config.username_length_limit,
+  });
 const validateUploadComment = (value) =>
   value.length <= config.upload_comment_length_limit ||
-  config.upload_comment_length_limit + "文字以内で入力してください";
+  i18nT("pages.new_post.scripts.validations.string_length_limit", {
+    string_length_limit: config.upload_comment_length_limit,
+  });
 const validateDeletePassword = (value) => {
   if (value.length === 0) {
-    return "必ず入力してください";
+    return i18nT("pages.new_post.scripts.validations.input_required");
   }
   if (value.length > config.delete_password_length_limit) {
-    return config.delete_password_length_limit + "文字以内で入力してください";
+    return i18nT("pages.new_post.scripts.validations.string_length_limit", {
+      string_length_limit: config.delete_password_length_limit,
+    });
   }
   if (isUseNonVisibleASCII(value)) {
-    return "半角のASCII可視文字のみが許容されています。";
+    return i18nT("pages.new_post.scripts.validations.only_ascii");
   }
   if (value.trim().length === 0) {
-    return "スペースのみの入力はしないでください";
+    return i18nT("pages.new_post.scripts.validations.do_not_only_space");
   }
   return true;
 };
 const validateReplayFile = (value) => {
   if (!value) return true;
   if (value.size > config.filesize_kb_limit * 1024) {
-    return "ファイルサイズが大きすぎます";
+    return i18nT("pages.new_post.scripts.validations.too_large_file");
   }
   return true;
 };
 const validateOptionalTag = (value) =>
   value.length <= config.optional_tag_length_limit ||
-  config.optional_tag_length_limit + "文字以内で入力してください";
+  i18nT("pages.new_post.scripts.validations.string_length_limit", {
+    string_length_limit: config.optional_tag_length_limit,
+  });
 
 onMounted(() => {
   const script = document.createElement("script");
@@ -275,56 +360,77 @@ onMounted(() => {
 async function sendPostReplay() {
   if (userName.value === "") {
     snackbar.value.visible = true;
-    snackbar.value.message = "ユーザ名を入力してください";
+    snackbar.value.message = i18nT(
+      "pages.new_post.scripts.snack_bar.validations.username_required"
+    );
     snackbar.value.color = "error";
     return;
   }
   if (userName.value.length > config.username_length_limit) {
     snackbar.value.visible = true;
-    snackbar.value.message = `ユーザ名の文字数が${config.username_length_limit}文字より多いです`;
+    snackbar.value.message = i18nT(
+      "pages.new_post.scripts.snack_bar.validations.username_length_limit_exceed",
+      { username_length_limit: config.username_length_limit }
+    );
     snackbar.value.color = "error";
     return;
   }
   if (uploadComment.value.length > config.upload_comment_length_limit) {
     snackbar.value.visible = true;
-    snackbar.value.message = `コメントの文字数が${config.upload_comment_length_limit}文字より多いです`;
+    snackbar.value.message = i18nT(
+      "pages.new_post.scripts.snack_bar.validations.upload_comment_length_limit_exceed",
+      { upload_comment_length_limit: config.upload_comment_length_limit }
+    );
     snackbar.value.color = "error";
     return;
   }
   if (replayFile.value === null) {
     snackbar.value.visible = true;
-    snackbar.value.message = "リプレイファイルを指定してください";
+    snackbar.value.message = i18nT(
+      "pages.new_post.scripts.snack_bar.validations.replay_file_required"
+    );
     snackbar.value.color = "error";
     return;
   }
   if (isUseNonVisibleASCII(deletePassword.value)) {
     snackbar.value.visible = true;
-    snackbar.value.message =
-      "パスワードは半角のASCII可視文字のみが許容されています。";
+    snackbar.value.message = i18nT(
+      "pages.new_post.scripts.snack_bar.validations.delete_password_is_only_ascii"
+    );
     snackbar.value.color = "error";
     return;
   }
   if (deletePassword.value.length > config.delete_password_length_limit) {
     snackbar.value.visible = true;
-    snackbar.value.message = `パスワードの文字数が${config.delete_password_length_limit}文字より多いです`;
+    snackbar.value.message = i18nT(
+      "pages.new_post.scripts.snack_bar.validations.delete_password_length_limit_exceed",
+      { delete_password_length_limit: config.delete_password_length_limit }
+    );
     snackbar.value.color = "error";
     return;
   }
   if (deletePassword.value === "") {
     snackbar.value.visible = true;
-    snackbar.value.message = "パスワードを入力してください";
+    snackbar.value.message = i18nT(
+      "pages.new_post.scripts.snack_bar.validations.delete_password_required"
+    );
     snackbar.value.color = "error";
     return;
   }
   if (deletePassword.value.trim().length === 0) {
     snackbar.value.visible = true;
-    snackbar.value.message = "空白文字のみのパスワードは禁止されています";
+    snackbar.value.message = i18nT(
+      "pages.new_post.scripts.snack_bar.validations.delete_password_do_not_only_space"
+    );
     snackbar.value.color = "error";
     return;
   }
   if (optionalTag.value.length > config.optional_tag_length_limit) {
     snackbar.value.visible = true;
-    snackbar.value.message = `タグの文字数が${config.optional_tag_length_limit}文字より多いです`;
+    snackbar.value.message = i18nT(
+      "pages.new_post.scripts.snack_bar.validations.optional_tag_length_limit_exceed",
+      { optional_tag_length_limit: config.optional_tag_length_limit }
+    );
     snackbar.value.color = "error";
     return;
   }
@@ -337,7 +443,9 @@ async function sendPostReplay() {
   }
   if (config.recaptcha_enabled && !response) {
     snackbar.value.visible = true;
-    snackbar.value.message = "reCAPTCHAを確認してください";
+    snackbar.value.message = i18nT(
+      "pages.new_post.scripts.snack_bar.validations.recapcha_required"
+    );
     snackbar.value.color = "error";
     return;
   }
@@ -358,17 +466,16 @@ async function sendPostReplay() {
         if (200 <= response.status && response.status < 300) {
           replayFile.value = null;
           uploadComment.value = "";
-          pendingTweetText.value = `#えるろだ に
-リプレイを投稿しました！
+          pendingTweetText.value = i18nT("pages.new_post.scripts.share.tweet", {
+            url: `${window.location.origin}/replays/${response._data["replay_id"]}`,
+          });
 
-詳細はこちらから！
-${window.location.origin}/replays/${response._data["replay_id"]}
-
-`;
           dialogSuccessPost.value = true;
         }
         snackbar.value.visible = true;
-        snackbar.value.message = "リプレイを投稿しました";
+        snackbar.value.message = i18nT(
+          "pages.new_post.scripts.http_requested.replay_submitted"
+        );
         snackbar.value.color = "success";
         postedReplayId = response._data["replay_id"];
       },
@@ -377,8 +484,9 @@ ${window.location.origin}/replays/${response._data["replay_id"]}
     snackbar.value.visible = true;
     snackbar.value.color = "error";
     if (error?.response?.status === 429) {
-      snackbar.value.message =
-        "リプレイ送信上限を超えました。時間を置いて送信してください。";
+      snackbar.value.message = i18nT(
+        "pages.new_post.scripts.http_required.too_many_requested"
+      );
     } else {
       snackbar.value.message = `${error?.statusCode};${error?.statusMessage};${error?.data?.detail}`;
     }
@@ -399,4 +507,8 @@ const shareToTweet = () => {
   dialogSuccessPost.value = false;
   router.push("/");
 };
+
+useHead({
+  title: i18nT("pages.new_post.title"),
+});
 </script>

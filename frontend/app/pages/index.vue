@@ -13,22 +13,28 @@
         }"
       >
         <v-card-title class="text-h6 font-weight-bold mb-2">
-          ようこそ、L-Uploaderへ！
+          {{ i18nT("pages.index.template.welcome.title") }}
         </v-card-title>
 
         <v-card-text class="text-body-1">
-          ここは
-          <a
-            href="https://www16.big.or.jp/~zun/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            上海アリス幻樂団
-          </a>
-          が制作した東方Projectシリーズ作品のリプレイを投稿・閲覧できるアップローダです。
-          <br />
-          解析済みのリプレイファイルを確認・共有・ダウンロードすることができます。<br />
-          まずは新規投稿からリプレイファイルをアップロードしてみましょう。
+          <I18nT keypath="pages.index.template.welcome.contents.text" tag="p">
+            <template #br>
+              <br />
+            </template>
+            <template #shanghai_alice>
+              <a
+                href="https://www16.big.or.jp/~zun/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {{
+                  i18nT(
+                    "pages.index.template.welcome.contents.tags.shanghai_alice"
+                  )
+                }}
+              </a>
+            </template>
+          </I18nT>
         </v-card-text>
 
         <v-card-actions class="mt-3">
@@ -40,7 +46,7 @@
                 variant="elevated"
                 prepend-icon="mdi-upload"
               >
-                新規投稿
+                {{ i18nT("pages.index.template.welcome.buttons.new_post") }}
               </v-btn>
             </v-col>
 
@@ -51,7 +57,7 @@
                 variant="outlined"
                 prepend-icon="mdi-information-outline"
               >
-                リプレイファイルの保存場所
+                {{ i18nT("pages.index.template.welcome.buttons.replay_path") }}
               </v-btn>
             </v-col>
           </v-row>
@@ -62,7 +68,7 @@
         <v-card-subtitle
           class="text-subtitle-2 font-weight-medium text-grey-darken-1"
         >
-          最新の更新情報
+          {{ i18nT("pages.index.template.welcome.latest_updates.title") }}
         </v-card-subtitle>
 
         <v-list density="compact" class="px-2">
@@ -80,8 +86,16 @@
             <div class="d-flex align-center">
               <v-text-field
                 v-model="inputedTag"
-                label="タグ検索"
-                placeholder="リプ会用"
+                :label="
+                  i18nT(
+                    'pages.index.template.search_components.tag_search.title'
+                  )
+                "
+                :placeholder="
+                  i18nT(
+                    'pages.index.template.search_components.tag_search.place_holder'
+                  )
+                "
                 dense
                 :rules="[validateOptionalTag]"
                 :counter="config.optional_tag_length_limit"
@@ -100,7 +114,11 @@
             <v-select
               v-model="selectedGame"
               :items="Object.keys(dropMenuGames)"
-              label="作品を選択"
+              :label="
+                i18nT(
+                  'pages.index.template.search_components.gamename_search.title'
+                )
+              "
               hide-details
               outlined
             />
@@ -110,7 +128,11 @@
             <v-select
               v-model="selectedCategory"
               :items="Object.keys(dropMenuCategories)"
-              label="カテゴリ"
+              :label="
+                i18nT(
+                  'pages.index.template.search_components.category_search.title'
+                )
+              "
               hide-details
               outlined
             />
@@ -162,9 +184,9 @@
     <v-snackbar v-model="snackbar.visible" :color="snackbar.color">
       {{ snackbar.message }}
       <template #actions>
-        <v-btn variant="outlined" @click="snackbar.visible = false"
-          >閉じる</v-btn
-        >
+        <v-btn variant="outlined" @click="snackbar.visible = false">
+          {{ i18nT("pages.index.snack_bar.close") }}
+        </v-btn>
       </template>
     </v-snackbar>
   </v-main>
@@ -174,6 +196,7 @@
 import { ref, watch } from "vue";
 import { useDisplay } from "vuetify";
 import { ClientOnly } from "#components";
+import { useI18n } from "#imports";
 
 import ReplayTable from "~/components/ReplayTable.vue";
 import DeleteDialog from "~/components/Dialogs/DeleteDialog.vue";
@@ -210,12 +233,26 @@ const loadingReplayMeta = ref(true);
 const loadingReplayCounts = ref(true);
 const deleteDialog = ref(false);
 const shareDialog = ref(false);
+const { t: i18nT, locale } = useI18n();
 
 const snackbar = ref({
   visible: false,
   message: "",
   color: "success",
 });
+
+async function openSnackBar(payload) {
+  snackbar.value.color = payload.success ? "success" : "error";
+  snackbar.value.message =
+    payload.message ??
+    (payload.success
+      ? i18nT("pages.index.scripts.open_snack_bar.payload.success")
+      : i18nT("pages.index.scripts.open_snack_bar.payload.error"));
+  snackbar.value.visible = true;
+  if (payload.page_reload) {
+    await onPageChanged(replayPagination.value);
+  }
+}
 
 const pendingDeleteItem = ref({});
 const pendingShareItem = ref({});
@@ -231,6 +268,7 @@ const inputedTag = ref("");
 const selectedTag = ref("");
 
 const release = ref(Releases()[0]);
+let suppressPaginationWatch = false;
 
 // 日付整形
 const formatDate = (iso) =>
@@ -305,94 +343,87 @@ const tableComponents = {
 
 const validateOptionalTag = (value) =>
   value.length <= config.optional_tag_length_limit ||
-  config.optional_tag_length_limit + "文字以内で入力してください";
+  i18nT("pages.index.scripts.validation.string_length_limit_exceed", {
+    string_length_limit: config.optional_tag_length_limit,
+  });
 
 const getReplayTable = (gameId) => {
   return tableComponents[gameId] ?? ErrorTable;
 };
 
-await useFetch(`${config.backend_url}/replays/count`, {
-  server: false,
-  onResponse({ response }) {
-    const countData = response._data;
-    replayPaginationLimit.value = Math.max(
-      1,
-      Math.floor((Number(countData.count) - 1) / config.pagination_size) + 1
-    );
-    loadingReplayCounts.value = false;
-  },
-  onResponseError({ error }) {
-    console.error(error);
-    replayPagination.value = 1;
-    loadingReplayCounts.value = false;
-    openSnackBar({ success: false, message: String(error) });
-  },
+const buildCommonParams = () => ({
+  game_id: dropMenuGames[selectedGame.value],
+  category: dropMenuCategories[selectedCategory.value],
+  optional_tag: selectedTag.value,
 });
 
-// リプレイ取得
-await useFetch(`${config.backend_url}/replays?order=desc&page=0`, {
-  server: false,
-  onResponse({ response }) {
-    const rawData = response._data;
-    replays.value = rawData.map((item, i) => ({
-      ...item,
-      uploaded_at: formatDate(item.uploaded_at),
-    }));
-    loadingReplayMeta.value = false;
-  },
-  onResponseError({ error }) {
-    console.error(error);
-    replays.value = [];
-    loadingReplayMeta.value = false;
-    openSnackBar({ success: false, message: String(error) });
-  },
-});
-
-const onPageChanged = async (newPage) => {
+async function fetchReplayCounts() {
+  loadingReplayCounts.value = true;
+  const params = new URLSearchParams(buildCommonParams());
   try {
     const countData = await $fetch(
-      `${config.backend_url}/replays/count?game_id=${
-        dropMenuGames[selectedGame.value]
-      }&category=${
-        dropMenuCategories[selectedCategory.value]
-      }&optional_tag=${encodeURIComponent(selectedTag.value)}`,
+      `${config.backend_url}/replays/count?${params.toString()}`,
       {
         method: "get",
         server: false,
       }
     );
-
     replayPaginationLimit.value = Math.max(
       1,
       Math.floor((Number(countData.count) - 1) / config.pagination_size) + 1
     );
+  } catch (error) {
+    console.error(error);
+    replayPagination.value = 1;
+    await openSnackBar({ success: false, message: String(error) });
+  } finally {
+    loadingReplayCounts.value = false;
+  }
+}
 
-    if (replayPagination.value > replayPaginationLimit.value) {
-      replayPagination.value = replayPaginationLimit.value;
-      await onPageChanged(replayPagination.value);
-      return;
-    }
-
+async function fetchReplays(page) {
+  loadingReplayMeta.value = true;
+  const params = new URLSearchParams({
+    order: "desc",
+    page: String(page - 1),
+    ...buildCommonParams(),
+  });
+  try {
     const replaysData = await $fetch(
-      `${config.backend_url}/replays?order=desc&page=${
-        replayPagination.value - 1
-      }&game_id=${dropMenuGames[selectedGame.value]}&category=${
-        dropMenuCategories[selectedCategory.value]
-      }&optional_tag=${encodeURIComponent(selectedTag.value)}`,
+      `${config.backend_url}/replays?${params.toString()}`,
       {
         method: "get",
         server: false,
       }
     );
-
     replays.value = replaysData.map((item) => ({
       ...item,
       uploaded_at: formatDate(item.uploaded_at),
     }));
   } catch (error) {
-    openSnackBar({ success: false, message: String(error) });
+    console.error(error);
+    replays.value = [];
+    await openSnackBar({ success: false, message: String(error) });
+  } finally {
+    loadingReplayMeta.value = false;
   }
-};
+}
+
+async function refreshReplays(page) {
+  await fetchReplayCounts();
+  const cappedPage = Math.min(page, replayPaginationLimit.value);
+  if (cappedPage !== replayPagination.value) {
+    suppressPaginationWatch = true;
+    replayPagination.value = cappedPage;
+  }
+  await fetchReplays(cappedPage);
+}
+
+await refreshReplays(replayPagination.value);
+
+async function onPageChanged(newPage) {
+  await refreshReplays(newPage);
+}
 
 const applyTag = () => {
   if (inputedTag.value.length <= config.optional_tag_length_limit) {
@@ -400,7 +431,12 @@ const applyTag = () => {
   } else {
     openSnackBar({
       success: false,
-      message: `タグは${config.optional_tag_length_limit}文字以内で入力してください`,
+      message: i18nT(
+        "pages.index.scripts.validation.string_length_limit_exceed",
+        {
+          string_length_limit: config.optional_tag_length_limit,
+        }
+      ),
     });
   }
 };
@@ -429,7 +465,19 @@ watch(selectedCategory, () => {
   }
 });
 
+watch(locale, () => {
+  if (replayPagination.value === 1) {
+    onPageChanged(1);
+  } else {
+    replayPagination.value = 1;
+  }
+});
+
 watch(replayPagination, (newPage) => {
+  if (suppressPaginationWatch) {
+    suppressPaginationWatch = false;
+    return;
+  }
   onPageChanged(newPage);
 });
 
@@ -443,17 +491,6 @@ function openShareDialog(payload) {
   pendingShareItem.value = payload;
   shareDialog.value = true;
 }
-
-const openSnackBar = async (payload) => {
-  snackbar.value.color = payload.success ? "success" : "error";
-  snackbar.value.message =
-    payload.message ??
-    (payload.success ? "成功しました" : "エラーが発生しました");
-  snackbar.value.visible = true;
-  if (payload.page_reload) {
-    await onPageChanged(replayPagination.value);
-  }
-};
 </script>
 
 <style scoped>

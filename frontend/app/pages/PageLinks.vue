@@ -2,7 +2,9 @@
   <v-main>
     <v-container class="py-8">
       <v-card elevation="2" class="pa-4">
-        <v-card-title>外部リンク一覧</v-card-title>
+        <v-card-title>{{
+          i18nT("pages.page_links.template.page_links.title")
+        }}</v-card-title>
         <v-divider class="my-2" />
         <v-list>
           <v-list-item
@@ -25,22 +27,27 @@
 </template>
 
 <script setup>
+import { useI18n } from "#imports";
+const { t: i18nT } = useI18n();
 const externalLinks = [
   {
     path: "https://blog.l-uploader.puresign.tokyo",
-    label: "えるろだ開発ブログ",
+    label: i18nT("pages.page_links.scripts.links.lblog"),
   },
   {
     path: "https://wefma.net",
-    label: "開発者のホームページ",
+    label: i18nT("pages.page_links.scripts.links.wefmaika"),
   },
   {
-    path: "https://info.puresign.tokyo",
-    label: "運用者のホームページ",
+    path: "https://puresign.tokyo",
+    label: i18nT("pages.page_links.scripts.links.puresign"),
   },
   {
     path: "http://silentselene.net",
-    label: "silentselene.net",
+    label: i18nT("pages.page_links.scripts.links.silentselene"),
   },
 ];
+useHead({
+  title: i18nT("pages.page_links.title"),
+});
 </script>

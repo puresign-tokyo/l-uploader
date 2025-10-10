@@ -29,7 +29,7 @@ export default defineNuxtConfig({
     },
   },
   devtools: { enabled: true },
-  modules: ["@nuxtjs/seo"],
+  modules: ["@nuxtjs/seo", "@nuxtjs/i18n"],
   site: {
     url: "https://l-uploader.puresign.tokyo",
     name: "えるろだ",
@@ -105,6 +105,37 @@ export default defineNuxtConfig({
       upload_comment_share_length_limit: (() => {
         return process.env.NUXT_PUBLIC_UPLOAD_COMMENT_SHARE_LENGTH_LIMIT;
       })(),
+    },
+  },
+  i18n: {
+    strategy: "prefix_except_default",
+    defaultLocale: "ja",
+    baseUrl: "https://l-uploader.puresign.tokyo",
+    locales: [
+      {
+        code: "ja",
+        name: "日本語",
+        file: "ja.yml",
+        iso: "ja-JP",
+        language: "ja-JP",
+      },
+      {
+        code: "en",
+        name: "English",
+        file: "en.yml",
+        iso: "en-US",
+        language: "en-US",
+      },
+    ],
+    lazy: true,
+    langDir: "locales/",
+    compilation: {
+      strictMessage: false,
+      escapeHtml: true,
+    },
+    bundle: {
+      fullInstall: true,
+      optimizeTranslationDirective: false,
     },
   },
   vite: {

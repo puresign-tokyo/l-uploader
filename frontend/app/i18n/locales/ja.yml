@@ -1,0 +1,535 @@
+components:
+  dialogs:
+    delete_dialog:
+      template:
+        delete:
+          title: "{filename}を削除する"
+          text: 削除用パスワードを入力してください
+          contents:
+            password_text_field:
+              label: 削除用パスワード
+            button_close: 閉じる
+            button_delete: 削除
+      scripts:
+        validation:
+          delete_password_is_only_ascii: パスワードは半角のASCII可視文字のみが許容されています
+          delete_password_length_limit_exceed: パスワードの文字数が{delete_password_length_limit}文字より多いです
+          delete_password_required: パスワードは必ず入力してください
+          delete_password_do_not_only_space: スペースのみのパスワードは禁止されています
+          recaptcha_required: reCAPTCHAを確認してください
+        http_requested:
+          success: 削除しました
+          password_mismatch: パスワードが違います
+          too_many_requested: 短時間で何回もパスワードを間違えています。時間を置いて削除してください。
+    share_dialog:
+      template:
+        share:
+          title: "{filename}をシェアする"
+          text: どのようにシェアしますか？
+          contents:
+            button_link: リンク
+            button_meta: 情報一覧コピー
+            button_twitter: Twitter共有
+            button_close: 閉じる
+      scripts:
+        share_to_tweet:
+          text: |-
+            #えるろだ
+            {filename}
+            {game_name} {user_name}
+            {upload_comment}
+          action_message: Twitterリンクに飛びました
+        share_meta:
+          text: |-
+            {game_name} {user_name}
+            {upload_comment}
+          action_message: 情報一覧をコピーしました
+        share_to_link:
+          action_message: リンクをコピーしました
+  replay_table:
+    template:
+      main:
+        user_name: ユーザ名
+        game_name: ゲーム名
+        total_score: スコア
+        replay_name: リプレイ名
+        slowdown: 処理落ち率
+        timestamp: リプレイ作成日
+        division: 難易度 機体
+        optional_tag: オプションタグ
+        upload_comment: コメント
+      sub:
+        detail_info:
+          title: 詳細情報
+        delete:
+          title: 削除
+          unknown:
+            filename: 不明なファイル
+            replay_id: error
+        share:
+          title: シェア
+          unknown:
+            user_name: 不明なユーザ
+            upload_comment: 不明なコメント
+            filename: 不明なファイル
+            game_name: 不明なゲーム名
+            replay_id: error
+        download:
+          title: ダウンロード
+  the_footer:
+    template:
+      contents:
+        text: Copyright {project_puresign} All Rights Reserved.
+        tags:
+          project_puresign: project puresign
+pages:
+  replays:
+    replay_id:
+      title: リプレイ詳細
+      template:
+        card:
+          replay_fetch_error: |-
+            データの取得中にエラーが発生しました。{br}
+            リロードするか、後でもう一度お試しください。
+          user_name: ユーザ名
+          game_name: ゲーム名
+          total_score: スコア
+          division: 部門
+          category: カテゴリ
+          optional_tag: オプションタグ
+          replay_name: リプレイ名
+          timestamp: リプレイ作成日
+          slowdown: 処理落ち率
+          upload_comment: コメント
+          stage_splits: プレイ進行
+          cant_show_stage_splits: このリプレイではプレイ進行を表示することができません
+        dialog:
+          unknown:
+            filename: 不明なファイル
+            user: 不明なユーザ
+            upload_comment: 不明なコメント
+            replay_id: error
+
+        snack_bar:
+          close: 閉じる
+      scripts:
+        snack_bar:
+          payload:
+            success: 成功しました
+            error: エラーが発生しました
+
+  about:
+    title: サイト概要
+    template:
+      replay_path:
+        title: リプレイファイルの保存場所
+        sections:
+          until_th12:
+            title: 星蓮船までの作品
+            contents:
+              paragraph: 次のいずれか
+              lists:
+                games_replay_folder:
+                  text: ゲーム内の{replay}フォルダ
+                  tags:
+                    replay: replay
+                virtual_store:
+                  text: C:\Users\(ユーザー名)\AppData\Local\VirtualStore
+          since_th125:
+            title: ダブルスポイラー以降
+            contents:
+              text: C:\Users\(ユーザー名)\AppData\Roaming\ShanghaiAlice
+          note:
+            title: 注意
+            contents:
+              text: |-
+                ただしAppDataフォルダは隠しフォルダのため、
+                {search_query}等で調べて表示できるようにしておくこと
+              tags:
+                search_query: Windows 隠しフォルダ 表示
+      compatible_games:
+        title: 対応作品一覧
+        sections:
+          mainline_games:
+            title: 整数作品
+          side_games:
+            title: 小数作品
+          other_games:
+            title: その他
+      license:
+        title: ライセンス
+        sections:
+          source_code:
+            title: ソースコード
+            contents:
+              text: |-
+                {apache_license_2_0}にて{github}で公開されています。
+              tags:
+                apache_license_2_0: Apache License 2.0
+                github: Github
+          logo:
+            title: ロゴ
+            contents:
+              creator: OMに依頼して作成しています。
+              do_not_modify: ユーザのロゴの改変を禁じます。
+      staff:
+        title: スタッフ紹介
+        sections:
+          wefmaika:
+            title: ゑふまいか
+            contents:
+              lists:
+                developper: 開発
+                server_management: サーバ管理
+                operation_management: 運用管理
+          irckk:
+            title: irckk
+            contents:
+              lists:
+                domain_management: ドメイン管理
+                operation: 運用
+          kamo_kun:
+            title: かも猫
+            contents:
+              lists:
+                develop_consign: 開発委託
+          om:
+            title: OM
+            contents:
+              lists:
+                create_logo: ロゴ作成
+      third_parties:
+        title: 使用した主なサードパーティ成果物
+        sections:
+          silentselene:
+            title:
+              text: "{silentselene}(Apache License 2.0)"
+              tags:
+                silentselene: silentselene.net
+            contents:
+              lists:
+                parse_replay: リプレイファイルパース定義
+          tsadecode:
+            title:
+              text: "{tsadecode}(パブリックドメイン)"
+              tags:
+                tsadecode: tsadecode
+            contents:
+              lists:
+                decode_replay: リプレイファイルデコーダ
+      donation:
+        title: 寄付
+        sections:
+          donation:
+            contents:
+              cause: このサイトはゑふまいかの家の電気代によって成り立っています。
+              donation_page:
+                text: "{here}からゑふまいかに寄付を送ることができます。"
+                tags:
+                  here: ここ
+  index:
+    title: ホーム
+    template:
+      welcome:
+        title: ようこそ、L-Uploaderへ！
+        contents:
+          text: |-
+            ここは{shanghai_alice}が制作した東方Projectシリーズ作品のリプレイを投稿・閲覧できるアップローダです。{br}
+            解析済みのリプレイファイルを確認・共有・ダウンロードすることができます。{br}
+            まずは新規投稿からリプレイファイルをアップロードしてみましょう。
+          tags:
+            shanghai_alice: "上海アリス幻樂団"
+        buttons:
+          new_post: 新規投稿
+          replay_path: リプレイファイルの保存場所
+        latest_updates:
+          title: 最新の更新情報
+      search_components:
+        tag_search:
+          title: タグ検索
+          place_holder: リプ会用
+        gamename_search:
+          title: 作品を選択
+        category_search:
+          title: カテゴリ
+      snack_bar:
+        close: 閉じる
+    scripts:
+      open_snack_bar:
+        payload:
+          success: 成功しました
+          error: エラーが発生しました
+      validation:
+        string_length_limit_exceed: "{string_length_limit}文字以内で入力してください"
+  new_post:
+    title: 新規投稿
+    template:
+      new_post:
+        title: 新規投稿
+        sections:
+          replay_file:
+            title: リプレイファイル
+            contents:
+              file_input:
+                label: リプレイファイル(.rpy)
+                details:
+                  text: リプレイファイルの場所は{replay_path}をご覧ください。
+                  tags:
+                    replay_path: リプレイファイルの保存場所
+          detail_info:
+            title: 詳細情報
+            contents:
+              user_name:
+                label: ユーザ名
+                place_holder: ZUN
+              category:
+                label: プレイスタイル
+              optional_tag:
+                label: タグ
+                place_holder: リプ会用
+              upload_comment:
+                label: コメント
+                place_holder: 頑張って達成しました！！
+          delete_password:
+            title: 削除パスワード
+            contents:
+              delete_password:
+                label: 削除用パスワード
+                hint: 必ず入力してください
+          submit:
+            text: 送信
+      dialog:
+        title: リプレイを投稿しました
+        contents:
+          share_to_tweet: Twitterでシェアする
+          return_home: ホーム画面に戻る
+      snack_bar:
+        close: 閉じる
+    scripts:
+      validations:
+        string_length_limit: "{string_length_limit}文字以内で入力してください"
+        input_required: 必ず入力してください
+        only_ascii: 半角のASCII可視文字のみが許容されています
+        do_not_only_space: スペースのみの入力はしないでください
+        too_large_file: ファイルサイズが大きすぎます
+      snack_bar:
+        validations:
+          username_required: ユーザ名を入力してください
+          username_length_limit_exceed: ユーザ名の文字数が{username_length_limit}文字より多いです
+          upload_comment_length_limit_exceed: コメントの文字数が{upload_comment_length_limit}文字より多いです
+          replay_file_required: リプレイファイルを指定してください
+          delete_password_is_only_ascii: パスワードは半角のASCII可視文字のみが許容されています
+          delete_password_length_limit_exceed: パスワードの文字数が{delete_password_length_limit}文字より多いです
+          delete_password_required: パスワード入力してください
+          delete_password_do_not_only_space: スペースのみのパスワードは禁止されています
+          optional_tag_length_limit_exceed: タグの文字数が{optional_tag_length_limit}文字より多いです
+          recaptcha_required: reCAPTCHAを確認してください
+        http_requested:
+          replay_submitted: リプレイを投稿しました
+          too_many_requested: リプレイ送信上限を超えました。時間を置いて送信してください。
+      share:
+        tweet: |-
+          #えるろだ に
+          リプレイを投稿しました！
+
+          詳細はこちらから！
+          {url}
+  page_links:
+    title: 外部リンク一覧
+    template:
+      page_links:
+        title: 外部リンク一覧
+    scripts:
+      links:
+        lblog: えるろだ開発ブログ
+        wefmaika: 開発者のホームページ
+        puresign: 運用者のホームページ
+        silentselene: silentselene.net
+  release_note:
+    title: 更新履歴
+    template:
+      release_note:
+        title: 更新履歴
+  terms_serve:
+    title: 利用規約
+    template:
+      terms_serve:
+        title: 利用規約
+        subtitle: 最終更新日 2025年9月11日
+        sections:
+          article01:
+            title: 第1条（適用）
+            contents:
+              lists:
+                scope: |-
+                  本規約は，ユーザーと管理者との間の本サービスの利用に係る一切の関係に適用されるものとします。
+                only_japan: |-
+                  本サービスは日本国内向けであり、EU域内からの利用は禁止します。
+                  管理者は、EU域内の利用者についてGDPR上の義務を負いません。
+          article02:
+            title: 第2条（リプレイの登録）
+            contents:
+              lists:
+                replay_post_enable: |-
+                  本サービスにおいては，ユーザーが本規約に同意の上，管理者の定める方法によってリプレイを投稿することができます。
+                multi_post_enable: |-
+                  本サービスにおいては，1ユーザーにつき複数投稿をすることができます。
+                  ただし，1ユーザーが短時間に複数投稿をした場合は管理者の判断によって一定時間投稿停止させることがあります。
+                replay_store_limit: |-
+                  稿されたリプレイの保持期間は原則として投稿日から1年間とし、期間経過後はユーザーによる削除の有無にかかわらず自動的に削除されます。
+                  ただし、システム障害その他の事由により、保持期間に満たない時点でリプレイが削除または消失する場合があります。
+                  この場合に生じた損害について、管理者は一切の責任を負わないものとします。
+          article03:
+            title: 第3条（リプレイの削除・パスワードの管理）
+            contents:
+              lists:
+                user_stores_password: |-
+                  ユーザーは，自己の責任において，リプレイ投稿時に設定した削除用パスワードを適切に管理するものとします。
+                delete_with_password: |-
+                  管理者は，リプレイと削除パスワードの組み合わせが登録情報と一致したうえで削除要求された場合には，
+                  そのリプレイを登録しているユーザー自身による削除要求とみなしリプレイを削除します。
+                third_person_use_password: |-
+                  削除パスワードが第三者によって使用されたことによって生じた損害は，
+                  管理者に故意又は重大な過失がある場合を除き，管理者は一切の責任を負わないものとします。
+          article04:
+            title: 第4条（禁止事項）
+            contents:
+              paragraph: |-
+                ユーザーは本サービスの利用にあたり、以下の行為をしてはなりません。
+                これらの行為が確認されたユーザーに対して，管理者はユーザーが投稿したリプレイの削除，及びユーザの利用停止を行うことが可能です。
+                ただし，当該行為が明らかにジョークやパロディ等の『ネタ』であり，かつ他者の権利侵害や迷惑を伴わないと管理者が判断した場合は，
+                この限りではありません。
+              lists:
+                illegal: 法令または公序良俗に違反する行為
+                crime: 犯罪行為に関連する行為
+                cyber_attack: 管理者，本サービスの他のユーザー，または第三者のサーバーまたはネットワークの機能を破壊したり，妨害したりする行為
+                obstruct_service: 管理者の管理するサービスの運営を妨害するおそれのある行為
+                steal_personal_info: 他のユーザーに関する個人情報等を収集または蓄積する行為
+                unauthorized_access: 不正アクセスをし，またはこれを試みる行為
+                impersonation: 他のユーザーに成りすます行為
+                anti_social: 管理者の管理するサービスに関連して，反社会的勢力に対して直接または間接に利益を供与する行為
+                violation_of_rights: 管理者，本サービスの他のユーザーまたは第三者の知的財産権，肖像権，プライバシー，名誉その他の権利または利益を侵害する行為
+                posts_contents:
+                  text: 以下の表現を含み，または含むと管理者が判断する内容を本サービス上に投稿し，または送信する行為
+                  lists:
+                    violence: 過度に暴力的な表現
+                    sexual: 露骨な性的表現
+                    discrimination: 人種，国籍，信条，性別，社会的身分，門地等による差別につながる表現
+                    suicide: 自殺，自傷行為，薬物乱用を誘引または助長する表現
+                    others: その他反社会的な内容を含み他人に不快感を与える表現
+                religion: 宗教活動または宗教団体への勧誘行為
+                others: その他，管理者が不適切と判断する行為
+          article05:
+            title: 第5条（本サービスの提供の停止等）
+            contents:
+              lists:
+                conditions_of_service_stop:
+                  text: |-
+                    管理者は，以下のいずれかの事由があると判断した場合，
+                    ユーザーに事前に通知することなく本サービスの全部または一部の提供を停止または中断することができるものとします。
+                  lists:
+                    maintenance: 本サービスにかかるコンピュータシステムの保守点検または更新を行う場合
+                    disaster: 地震，落雷，火災，停電または天災などの不可抗力により，本サービスの提供が困難となった場合
+                    cyber_incident: コンピュータまたは通信回線等が事故により停止した場合
+                    others: その他，管理者が本サービスの提供が困難と判断した場合
+                user_disadvantage: |-
+                  管理者は，本サービスの提供の停止または中断により，ユーザーまたは第三者が被ったいかなる不利益または損害についても，
+                  一切の責任を負わないものとします。
+                service_end: |-
+                  本サービスが終了する場合，第10条に示す個人情報等を含む、
+                  本サービス運営により取得・保存したユーザー関連データをすべて破棄します。
+                  なお、本サービスの運営に用いたプログラムやソースコードは削除対象に含まれません。
+          article06:
+            title: 第6条（著作権）
+            contents:
+              lists:
+                enable_posts_replays: |-
+                  ユーザーは，自ら作成したリプレイ，及び第三者の作成したリプレイを投稿することができます。
+                  ただしこれはリプレイ作成を行った第三者とリプレイを投稿した人の間で合意があって投稿したと管理者はみなし，
+                  当事者間で起きたトラブルには管理者は一切責任を負わないものとします。
+                posts_info_rights: |-
+                  ユーザーが本サービスを利用して投稿ないしアップロードしたリプレイ，文章等については，当該ユーザーに留保されるものとします。
+                  ただし，管理者は，本サービスを利用して投稿ないしアップロードされたリプレイ，文章等について，
+                  本サービスの改良，品質の向上，または不備の是正等ならびに本サービスの周知宣伝等に必要な範囲で利用できるものとし，
+                  ユーザーは，この利用に関して，著作者人格権を行使しないものとします。
+                compatible_fun_work_guideline: |-
+                  本サービスは東方Project二次創作ガイドラインに準拠して運営されます。
+                  ユーザーは，リプレイの投稿にあたり，当該ガイドラインその他関係する著作権規定に従うものとし，
+                  原作権利者または権利管理者から削除要請があった場合には，管理者は当該リプレイを削除できるものとします。
+          article07:
+            title: 第7条（保証の否認および免責事項）
+            contents:
+              lists:
+                disclaimer_of_warranties: |-
+                  管理者は，本サービスに事実上または法律上の瑕疵
+                  （安全性，信頼性，正確性，完全性，有効性，特定の目的への適合性，セキュリティなどに関する欠陥，エラーやバグ，権利侵害などを含みます。）
+                  がないことを明示的にも黙示的にも保証しておりません。
+                user_damage: |-
+                  管理者は，本サービスに起因してユーザーに生じたあらゆる損害について，
+                  管理者の故意又は重過失による場合を除き，一切の責任を負いません。
+                  ただし，本サービスに関する管理者とユーザーとの間の契約（本規約を含みます。）が
+                  消費者契約法に定める消費者契約となる場合，この免責規定は適用されません。
+                special_circumstance: |-
+                  前項ただし書に定める場合であっても，管理者は，管理者の過失（重過失を除きます。）による債務不履行または不法行為によりユーザーに生じた損害のうち
+                  特別な事情から生じた損害（管理者またはユーザーが損害発生につき予見し，または予見し得た場合を含みます。）について一切の責任を負いません。
+                user_and_third_person: |-
+                  管理者は，本サービスに関して，ユーザーと他のユーザーまたは第三者との間において生じた取引，連絡または紛争等について一切責任を負いません。
+          article08:
+            title: 第8条（サービス内容の変更など）
+            contents:
+              paragraph: |-
+                管理者は，ユーザーへの予告なく，本サービスの内容を変更，追加または廃止することがあり，ユーザーはこれを承諾するものとします。
+          article09:
+            title: 第9条（利用規約の変更）
+            contents:
+              lists:
+                conditions_of_change_terms_serve:
+                  text: |-
+                    管理者は以下の場合には，ユーザーの個別の同意を要せず，本規約を変更することができるものとします。
+                  lists:
+                    compatible_user_advantage: 本規約の変更がユーザーの一般の利益に適合するとき。
+                    rationality: |-
+                      本規約の変更が本サービス利用契約の目的に反せず，
+                      かつ，変更の必要性，変更後の内容の相当性その他の変更に係る事情に照らして合理的なものであるとき。
+                press_release: |-
+                  管理者は，ユーザーに対し，X(旧Twitter)，または適切な方法により，
+                  事前に本規約を変更する旨および変更後の内容並びにその効力発生時期を通知します。
+          article10:
+            title: 第10条（個人情報の取り扱い）
+            contents:
+              lists:
+                store_personal_info_secure: |-
+                  管理者は，ユーザーから提供された削除パスワード，
+                  またはその他個人を特定できる情報（以下「個人情報等」といいます）を、適切に取り扱うものとし、
+                  プライバシーの保護に関して安全管理措置を講じます。
+                personal_info_usecase:
+                  text: 管理者は、取得した個人情報等を以下の目的のために利用します。
+                  lists:
+                    operation: 本サービスの提供および運営のため
+                    improve_service: 利用状況の分析やサービス改善のため（個人を特定しない範囲での統計データ作成を含む）
+                exception_of_disclosure_personal_info:
+                  text: |-
+                    管理者は，次のいずれかに該当する場合を除き，個人情報等を第三者に開示または提供しません。
+                  lists:
+                    users_consent: ユーザー本人の同意がある場合
+                    based_on_laws: 法令に基づき開示を求められた場合
+                    emergency: 人の生命、身体または財産の保護のために必要があり、本人の同意を得ることが困難な場合
+                disclosure_request: |-
+                  ユーザーは、自己の個人情報等について、開示、訂正、利用停止等を希望する場合は、
+                  管理者所定の手続により請求することができます。
+                  管理者は、本人確認のうえ、合理的な期間内に対応します。
+          article11:
+            title: 第11条（権利義務の譲渡の禁止）
+            contents:
+              paragraph: |-
+                ユーザーは，管理者の書面による事前の承諾なく，
+                利用契約上の地位または本規約に基づく権利もしくは義務を第三者に譲渡し，
+                または担保に供することはできません。
+          article12:
+            title: 第12条（準拠法）
+            contents:
+              lists:
+                governing_law: 本規約の解釈には日本法を準拠法とします。
+                mismatch_intentions: |-
+                  本規約は日本語で作成されており、
+                  翻訳版と日本語版との間に相違があるときは、日本語版の内容を優先します。

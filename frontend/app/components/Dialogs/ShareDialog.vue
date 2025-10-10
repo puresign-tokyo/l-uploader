@@ -6,8 +6,12 @@
     attach="body"
   >
     <v-card
-      :title="`${props.filename}をシェアする`"
-      text="どのようにシェアしますか？"
+      :title="
+        i18nT('components.dialogs.share_dialog.template.share.title', {
+          filename: props.filename,
+        })
+      "
+      :text="i18nT('components.dialogs.share_dialog.template.share.text')"
       class="elevation-0"
     >
       <v-row justify="center" align="center" class="my-4">
@@ -15,18 +19,30 @@
           icon="mdi-link"
           class="mx-4"
           @click="shareToLink"
-          title="リンク"
+          :title="
+            i18nT(
+              'components.dialogs.share_dialog.template.share.contents.button_link'
+            )
+          "
         />
         <v-btn
           icon="mdi-text-box-multiple"
           class="mx-4"
-          title="情報一覧コピー"
+          :title="
+            i18nT(
+              'components.dialogs.share_dialog.template.share.contents.button_meta'
+            )
+          "
           @click="shareMeta"
         />
         <v-btn
           icon="mdi-twitter"
           class="mx-4"
-          title="Twitter共有"
+          :title="
+            i18nT(
+              'components.dialogs.share_dialog.template.share.contents.button_twitter'
+            )
+          "
           @click="shareToTweet"
         />
       </v-row>
@@ -35,15 +51,25 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn text="閉じる" variant="plain" @click="shareDialog = false" />
+        <v-btn
+          :text="
+            i18nT(
+              'components.dialogs.share_dialog.template.share.contents.button_close'
+            )
+          "
+          variant="plain"
+          @click="shareDialog = false"
+        />
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from "#imports";
 const shareDialog = defineModel<boolean>();
 const config = useRuntimeConfig().public;
+const { t: i18nT } = useI18n();
 
 const props = defineProps<{
   game_name: string;
@@ -83,10 +109,12 @@ const shareToTweet = () => {
     Number(config.upload_comment_share_length_limit)
   );
   const text = encodeURIComponent(
-    `#えるろだ
-${props.filename}
-${game_name} ${user_name}
-${upload_comment}`
+    i18nT("components.dialogs.share_dialog.scripts.share_to_tweet.text", {
+      filename: props.filename,
+      game_name: props.game_name,
+      user_name: props.user_name,
+      upload_comment: props.upload_comment,
+    })
   );
   const url = encodeURIComponent(
     `${window.location.origin}/replays/${props.replay_id}`
@@ -95,7 +123,9 @@ ${upload_comment}`
   shareDialog.value = false;
   emit("result", {
     success: true,
-    message: "Twitterリンクに飛びました",
+    message: i18nT(
+      "components.dialogs.share_dialog.scripts.share_to_tweet.action_message"
+    ),
     page_reload: false,
   });
 };
@@ -118,7 +148,9 @@ ${upload_comment}`
     );
     emit("result", {
       success: true,
-      message: "情報一覧をコピーしました",
+      message: i18nT(
+        "components.dialogs.share_dialog.scripts.share_meta.action_message"
+      ),
       page_reload: false,
     });
   } catch (err) {
@@ -137,7 +169,9 @@ const shareToLink = async () => {
     );
     emit("result", {
       success: true,
-      message: "リンクをコピーしました",
+      message: i18nT(
+        "components.dialogs.share_dialog.scripts.share_to_link.action_message"
+      ),
       page_reload: false,
     });
   } catch (err) {

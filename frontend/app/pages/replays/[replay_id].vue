@@ -8,10 +8,17 @@
           </v-card>
 
           <v-card v-else-if="errorResponse">
-            <v-alert type="error" color="red darken-1" icon="mdi-alert-circle">
-              データの取得中にエラーが発生しました。<br />
-              リロードするか、後でもう一度お試しください。
-            </v-alert>
+            <I18nT
+              keypath="pages.replays.replay_id.template.card.replay_fetch_error"
+              tag="v-alert"
+              type="error"
+              color="red darken-1"
+              icon="mdi-alert-circle"
+            >
+              <template #br>
+                <br />
+              </template>
+            </I18nT>
           </v-card>
 
           <template v-else>
@@ -89,9 +96,17 @@
                       </v-col>
 
                       <v-col cols="12" class="d-flex align-baseline">
-                        <v-icon small class="mr-1" title="ユーザ名"
-                          >mdi-account</v-icon
+                        <v-icon
+                          small
+                          class="mr-1"
+                          :title="
+                            i18nT(
+                              'pages.replays.replay_id.template.card.user_name'
+                            )
+                          "
                         >
+                          mdi-account
+                        </v-icon>
                         <span v-if="true" class="text-h5 font-weight-bold mr-5">
                           {{ replayTable.user_name }}
                         </span>
@@ -109,10 +124,20 @@
 
               <v-row class="ml-4 mr-2 mt-1 align-center" style="min-width: 0">
                 <v-col cols="12" md="3" class="d-flex">
-                  <v-icon small class="mr-1" title="ゲーム名"
-                    >mdi-controller</v-icon
+                  <v-icon
+                    small
+                    class="mr-1"
+                    :title="
+                      i18nT('pages.replays.replay_id.template.card.game_name')
+                    "
                   >
-                  <span>ゲーム名</span>
+                    mdi-controller
+                  </v-icon>
+                  <span>
+                    {{
+                      i18nT("pages.replays.replay_id.template.card.game_name")
+                    }}
+                  </span>
                 </v-col>
                 <v-col cols="12" md="9" class="d-flex">
                   <p>{{ replayTable.game_meta.name }}</p>
@@ -120,8 +145,20 @@
                 <v-col cols="12" v-if="display.smAndDown.value" />
 
                 <v-col cols="12" md="3" class="d-flex">
-                  <v-icon small class="mr-1" title="スコア">mdi-trophy</v-icon>
-                  <span>スコア</span>
+                  <v-icon
+                    small
+                    class="mr-1"
+                    :title="
+                      i18nT('pages.replays.replay_id.template.card.total_score')
+                    "
+                  >
+                    mdi-trophy
+                  </v-icon>
+                  <span>
+                    {{
+                      i18nT("pages.replays.replay_id.template.card.total_score")
+                    }}
+                  </span>
                 </v-col>
                 <v-col cols="12" md="9" class="d-flex">
                   <p class="text-h5 font-weight-bold">
@@ -131,8 +168,20 @@
                 <v-col cols="12" v-if="display.smAndDown.value" />
 
                 <v-col cols="12" md="3" class="d-flex">
-                  <v-icon small class="mr-1" title="部門">mdi-flag</v-icon>
-                  <span>部門</span>
+                  <v-icon
+                    small
+                    class="mr-1"
+                    :title="
+                      i18nT('pages.replays.replay_id.template.card.division')
+                    "
+                  >
+                    mdi-flag
+                  </v-icon>
+                  <span>
+                    {{
+                      i18nT("pages.replays.replay_id.template.card.division")
+                    }}
+                  </span>
                 </v-col>
                 <v-col cols="12" md="9" class="d-flex">
                   <div class="d-flex flex-wrap" style="gap: 8px; min-width: 0">
@@ -174,10 +223,20 @@
                 <v-col cols="12" v-if="display.smAndDown.value" />
 
                 <v-col cols="12" md="3" class="d-flex">
-                  <v-icon small class="mr-1" title="カテゴリ"
-                    >mdi-flag-outline</v-icon
+                  <v-icon
+                    small
+                    class="mr-1"
+                    :title="
+                      i18nT('pages.replays.replay_id.template.card.category')
+                    "
                   >
-                  <span>カテゴリ</span>
+                    mdi-flag-outline
+                  </v-icon>
+                  <span>
+                    {{
+                      i18nT("pages.replays.replay_id.template.card.category")
+                    }}
+                  </span>
                 </v-col>
                 <v-col cols="12" md="9" class="d-flex">
                   <div class="d-flex flex-wrap" style="gap: 8px; min-width: 0">
@@ -206,10 +265,24 @@
                 <v-col cols="12" v-if="display.smAndDown.value" />
 
                 <v-col cols="12" md="3" class="d-flex">
-                  <v-icon small class="mr-1" title="カテゴリ"
-                    >mdi-tag-outline</v-icon
+                  <v-icon
+                    small
+                    class="mr-1"
+                    :title="
+                      i18nT(
+                        'pages.replays.replay_id.template.card.optional_tag'
+                      )
+                    "
                   >
-                  <span>オプションタグ</span>
+                    mdi-tag-outline
+                  </v-icon>
+                  <span>
+                    {{
+                      i18nT(
+                        "pages.replays.replay_id.template.card.optional_tag"
+                      )
+                    }}
+                  </span>
                 </v-col>
                 <v-col cols="12" md="9" class="d-flex">
                   <p v-if="replayTable.optional_tag">
@@ -219,10 +292,20 @@
                 <v-col cols="12" v-if="display.smAndDown.value" />
 
                 <v-col cols="12" md="3" class="d-flex">
-                  <v-icon small class="mr-1" title="リプレイ名"
-                    >mdi-badge-account-outline</v-icon
+                  <v-icon
+                    small
+                    class="mr-1"
+                    :title="
+                      i18nT('pages.replays.replay_id.template.card.replay_name')
+                    "
                   >
-                  <span>リプレイ名</span>
+                    mdi-badge-account-outline
+                  </v-icon>
+                  <span>
+                    {{
+                      i18nT("pages.replays.replay_id.template.card.replay_name")
+                    }}
+                  </span>
                 </v-col>
                 <v-col cols="12" md="9" class="d-flex">
                   <p>{{ replayTable.replay_name ?? "-" }}</p>
@@ -230,10 +313,20 @@
                 <v-col cols="12" v-if="display.smAndDown.value" />
 
                 <v-col cols="12" md="3" class="d-flex">
-                  <v-icon small class="mr-1" title="リプレイ作成日"
-                    >mdi-calendar-clock</v-icon
+                  <v-icon
+                    small
+                    class="mr-1"
+                    :title="
+                      i18nT('pages.replays.replay_id.template.card.timestamp')
+                    "
                   >
-                  <span>リプレイ作成日</span>
+                    mdi-calendar-clock
+                  </v-icon>
+                  <span>
+                    {{
+                      i18nT("pages.replays.replay_id.template.card.timestamp")
+                    }}
+                  </span>
                 </v-col>
                 <v-col cols="12" md="9" class="d-flex">
                   <p>{{ replayTable.timestamp ?? "-" }}</p>
@@ -241,10 +334,18 @@
                 <v-col cols="12" v-if="display.smAndDown.value" />
 
                 <v-col cols="12" md="3" class="d-flex">
-                  <v-icon small class="mr-1" title="処理落ち率"
-                    >mdi-play-speed</v-icon
+                  <v-icon
+                    small
+                    class="mr-1"
+                    :title="
+                      i18nT('pages.replays.replay_id.template.card.slowdown')
+                    "
                   >
-                  <span>処理落ち率</span>
+                    mdi-play-speed
+                  </v-icon>
+                  <span>{{
+                    i18nT("pages.replays.replay_id.template.card.slowdown")
+                  }}</span>
                 </v-col>
                 <v-col cols="12" md="9" class="d-flex">
                   <p>{{ replayTable.slowdown ?? "-" }}</p>
@@ -252,10 +353,24 @@
                 <v-col cols="12" v-if="display.smAndDown.value" />
 
                 <v-col cols="12" md="3" class="d-flex mb-5">
-                  <v-icon small class="mr-1" title="コメント"
-                    >mdi-comment</v-icon
+                  <v-icon
+                    small
+                    class="mr-1"
+                    :title="
+                      i18nT(
+                        'pages.replays.replay_id.template.card.upload_comment'
+                      )
+                    "
                   >
-                  <span>コメント</span>
+                    mdi-comment
+                  </v-icon>
+                  <span>
+                    {{
+                      i18nT(
+                        "pages.replays.replay_id.template.card.upload_comment"
+                      )
+                    }}
+                  </span>
                 </v-col>
                 <v-col
                   cols="12"
@@ -276,10 +391,24 @@
 
               <v-row class="ml-4 mr-10 align-center" style="min-width: 0">
                 <v-col cols="12" class="d-flex mt-1">
-                  <v-icon small class="mr-1" title="プレイ進行"
-                    >mdi-chart-line</v-icon
+                  <v-icon
+                    small
+                    class="mr-1"
+                    :title="
+                      i18nT(
+                        'pages.replays.replay_id.template.card.stage_splits'
+                      )
+                    "
                   >
-                  <span>プレイ進行</span>
+                    mdi-chart-line
+                  </v-icon>
+                  <span>
+                    {{
+                      i18nT(
+                        "pages.replays.replay_id.template.card.stage_splits"
+                      )
+                    }}
+                  </span>
                 </v-col>
                 <v-col cols="12" class="d-flex mb-5">
                   <v-data-table
@@ -292,9 +421,13 @@
                     }"
                     hide-default-footer
                   />
-                  <span v-else
-                    >このリプレイではプレイ進行を表示することができません</span
-                  >
+                  <span v-else>
+                    {{
+                      i18nT(
+                        "pages.replays.replay_id.template.card.cant_show_stage_splits"
+                      )
+                    }}
+                  </span>
                 </v-col>
               </v-row>
             </v-card>
@@ -305,8 +438,14 @@
       <!-- 削除ダイアログ -->
       <DeleteDialog
         v-if="!loading"
-        :filename="replayTable.filename ?? '不明なファイル'"
-        :replay_id="replayTable.replay_id ?? 'error'"
+        :filename="
+          replayTable.filename ??
+          i18nT('pages.replays.replay_id.template.dialog.unknown.filename')
+        "
+        :replay_id="
+          replayTable.replay_id ??
+          i18nT('pages.replays.replay_id.template.dialog.unknown.replay_id')
+        "
         v-model="deleteDialog"
         @result="openSnackBar"
       />
@@ -314,11 +453,25 @@
       <!-- 共有ダイアログ -->
       <ShareDialog
         v-if="!loading"
-        :user_name="replayTable.user_name ?? '不明なユーザ'"
-        :upload_comment="replayTable.upload_comment ?? '不明なコメント'"
+        :user_name="
+          replayTable.user_name ??
+          i18nT('pages.replays.replay_id.template.dialog.unknown.user_name')
+        "
+        :upload_comment="
+          replayTable.upload_comment ??
+          i18nT(
+            'pages.replays.replay_id.template.dialog.unknown.upload_comment'
+          )
+        "
         :game_name="replayTable.game_meta.name"
-        :filename="replayTable.filename ?? '不明なファイル'"
-        :replay_id="replayTable.replay_id ?? 'error'"
+        :filename="
+          replayTable.filename ??
+          i18nT('pages.replays.replay_id.template.dialog.unknown.filename')
+        "
+        :replay_id="
+          replayTable.replay_id ??
+          i18nT('pages.replays.replay_id.template.dialog.unknown.replay_id')
+        "
         v-model="shareDialog"
         @result="openSnackBar"
       />
@@ -327,9 +480,9 @@
       <v-snackbar v-model="snackbar.visible" :color="snackbar.color">
         {{ snackbar.message }}
         <template #actions>
-          <v-btn variant="outlined" @click="snackbar.visible = false"
-            >閉じる</v-btn
-          >
+          <v-btn variant="outlined" @click="snackbar.visible = false">
+            {{ i18nT("pages.replays.replay_id.template.snack_bar.close") }}
+          </v-btn>
         </template>
       </v-snackbar>
     </ClientOnly>
@@ -338,6 +491,7 @@
 
 <script setup lang="ts">
 import { useDisplay } from "vuetify";
+import { I18nT, useI18n } from "vue-i18n";
 import { ClientOnly } from "#components";
 import DeleteDialog from "~/components/Dialogs/DeleteDialog.vue";
 import ShareDialog from "~/components/Dialogs/ShareDialog.vue";
@@ -366,7 +520,7 @@ import { Th165Table } from "~/composables/Games/Th165";
 import { AlcoTable } from "~/composables/Games/Alco";
 
 const display = useDisplay();
-// import Th06Detail from '~/components/Games/Th06/Th06Detail.vue'
+const { t: i18nT, locale } = useI18n();
 
 type StageDetailsRow = Record<string, string | number | boolean | null>;
 
@@ -441,27 +595,31 @@ const tableComponents: Record<string, TableParser> = {
 
   alco: AlcoTable,
 };
-const getReplayTable = (game_id: string) => {
-  return tableComponents[game_id] ?? ErrorTable;
-};
 
-// const getComponentForReplayDetail = (gameId)=>detailComponents[gameId] || Th06Detail
-
-await useFetch(
-  `${useRuntimeConfig().public.backend_url}/replays/${route.params.replay_id}`,
-  {
-    server: false,
-    onResponse({ response }) {
-      replayTable = tableComponents[response._data.game_id](response._data);
-      loading.value = false;
-    },
-    onResponseError({ error }) {
-      console.error(error);
-      errorResponse.value = true;
-      loading.value = false;
-    },
+async function refreshReplay() {
+  try {
+    const response = await $fetch<{ game_id: string }>(
+      `${useRuntimeConfig().public.backend_url}/replays/${
+        route.params.replay_id
+      }`,
+      {
+        method: "get",
+      }
+    );
+    if (tableComponents[response?.game_id]) {
+      replayTable = tableComponents[response?.game_id](response);
+    } else {
+      replayTable = ErrorTable(response);
+    }
+    loading.value = false;
+  } catch (error) {
+    console.error(error);
+    errorResponse.value = true;
+    loading.value = false;
   }
-);
+}
+
+await refreshReplay();
 
 const openSnackBar = async (payload: {
   success: boolean;
@@ -471,15 +629,21 @@ const openSnackBar = async (payload: {
   snackbar.value.color = payload.success ? "success" : "error";
   snackbar.value.message =
     payload.message ??
-    (payload.success ? "成功しました" : "エラーが発生しました");
+    (payload.success
+      ? i18nT("pages.replays.replay_id.scripts.snack_bar.payload.success")
+      : i18nT("pages.replays.replay_id.scripts.snack_bar.payload.error"));
   snackbar.value.visible = true;
   if (payload.page_reload) {
     router.push("/");
   }
 };
 
+watch(locale, () => {
+  refreshReplay();
+});
+
 useHead({
-  title: `リプレイ詳細`,
+  title: i18nT("pages.replays.replay_id.title"),
 });
 
 useSeoMeta({

@@ -30,6 +30,18 @@
         >
           {{ internalLink.label }}
         </v-btn>
+        <v-divider class="my-4" />
+        <v-btn
+          v-for="option in localeOptions"
+          :key="option.code"
+          block
+          :to="switchLocalePath(option.code)"
+          class="mb-2"
+          variant="outlined"
+          :disabled="locale === option.code"
+        >
+          {{ option.label }}
+        </v-btn>
       </v-container>
     </v-navigation-drawer>
   </ClientOnly>
@@ -54,24 +66,68 @@
     >
       {{ internalLink.label }}
     </v-btn>
+    <v-spacer />
+    <v-btn
+      v-if="display.smAndDown.value"
+      variant="text"
+      class="ml-auto"
+      :to="switchLocalePath(locale === 'ja' ? 'en' : 'ja')"
+    >
+      {{
+        locale === "ja"
+          ? localeOptions.find((option) => option.code === "en")?.label
+          : localeOptions.find((option) => option.code === "ja")?.label
+      }}
+    </v-btn>
+    <template v-else>
+      <v-btn
+        v-for="option in localeOptions"
+        :key="option.code"
+        :to="switchLocalePath(option.code)"
+        class="ml-2"
+        size="small"
+        :variant="locale === option.code ? 'outlined' : 'text'"
+        :disabled="locale === option.code"
+      >
+        {{ option.label }}
+      </v-btn>
+    </template>
   </v-app-bar>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useDisplay } from "vuetify";
-const display = useDisplay();
+import { useI18n, useLocalePath, useSwitchLocalePath } from "#imports";
 
+const { t: i18nT } = useI18n();
+const display = useDisplay();
 const drawer = ref(false);
 
-const internalLinks = [
-  { path: "/", label: "ホーム" },
-  { path: "/NewPost", label: "新規投稿" },
-  { path: "/About", label: "サイト概要" },
-  { path: "/TermsServe", label: "利用規約" },
-  { path: "/ReleaseNote", label: "リリースノート" },
-  { path: "/PageLinks", label: "外部リンク一覧" },
+const { locale } = useI18n();
+const switchLocalePath = useSwitchLocalePath();
+const localePath = useLocalePath();
+
+const localeOptions = [
+  { code: "ja", label: "日本語" },
+  { code: "en", label: "English" },
 ];
+
+const baseInternalLinks = [
+  { path: "/", labelKey: "pages.index.title" },
+  { path: "/NewPost", labelKey: "pages.new_post.title" },
+  { path: "/About", labelKey: "pages.about.title" },
+  { path: "/TermsServe", labelKey: "pages.terms_serve.title" },
+  { path: "/ReleaseNote", labelKey: "pages.release_note.title" },
+  { path: "/PageLinks", labelKey: "pages.page_links.title" },
+];
+
+const internalLinks = computed(() =>
+  baseInternalLinks.map((link) => ({
+    path: localePath(link.path),
+    label: i18nT(link.labelKey),
+  }))
+);
 
 watch(display.smAndDown, (isSmall) => {
   if (!isSmall) {
