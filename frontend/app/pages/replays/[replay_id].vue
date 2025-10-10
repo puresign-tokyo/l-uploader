@@ -477,4 +477,12 @@ const openSnackBar = async (payload: {
     router.push("/");
   }
 };
+
+useHead({
+  title: `リプレイ詳細`,
+});
+
+useSeoMeta({
+  robots: "noindex, nofollow",
+});
 </script>
