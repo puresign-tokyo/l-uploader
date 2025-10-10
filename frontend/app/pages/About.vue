@@ -206,7 +206,7 @@
                 >
                   {{
                     i18nT(
-                      "pages.about.template.license.sections.source_code.tags.apache_license_2_0"
+                      "pages.about.template.license.sections.source_code.contents.tags.apache_license_2_0"
                     )
                   }}
                 </a>
@@ -219,7 +219,7 @@
                 >
                   {{
                     i18nT(
-                      "pages.about.template.license.sections.source_code.tags.github"
+                      "pages.about.template.license.sections.source_code.contents.tags.github"
                     )
                   }}
                 </a>
