@@ -245,7 +245,7 @@ pages:
       search_components:
         tag_search:
           title: Tag Search
-          place_holder: For Replay Meetings
+          place_holder: リプ会用
         gamename_search:
           title: Select a Game
         category_search:
