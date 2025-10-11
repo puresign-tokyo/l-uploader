@@ -353,7 +353,7 @@ pages:
     template:
       terms_serve:
         title: Terms Serve
-        subtitle: Last updated date 09/11/2025
+        subtitle: Last updated date 10/11/2025
         sections:
           article01:
             title: 第1条（適用）
@@ -524,7 +524,7 @@ pages:
                 利用契約上の地位または本規約に基づく権利もしくは義務を第三者に譲渡し，
                 または担保に供することはできません。
           article12:
-            title: 第12条（準拠法）
+            title: 第12条（準拠法および言語）
             contents:
               lists:
                 governing_law: 本規約の解釈には日本法を準拠法とします。
