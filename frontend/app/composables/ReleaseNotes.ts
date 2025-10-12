@@ -2,6 +2,13 @@ export function Releases() {
   // 要素番号が小さいものほど最新であるようにすること
   const releases = [
     {
+      version: "1.0.16",
+      date: "2025-10-12",
+      changes: [
+        "英語使用の時一覧ページからリプレイ詳細に飛んだ時、日本語に戻ってしまうことの修正",
+      ],
+    },
+    {
       version: "1.0.15",
       date: "2025-10-11",
       changes: [

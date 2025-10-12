@@ -251,7 +251,7 @@
                 >
                   <NuxtLink
                     v-if="props.replayTable.replay_id"
-                    :to="`/replays/${props.replayTable.replay_id}`"
+                    :to="localePath(`/replays/${props.replayTable.replay_id}`)"
                     style="text-decoration: none; color: inherit"
                   >
                     <v-icon
@@ -391,8 +391,9 @@
 
 <script setup lang="ts">
 import { useDisplay } from "vuetify";
-import { useI18n } from "#imports";
+import { useI18n, useLocalePath } from "#imports";
 const { t: i18nT } = useI18n();
+const localePath = useLocalePath();
 const display = useDisplay();
 
 interface ReplayTable {
