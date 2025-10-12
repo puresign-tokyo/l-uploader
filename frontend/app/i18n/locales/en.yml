@@ -284,7 +284,7 @@ pages:
                 label: Playstyle
               optional_tag:
                 label: Tag
-                place_holder: For Replay Meetings
+                place_holder: リプ会用
               upload_comment:
                 label: Comment
                 place_holder: Achieved with great effort!!
