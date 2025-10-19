@@ -474,7 +474,7 @@ async function sendPostReplay() {
         }
         snackbar.value.visible = true;
         snackbar.value.message = i18nT(
-          "pages.new_post.scripts.http_requested.replay_submitted"
+          "pages.new_post.scripts.snack_bar.http_requested.replay_submitted"
         );
         snackbar.value.color = "success";
         postedReplayId = response._data["replay_id"];
@@ -485,7 +485,7 @@ async function sendPostReplay() {
     snackbar.value.color = "error";
     if (error?.response?.status === 429) {
       snackbar.value.message = i18nT(
-        "pages.new_post.scripts.http_required.too_many_requested"
+        "pages.new_post.scripts.snack_bar.http_required.too_many_requested"
       );
     } else {
       snackbar.value.message = `${error?.statusCode};${error?.statusMessage};${error?.data?.detail}`;
