@@ -4,7 +4,7 @@
 
 ## 使用方法
 
-1. `th-uploader/.env` ファイルを作成し、以下を定義する（docker-compose.yml に準拠）
+1. `l-uploader/.env` ファイルを作成し、以下を定義する（docker-compose.yml に準拠）
 
    ```
    # フロント/バックエンドの公開設定
