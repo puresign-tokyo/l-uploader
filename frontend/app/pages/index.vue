@@ -185,7 +185,7 @@
       {{ snackbar.message }}
       <template #actions>
         <v-btn variant="outlined" @click="snackbar.visible = false">
-          {{ i18nT("pages.index.snack_bar.close") }}
+          {{ i18nT("pages.index.template.snack_bar.close") }}
         </v-btn>
       </template>
     </v-snackbar>
