@@ -1,5 +1,5 @@
 meta:
-  id: alco
+  id: alco_encrypted
   file-extension: raw
   endian: le
 seq:

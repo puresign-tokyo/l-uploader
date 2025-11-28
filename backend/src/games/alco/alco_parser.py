@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from parsers.py_code import alco, alco_userdata
+from parsers.py_code import alco_encrypted, alco_userdata
 from parsers.base_parser import BaseParser
 import tsadecode as td
 from games.alco.alco_replay_info import AlcoReplayInfo, AlcoStageDetail
@@ -18,7 +18,7 @@ class AlcoParser(BaseParser):
 
         td.decrypt(comp_data, 0x400, 0xAA, 0xE1)
         td.decrypt(comp_data, 0x80, 0x3D, 0x7A)
-        replay = alco.Alco.from_bytes(td.unlzss(comp_data))
+        replay = alco_encrypted.AlcoEncrypted.from_bytes(td.unlzss(comp_data))
 
         rep_stages = []
 
