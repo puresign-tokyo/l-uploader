@@ -14,8 +14,8 @@ interface AlcoReplay {
     total_score: string;
     slowdown: string;
     timestamp: string;
-    spell_card_id: string;
     stage_details: [];
+    parser_version: string;
   };
 }
 
