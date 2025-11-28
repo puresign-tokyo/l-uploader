@@ -14,12 +14,55 @@ interface AlcoReplay {
     total_score: string;
     slowdown: string;
     timestamp: string;
-    spell_card_id: string;
-    stage_details: [];
+    stage_details: [
+      // パーサバージョン2で追加
+      {
+        stage: string;
+        score: string | null;
+      }
+    ];
+    parser_version: string;
   };
 }
 
+interface StageDetailHeader {
+  title: string;
+  key: string;
+  sortable: boolean;
+  fixed: boolean;
+}
+
+interface StageDetailItem {
+  stage: string;
+  score: string;
+}
+
 export function AlcoTable(replay: AlcoReplay) {
+  let parser_version = Number(replay.replay_meta.parser_version);
+
+  let stage_detail_headers: StageDetailHeader[] = [];
+  let stage_detail_items: StageDetailItem[] = [];
+  if (parser_version >= 2) {
+    stage_detail_headers = [
+      {
+        title: "ステージ",
+        key: "stage",
+        sortable: false,
+        fixed: true,
+      },
+      {
+        title: "スコア",
+        key: "score",
+        sortable: false,
+        fixed: false,
+      },
+    ];
+    stage_detail_items = replay.replay_meta.stage_details.map((stage) => ({
+      stage: String(stage.stage),
+      score: stage.score !== null ? Number(stage.score).toLocaleString() : "-",
+    }));
+  }
+
   return {
     game_meta: {
       theme_color: "#C89600",
@@ -58,8 +101,8 @@ export function AlcoTable(replay: AlcoReplay) {
     category: useTableUtils().convertCategory(replay.category),
     replay_id: replay.replay_id,
     stage_details: {
-      headers: [],
-      items: [],
+      headers: stage_detail_headers,
+      items: stage_detail_items,
     },
   };
 }

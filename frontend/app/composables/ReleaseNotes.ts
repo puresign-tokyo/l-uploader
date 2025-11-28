@@ -2,6 +2,13 @@ export function Releases() {
   // 要素番号が小さいものほど最新であるようにすること
   const releases = [
     {
+      version: "1.0.17",
+      date: "2025-11-28",
+      changes: [
+        "黄昏酒場のステージ進行を表示に対応(今までに投稿されたリプレイは対応していません)",
+      ],
+    },
+    {
       version: "1.0.16",
       date: "2025-10-12",
       changes: [

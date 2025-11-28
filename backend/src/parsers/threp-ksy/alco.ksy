@@ -1,84 +1,44 @@
 meta:
   id: alco
-  file-extension: rpy
+  file-extension: raw
   endian: le
 seq:
-  - id: main
-    type: main
-  - id: userdata
-    type: userdata
+  - id: header
+    type: header
+  - id: stages
+    type: stage
+    repeat: expr
+    repeat-expr: header.stagecount
 types:
-  main:
+  header:
     seq:
-      - id: magic_ver
-        contents: al1r
-      - id: version
-        type: u4
-      - id: unused_1
-        type: u4
-      - id: userdata_offset
-        type: u4
-      - id: unused_2
+      - id: name
+        type: str
         size: 12
-      - id: comp_size
-        type: u4
-      - id: size
-        type: u4
-      - id: comp_data
-        size: comp_size
-  userdata:
-    seq:
-      - id: magic_user
-        contents: USER
-      - id: user_length
-        type: u4
-      - id: unknown
-        size: 4
-      - id: user_desc
-        type: u1
-        repeat: until
-        repeat-until: _ == 0xd
-      - id: user_desc_term
-        type: str
-        terminator: 0xa
-        encoding: ASCII
-      - id: user_ver
-        type: userdata_field("Version")
-      - id: name
-        type: userdata_field("Name")
-      - id: date
-        type: userdata_field("Date")
-      - id: stage
-        type: userdata_field("Stage")
-      - id: score
-        type: userdata_field("Score")
-      - id: slowdown
-        type: userdata_field("Slow Rate")
-  crlfstring:
-    seq:
-      - id: value
-        type: str
-        terminator: 0xd
         encoding: SJIS
-      - id: term
-        type: u1
-  userdata_field:
-    params:
-      - id: expected_name
-        type: str
+      - id: timestamp
+        type: u4
+      - id: total_score
+        type: u4
+      - id: unknown_1
+        size: 52
+      - id: slowdown
+        type: f4
+      - id: stagecount
+        type: u4
+      - id: unknown_2
+        size: 16
+  stage:
     seq:
-      - id: name
-        type: str
-        size: expected_name.length
-        encoding: ASCII
-        valid: expected_name
-      - id: name_value_separator_space
-        contents: " "
-      - id: value_with_space
-        type: str
-        # Always ends with 0x0d0a; that is, space then LF
-        terminator: 0x0a
-        encoding: ASCII
-    instances:
-      value:
-        value: value_with_space.substring(0, value_with_space.length - 1)
+      - id: stage_num
+        type: u2
+      - id: unknown_1
+        size: 6
+      - id: next_stage_offset
+        type: u4
+      - id: score
+        type: u4
+      - id: unknown_2
+        size: 8
+      - id: stage_data
+        size: next_stage_offset
