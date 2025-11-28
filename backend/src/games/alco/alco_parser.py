@@ -1,7 +1,8 @@
-from datetime import datetime
-from parsers.py_code import alco
+from datetime import datetime, timezone
+from parsers.py_code import alco, alco_userdata
 from parsers.base_parser import BaseParser
-from games.alco.alco_replay_info import AlcoReplayInfo
+import tsadecode as td
+from games.alco.alco_replay_info import AlcoReplayInfo, AlcoStageDetail
 
 
 class AlcoParser(BaseParser):
@@ -12,41 +13,36 @@ class AlcoParser(BaseParser):
         return rep_raw[:4] == b"al1r"
 
     def parse(self, rep_raw: bytes):
-        replay = alco.Alco.from_bytes(rep_raw)
+        header = alco_userdata.AlcoUserdata.from_bytes(rep_raw)
+        comp_data = bytearray(header.main.comp_data)
 
-        if replay.userdata is None:
-            raise ValueError("alco replay file cannot be parsed")
+        td.decrypt(comp_data, 0x400, 0xAA, 0xE1)
+        td.decrypt(comp_data, 0x80, 0x3D, 0x7A)
+        replay = alco.Alco.from_bytes(td.unlzss(comp_data))
 
-        if replay.userdata.name.value is None:
-            raise ValueError("alco replay file cannot be found username value")
+        rep_stages = []
 
-        if replay.userdata.date.value is None:
-            raise ValueError("alco replay file cannot be found date")
+        for current_stage_start_data, next_stage_start_data in zip(
+            replay.stages, replay.stages[1:] + [None]
+        ):
+            # if next_stage_start_data is not None:
+            s = AlcoStageDetail(
+                stage=current_stage_start_data.stage_num,
+            )
+            if next_stage_start_data is not None:
+                s.score = next_stage_start_data.score
+            else:
+                s.score = replay.header.total_score
 
-        if replay.userdata.stage.value is None:
-            raise ValueError("alco replay file cannot be found scene value")
-
-        if replay.userdata.score.value is None:
-            raise ValueError("alco replay file cannot be found total score")
-
-        if replay.userdata.slowdown.value is None:
-            raise ValueError("alco replay file cannot be found slowdown")
-
-        if replay.userdata.stage.value == "1":
-            stage = "1"
-        elif replay.userdata.stage.value == "1 〜 2":
-            stage = "2"
-        elif replay.userdata.stage.value == "1 〜 3":
-            stage = "3"
-        elif replay.userdata.stage.value == "All Clear":
-            stage = "Clear"
-        else:
-            raise ValueError(f"Unexpected stage value {replay.userdata.stage.value}")
+            rep_stages.append(s)
 
         return AlcoReplayInfo(
-            total_score=int(replay.userdata.score.value),
-            timestamp=datetime.strptime(replay.userdata.date.value, "%y/%m/%d %H:%M"),
-            name=replay.userdata.name.value,
-            stage=stage,
-            slowdown=float(replay.userdata.slowdown.value),
+            total_score=int(replay.header.total_score),
+            timestamp=datetime.fromtimestamp(replay.header.timestamp, tz=timezone.utc),
+            name=replay.header.name.replace("\x00", ""),
+            slowdown=float(replay.header.slowdown),
+            stage_details=rep_stages,
         )
+
+
+AlcoParser()
