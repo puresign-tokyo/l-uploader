@@ -259,12 +259,12 @@ def get_replays_replay_id(request: Request, replay_id: int):
 
     try:
         result = Usecase.select_replay(replay_id)
-        if result["state"] == "replay_not_found_in_postgres":
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         logger.exception(e)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    if result["state"] == "replay_not_found_in_postgres":
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="select replay not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="selected replay is not found"
         )
     return JSONResponse(content=result["post"])
 

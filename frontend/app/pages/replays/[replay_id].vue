@@ -613,6 +613,14 @@ async function refreshReplay() {
     }
     loading.value = false;
   } catch (error) {
+    throw showError({
+      statusCode: (error as any)?.statusCode ?? (error as any)?.status ?? 500,
+      statusMessage:
+        (error as any)?.statusMessage ??
+        (error as any)?.message ??
+        "Unknown error",
+      data: error,
+    });
     console.error(error);
     errorResponse.value = true;
     loading.value = false;
