@@ -26,6 +26,17 @@ export default defineNuxtConfig({
           content: "https://l-uploader.puresign.tokyo/images/logo/ogp.png",
         },
       ],
+      link: [
+        {
+          rel: "apple-touch-icon",
+          sizes: "180x180",
+          href: "/smart-phone-icons/ios/apple-touch-icon-180x180.png",
+        },
+        {
+          rel: "manifest",
+          href: "/manifest.json",
+        },
+      ],
     },
   },
   devtools: { enabled: true },
