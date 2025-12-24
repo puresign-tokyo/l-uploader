@@ -2,6 +2,13 @@ export function Releases() {
   // 要素番号が小さいものほど最新であるようにすること
   const releases = [
     {
+      version: "1.0.18",
+      date: "2025-12-24",
+      changes: [
+        "スマホでホーム画面に追加するとアプリのように振る舞うようにした",
+      ],
+    },
+    {
       version: "1.0.17",
       date: "2025-11-28",
       changes: [
