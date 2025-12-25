@@ -88,7 +88,7 @@ services:
       - 5432
 
   mongodb:
-    image: mongo:8.0.9
+    image: mongo:8.0.17
     container_name: ${MONGO_HOST}
     volumes:
       - mongodb_table:/data/db
