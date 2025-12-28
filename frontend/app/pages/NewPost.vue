@@ -61,7 +61,7 @@
               <v-text-field
                 v-model="optionalTag"
                 label="タグ"
-                placeholder="リプ会用"
+                placeholder="リプ会用 ※タグの指定は一つまでです"
                 :rules="[validateOptionalTag]"
                 :counter="config.optional_tag_length_limit"
               ></v-text-field>
