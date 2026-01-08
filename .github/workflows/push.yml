@@ -1,0 +1,22 @@
+name: Check Pull Request
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  check-releases:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - run: git fetch origin ${{ github.base_ref }} --depth=1
+
+      - name: Warn if ReleaseNotes.ts is unchanged
+        run: |
+          # 差分がないと git diff --exit-code は 0 を返す
+          if git diff --exit-code origin/${{ github.base_ref }} -- frontend/app/composables/ReleaseNotes.ts >/dev/null ; then
+            echo "::error file=frontend/app/composables/ReleaseNotes.ts::ReleaseNotes.ts is not changed.\nIs this intended action?"
+            exit 1
+          fi
