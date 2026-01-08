@@ -122,7 +122,13 @@
                 "
                 :rules="[validateOptionalTag]"
                 :counter="config.optional_tag_length_limit"
-              ></v-text-field>
+                :hint="
+                  i18nT(
+                    'pages.new_post.template.new_post.sections.detail_info.contents.optional_tag.hint'
+                  )
+                "
+                persistent-hint
+              />
             </v-col>
           </v-row>
 
