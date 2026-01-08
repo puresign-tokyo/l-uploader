@@ -285,6 +285,7 @@ pages:
               optional_tag:
                 label: Tag
                 place_holder: リプ会用
+                hint: You can specify one tag. It can be used for the tag search on the landing page.
               upload_comment:
                 label: Comment
                 place_holder: Achieved with great effort!!
