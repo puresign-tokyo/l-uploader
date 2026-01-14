@@ -1,4 +1,4 @@
-FROM node:23.11.0-bullseye-slim as build-stage
+FROM node:24.12.0-bullseye-slim as build-stage
 
 WORKDIR /app
 ENV LANG=C.UTF-8 \
@@ -46,7 +46,7 @@ ENV NUXT_PUBLIC_UPLOAD_COMMENT_SHARE_LENGTH_LIMIT=$NUXT_PUBLIC_UPLOAD_COMMENT_SH
 
 RUN npm run build
 
-FROM node:23.11.0-bullseye-slim
+FROM node:24.12.0-bullseye-slim
 
 WORKDIR /app
 
