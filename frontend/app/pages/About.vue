@@ -302,7 +302,7 @@
 
             <h3 class="text-subtitle-1 font-weight-medium mt-4">
               <a
-                href="https://info.puresign.tokyo"
+                href="https://www.puresign.tokyo"
                 target="_blank"
                 rel="noopener noreferrer"
               >

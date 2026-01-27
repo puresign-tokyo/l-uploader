@@ -7,7 +7,7 @@
       <I18nT keypath="components.the_footer.template.contents.text" tag="p">
         <template #project_puresign>
           <a
-            href="https://info.puresign.tokyo"
+            href="https://www.puresign.tokyo"
             target="_blank"
             rel="noopener noreferrer"
           >
