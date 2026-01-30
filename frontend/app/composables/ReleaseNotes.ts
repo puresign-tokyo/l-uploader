@@ -2,6 +2,11 @@ export function Releases() {
   // 要素番号が小さいものほど最新であるようにすること
   const releases = [
     {
+      version: "1.1.0",
+      date: "2026-01-31",
+      changes: ["外部影響のない画面表示部分のロジックの大幅な変更"],
+    },
+    {
       version: "1.0.18",
       date: "2025-12-24",
       changes: [
