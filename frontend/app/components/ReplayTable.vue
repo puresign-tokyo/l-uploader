@@ -260,7 +260,7 @@
                       size="large"
                       :title="
                         i18nT(
-                          'components.replay_table.template.sub.detail_info.title'
+                          'components.replay_table.template.sub.detail_info.title',
                         )
                       "
                       :class="{ 'text-disabled': !props.replayTable.replay_id }"
@@ -275,18 +275,18 @@
                     :class="{ 'text-disabled': !props.replayTable.replay_id }"
                     @click="
                       props.replayTable.replay_id &&
-                        emit('confirmDelete', {
-                          filename:
-                            props.replayTable.filename ??
-                            i18nT(
-                              'components.replay_table.template.sub.delete.unknown.filename'
-                            ),
-                          replay_id:
-                            props.replayTable.replay_id ??
-                            i18nT(
-                              'components.replay_table.template.sub.delete.unknown.replay_id'
-                            ),
-                        })
+                      emit('confirmDelete', {
+                        filename:
+                          props.replayTable.filename ??
+                          i18nT(
+                            'components.replay_table.template.sub.delete.unknown.filename',
+                          ),
+                        replay_id:
+                          props.replayTable.replay_id ??
+                          i18nT(
+                            'components.replay_table.template.sub.delete.unknown.replay_id',
+                          ),
+                      })
                     "
                     :title="
                       i18nT('components.replay_table.template.sub.delete.title')
@@ -302,27 +302,27 @@
                         user_name:
                           props.replayTable.user_name ??
                           i18nT(
-                            'components.replay_table.template.sub.share.unknown.user_name'
+                            'components.replay_table.template.sub.share.unknown.user_name',
                           ),
                         upload_comment:
                           props.replayTable.upload_comment ??
                           i18nT(
-                            'components.replay_table.template.sub.share.unknown.upload_comment'
+                            'components.replay_table.template.sub.share.unknown.upload_comment',
                           ),
                         filename:
                           props.replayTable.filename ??
                           i18nT(
-                            'components.replay_table.template.sub.share.unknown.filename'
+                            'components.replay_table.template.sub.share.unknown.filename',
                           ),
                         game_name:
                           props.replayTable.game_meta.name ??
                           i18nT(
-                            'components.replay_table.template.sub.share.unknown.game_name'
+                            'components.replay_table.template.sub.share.unknown.game_name',
                           ),
                         replay_id:
                           props.replayTable.replay_id ??
                           i18nT(
-                            'components.replay_table.template.sub.share.unknown.replay_id'
+                            'components.replay_table.template.sub.share.unknown.replay_id',
                           ),
                       })
                     "
@@ -333,7 +333,7 @@
 
                   <a
                     v-if="props.replayTable.replay_id"
-                    :href="`${useRuntimeConfig().public.backend_url}/replays/${
+                    :href="`${BackendUrl()}/replays/${
                       props.replayTable.replay_id
                     }/file`"
                     target="_blank"
@@ -346,7 +346,7 @@
                       size="large"
                       :title="
                         i18nT(
-                          'components.replay_table.template.sub.download.title'
+                          'components.replay_table.template.sub.download.title',
                         )
                       "
                     />
@@ -392,6 +392,7 @@
 <script setup lang="ts">
 import { useDisplay } from "vuetify";
 import { useI18n, useLocalePath } from "#imports";
+import { BackendUrl } from "~/composables/Settings";
 const { t: i18nT } = useI18n();
 const localePath = useLocalePath();
 const display = useDisplay();
@@ -438,7 +439,7 @@ const emit = defineEmits<{
       filename: string;
       game_name: string;
       replay_id: string;
-    }
+    },
   ): void;
 }>();
 </script>

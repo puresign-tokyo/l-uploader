@@ -32,16 +32,13 @@ interface StageDetailHeader {
   fixed: boolean;
 }
 
-interface StageDetailItem {
-  stage: string;
-  score: string;
-}
+type StageDetailsRow = Record<string, string | number | boolean | null>;
 
 export function AlcoTable(replay: AlcoReplay) {
   let parser_version = Number(replay.replay_meta.parser_version);
 
   let stage_detail_headers: StageDetailHeader[] = [];
-  let stage_detail_items: StageDetailItem[] = [];
+  let stage_detail_items: StageDetailsRow[] = [];
   if (parser_version >= 2) {
     stage_detail_headers = [
       {

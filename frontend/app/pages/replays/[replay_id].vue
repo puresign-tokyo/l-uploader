@@ -44,7 +44,7 @@
               <v-fab icon="mdi-share-variant" @click="shareDialog = true" />
               <a
                 v-if="replayTable.replay_id"
-                :href="`${useRuntimeConfig().public.backend_url}/replays/${
+                :href="`${BackendUrl()}/replays/${
                   replayTable.replay_id
                 }/file`"
                 target="_blank"
@@ -493,6 +493,7 @@
 import { useDisplay } from "vuetify";
 import { I18nT, useI18n } from "vue-i18n";
 import { ClientOnly } from "#components";
+import { BackendUrl } from "~/composables/Settings";
 import DeleteDialog from "~/components/Dialogs/DeleteDialog.vue";
 import ShareDialog from "~/components/Dialogs/ShareDialog.vue";
 
@@ -599,7 +600,7 @@ const tableComponents: Record<string, TableParser> = {
 async function refreshReplay() {
   try {
     const response = await $fetch<{ game_id: string }>(
-      `${useRuntimeConfig().public.backend_url}/replays/${
+      `${BackendUrl()}/replays/${
         route.params.replay_id
       }`,
       {

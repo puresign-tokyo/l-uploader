@@ -22,12 +22,12 @@
               max-width="360px"
               :label="
                 i18nT(
-                  'components.dialogs.delete_dialog.template.delete.contents.password_text_field.label'
+                  'components.dialogs.delete_dialog.template.delete.contents.password_text_field.label',
                 )
               "
               required
               inputmode="latin"
-              :counter="config.delete_password_length_limit"
+              :counter="Number(config.deletePasswordLengthLimit)"
               :rules="[validateDeletePassword]"
               :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
               :type="showPassword ? 'text' : 'password'"
@@ -38,7 +38,7 @@
         <v-row dense>
           <v-col cols="12" class="d-flex justify-center mt-8">
             <div
-              v-if="config.recaptcha_enabled"
+              v-if="Number(config.recaptchaEnabled)"
               ref="recaptchaRef"
               class="g-recaptcha"
             />
@@ -53,7 +53,7 @@
         <v-btn
           :text="
             i18nT(
-              'components.dialogs.delete_dialog.template.delete.contents.button_close'
+              'components.dialogs.delete_dialog.template.delete.contents.button_close',
             )
           "
           variant="plain"
@@ -63,7 +63,7 @@
           color="error"
           :text="
             i18nT(
-              'components.dialogs.delete_dialog.template.delete.contents.button_delete'
+              'components.dialogs.delete_dialog.template.delete.contents.button_delete',
             )
           "
           variant="tonal"
@@ -77,6 +77,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useI18n } from "#imports";
+import { useRuntimeConfig } from "#imports";
+import { BackendUrl } from "~/composables/Settings";
 const { t: i18nT } = useI18n();
 const deletePassword = ref("");
 const showPassword = ref(false);
@@ -95,23 +97,25 @@ function isUseNonVisibleASCII(val: string) {
 const validateDeletePassword = (value: string) => {
   if (value.length === 0) {
     return i18nT(
-      "components.dialogs.delete_dialog.scripts.validation.delete_password_required"
+      "components.dialogs.delete_dialog.scripts.validation.delete_password_required",
     );
   }
-  if (value.length > Number(config.delete_password_length_limit)) {
+  if (value.length > Number(config.deletePasswordLengthLimit)) {
     return i18nT(
       "components.dialogs.delete_dialog.scripts.validation.delete_password_length_limit_exceed",
-      { delete_password_length_limit: config.delete_password_length_limit }
+      {
+        delete_password_length_limit: Number(config.deletePasswordLengthLimit),
+      },
     );
   }
   if (isUseNonVisibleASCII(value)) {
     return i18nT(
-      "components.dialogs.delete_dialog.scripts.validation.delete_password_is_only_ascii"
+      "components.dialogs.delete_dialog.scripts.validation.delete_password_is_only_ascii",
     );
   }
   if (value.trim().length === 0) {
     return i18nT(
-      "components.dialogs.delete_dialog.scripts.validation.delete_password_do_not_only_space"
+      "components.dialogs.delete_dialog.scripts.validation.delete_password_do_not_only_space",
     );
   }
   return true;
@@ -125,7 +129,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (
     e: "result",
-    payload: { success: boolean; message: string; page_reload: boolean }
+    payload: { success: boolean; message: string; page_reload: boolean },
   ): void;
 }>();
 
@@ -138,7 +142,7 @@ async function sendDeleteReplay() {
     emit("result", {
       success: false,
       message: i18nT(
-        "components.dialogs.delete_dialog.scripts.validation.delete_password_is_only_ascii"
+        "components.dialogs.delete_dialog.scripts.validation.delete_password_is_only_ascii",
       ),
       page_reload: false,
     });
@@ -148,20 +152,22 @@ async function sendDeleteReplay() {
     emit("result", {
       success: false,
       message: i18nT(
-        "components.dialogs.delete_dialog.scripts.validation.delete_password_required"
+        "components.dialogs.delete_dialog.scripts.validation.delete_password_required",
       ),
       page_reload: false,
     });
     return;
   }
-  if (
-    deletePassword.value.length > Number(config.delete_password_length_limit)
-  ) {
+  if (deletePassword.value.length > Number(config.deletePasswordLengthLimit)) {
     emit("result", {
       success: false,
       message: i18nT(
         "components.dialogs.delete_dialog.scripts.validation.delete_password_length_limit_exceed",
-        { delete_password_length_limit: config.delete_password_length_limit }
+        {
+          delete_password_length_limit: Number(
+            config.deletePasswordLengthLimit,
+          ),
+        },
       ),
       page_reload: false,
     });
@@ -171,7 +177,7 @@ async function sendDeleteReplay() {
     emit("result", {
       success: false,
       message: i18nT(
-        "components.dialogs.delete_dialog.scripts.validation.delete_password_do_not_only_space"
+        "components.dialogs.delete_dialog.scripts.validation.delete_password_do_not_only_space",
       ),
       page_reload: false,
     });
@@ -179,16 +185,16 @@ async function sendDeleteReplay() {
   }
 
   let response = "";
-  if (config.recaptcha_enabled) {
+  if (Boolean(config.recaptchaEnabled)) {
     response = (window as any).grecaptcha?.getResponse();
   } else {
     response = "";
   }
-  if (config.recaptcha_enabled && !response) {
+  if (Boolean(config.recaptchaEnabled) && !response) {
     emit("result", {
       success: false,
       message: i18nT(
-        "components.dialogs.delete_dialog.scripts.validation.recaptcha_required"
+        "components.dialogs.delete_dialog.scripts.validation.recaptcha_required",
       ),
       page_reload: false,
     });
@@ -196,7 +202,7 @@ async function sendDeleteReplay() {
   }
 
   try {
-    await $fetch(`${config.backend_url}/replays/${props.replay_id}`, {
+    await $fetch(`${BackendUrl()}/replays/${props.replay_id}`, {
       method: "delete",
       body: {
         delete_password: deletePassword.value,
@@ -210,7 +216,7 @@ async function sendDeleteReplay() {
           emit("result", {
             success: true,
             message: i18nT(
-              "components.dialogs.delete_dialog.scripts.http_requested.success"
+              "components.dialogs.delete_dialog.scripts.http_requested.success",
             ),
             page_reload: true,
           });
@@ -226,11 +232,11 @@ async function sendDeleteReplay() {
     let msg;
     if (e?.data?.detail === "password mismatch") {
       msg = i18nT(
-        "components.dialogs.delete_dialog.scripts.http_requested.password_mismatch"
+        "components.dialogs.delete_dialog.scripts.http_requested.password_mismatch",
       );
     } else if (e?.statusCode === 429) {
       msg = i18nT(
-        "components.dialogs.delete_dialog.scripts.http_requested.too_many_requested"
+        "components.dialogs.delete_dialog.scripts.http_requested.too_many_requested",
       );
     } else {
       msg = `${e.statusCode};${e.statusMessage};${e.data?.detail}`;
@@ -245,7 +251,7 @@ function renderRecaptcha() {
   if (!g) return;
   // widgetId が残っているケースはrenderさせないことで再度ダイアログを開いたときは再生成させる。
   widgetId = g.render(recaptchaRef.value, {
-    sitekey: config.recaptcha_sitekey,
+    sitekey: String(config.recaptchaSitekey),
   });
 }
 
