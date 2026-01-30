@@ -29,7 +29,7 @@
               >
                 {{
                   i18nT(
-                    "pages.index.template.welcome.contents.tags.shanghai_alice"
+                    "pages.index.template.welcome.contents.tags.shanghai_alice",
                   )
                 }}
               </a>
@@ -88,17 +88,17 @@
                 v-model="inputedTag"
                 :label="
                   i18nT(
-                    'pages.index.template.search_components.tag_search.title'
+                    'pages.index.template.search_components.tag_search.title',
                   )
                 "
                 :placeholder="
                   i18nT(
-                    'pages.index.template.search_components.tag_search.place_holder'
+                    'pages.index.template.search_components.tag_search.place_holder',
                   )
                 "
                 dense
                 :rules="[validateOptionalTag]"
-                :counter="config.optional_tag_length_limit"
+                :counter="Number(config.optionalTagLengthLimit)"
               />
               <v-btn
                 icon="mdi-magnify"
@@ -116,7 +116,7 @@
               :items="Object.keys(dropMenuGames)"
               :label="
                 i18nT(
-                  'pages.index.template.search_components.gamename_search.title'
+                  'pages.index.template.search_components.gamename_search.title',
                 )
               "
               hide-details
@@ -130,7 +130,7 @@
               :items="Object.keys(dropMenuCategories)"
               :label="
                 i18nT(
-                  'pages.index.template.search_components.category_search.title'
+                  'pages.index.template.search_components.category_search.title',
                 )
               "
               hide-details
@@ -197,6 +197,8 @@ import { ref, watch } from "vue";
 import { useDisplay } from "vuetify";
 import { ClientOnly } from "#components";
 import { useI18n } from "#imports";
+import { BackendUrl } from "~/composables/Settings";
+import { useRuntimeConfig } from "#imports";
 
 import ReplayTable from "~/components/ReplayTable.vue";
 import DeleteDialog from "~/components/Dialogs/DeleteDialog.vue";
@@ -233,6 +235,7 @@ const loadingReplayMeta = ref(true);
 const loadingReplayCounts = ref(true);
 const deleteDialog = ref(false);
 const shareDialog = ref(false);
+const config = useRuntimeConfig().public;
 const { t: i18nT, locale } = useI18n();
 
 const snackbar = ref({
@@ -259,8 +262,6 @@ const pendingShareItem = ref({});
 
 const replayPagination = ref(1);
 const replayPaginationLimit = ref(1);
-
-const config = useRuntimeConfig().public;
 
 const selectedGame = ref("全作品");
 const selectedCategory = ref("全て");
@@ -342,9 +343,9 @@ const tableComponents = {
 };
 
 const validateOptionalTag = (value) =>
-  value.length <= config.optional_tag_length_limit ||
+  value.length <= Number(config.optionalTagLengthLimit) ||
   i18nT("pages.index.scripts.validation.string_length_limit_exceed", {
-    string_length_limit: config.optional_tag_length_limit,
+    string_length_limit: Number(config.optionalTagLengthLimit),
   });
 
 const getReplayTable = (gameId) => {
@@ -362,15 +363,16 @@ async function fetchReplayCounts() {
   const params = new URLSearchParams(buildCommonParams());
   try {
     const countData = await $fetch(
-      `${config.backend_url}/replays/count?${params.toString()}`,
+      `${BackendUrl()}/replays/count?${params.toString()}`,
       {
         method: "get",
         server: false,
-      }
+      },
     );
     replayPaginationLimit.value = Math.max(
       1,
-      Math.floor((Number(countData.count) - 1) / config.pagination_size) + 1
+      Math.floor((Number(countData.count) - 1) / Number(config.postsPerPage)) +
+        1,
     );
   } catch (error) {
     console.error(error);
@@ -390,11 +392,11 @@ async function fetchReplays(page) {
   });
   try {
     const replaysData = await $fetch(
-      `${config.backend_url}/replays?${params.toString()}`,
+      `${BackendUrl()}/replays?${params.toString()}`,
       {
         method: "get",
         server: false,
-      }
+      },
     );
     replays.value = replaysData.map((item) => ({
       ...item,
@@ -426,7 +428,7 @@ async function onPageChanged(newPage) {
 }
 
 const applyTag = () => {
-  if (inputedTag.value.length <= config.optional_tag_length_limit) {
+  if (inputedTag.value.length <= Number(config.optionalTagLengthLimit)) {
     selectedTag.value = inputedTag.value;
   } else {
     openSnackBar({
@@ -434,8 +436,8 @@ const applyTag = () => {
       message: i18nT(
         "pages.index.scripts.validation.string_length_limit_exceed",
         {
-          string_length_limit: config.optional_tag_length_limit,
-        }
+          string_length_limit: Number(config.optionalTagLengthLimit),
+        },
       ),
     });
   }

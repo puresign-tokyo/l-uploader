@@ -18,7 +18,7 @@
             <v-icon icon="mdi-file-outline" />
             {{
               i18nT(
-                "pages.new_post.template.new_post.sections.replay_file.title"
+                "pages.new_post.template.new_post.sections.replay_file.title",
               )
             }}
           </div>
@@ -30,7 +30,7 @@
                 accept=".rpy"
                 :label="
                   i18nT(
-                    'pages.new_post.template.new_post.sections.replay_file.contents.file_input.label'
+                    'pages.new_post.template.new_post.sections.replay_file.contents.file_input.label',
                   )
                 "
                 :rules="[validateReplayFile]"
@@ -49,7 +49,7 @@
                       >
                         {{
                           i18nT(
-                            "pages.new_post.template.new_post.sections.replay_file.contents.file_input.details.tags.replay_path"
+                            "pages.new_post.template.new_post.sections.replay_file.contents.file_input.details.tags.replay_path",
                           )
                         }}
                       </NuxtLink>
@@ -66,7 +66,7 @@
             <v-icon icon="mdi-information-outline" />
             {{
               i18nT(
-                "pages.new_post.template.new_post.sections.detail_info.title"
+                "pages.new_post.template.new_post.sections.detail_info.title",
               )
             }}
           </div>
@@ -77,17 +77,17 @@
                 v-model="userName"
                 :label="
                   i18nT(
-                    'pages.new_post.template.new_post.sections.detail_info.contents.user_name.label'
+                    'pages.new_post.template.new_post.sections.detail_info.contents.user_name.label',
                   )
                 "
                 required
                 :placeholder="
                   i18nT(
-                    'pages.new_post.template.new_post.sections.detail_info.contents.user_name.place_holder'
+                    'pages.new_post.template.new_post.sections.detail_info.contents.user_name.place_holder',
                   )
                 "
                 :rules="[validateUserName]"
-                :counter="config.username_length_limit"
+                :counter="Number(config.usernameLengthLimit)"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -97,7 +97,7 @@
               <v-select
                 :label="
                   i18nT(
-                    'pages.new_post.template.new_post.sections.detail_info.contents.category.label'
+                    'pages.new_post.template.new_post.sections.detail_info.contents.category.label',
                   )
                 "
                 v-model="categoryTag"
@@ -112,19 +112,19 @@
                 v-model="optionalTag"
                 :label="
                   i18nT(
-                    'pages.new_post.template.new_post.sections.detail_info.contents.optional_tag.label'
+                    'pages.new_post.template.new_post.sections.detail_info.contents.optional_tag.label',
                   )
                 "
                 :placeholder="
                   i18nT(
-                    'pages.new_post.template.new_post.sections.detail_info.contents.optional_tag.place_holder'
+                    'pages.new_post.template.new_post.sections.detail_info.contents.optional_tag.place_holder',
                   )
                 "
                 :rules="[validateOptionalTag]"
-                :counter="config.optional_tag_length_limit"
+                :counter="Number(config.optionalTagLengthLimit)"
                 :hint="
                   i18nT(
-                    'pages.new_post.template.new_post.sections.detail_info.contents.optional_tag.hint'
+                    'pages.new_post.template.new_post.sections.detail_info.contents.optional_tag.hint',
                   )
                 "
                 persistent-hint
@@ -138,16 +138,16 @@
                 v-model="uploadComment"
                 :label="
                   i18nT(
-                    'pages.new_post.template.new_post.sections.detail_info.contents.upload_comment.label'
+                    'pages.new_post.template.new_post.sections.detail_info.contents.upload_comment.label',
                   )
                 "
                 :placeholder="
                   i18nT(
-                    'pages.new_post.template.new_post.sections.detail_info.contents.upload_comment.place_holder'
+                    'pages.new_post.template.new_post.sections.detail_info.contents.upload_comment.place_holder',
                   )
                 "
                 :rules="[validateUploadComment]"
-                :counter="config.upload_comment_length_limit"
+                :counter="Number(config.uploadCommentLengthLimit)"
                 rows="3"
               ></v-textarea>
             </v-col>
@@ -159,7 +159,7 @@
             <v-icon icon="mdi-trash-can-outline" color="error" />
             {{
               i18nT(
-                "pages.new_post.template.new_post.sections.delete_password.title"
+                "pages.new_post.template.new_post.sections.delete_password.title",
               )
             }}
           </v-subheader>
@@ -170,18 +170,18 @@
                 v-model="deletePassword"
                 :label="
                   i18nT(
-                    'pages.new_post.template.new_post.sections.delete_password.contents.delete_password.label'
+                    'pages.new_post.template.new_post.sections.delete_password.contents.delete_password.label',
                   )
                 "
                 persistent-hint
                 :hint="
                   i18nT(
-                    'pages.new_post.template.new_post.sections.delete_password.contents.delete_password.hint'
+                    'pages.new_post.template.new_post.sections.delete_password.contents.delete_password.hint',
                   )
                 "
                 required
                 inputmode="latin"
-                :counter="config.delete_password_length_limit"
+                :counter="Number(config.deletePasswordLengthLimit)"
                 :rules="[validateDeletePassword]"
                 :type="showPassword ? 'text' : 'password'"
               >
@@ -200,9 +200,9 @@
           <v-row dense>
             <v-col cols="12" class="d-flex justify-center mt-8">
               <div
-                v-if="config.recaptcha_enabled"
+                v-if="Boolean(config.recaptchaEnabled)"
                 class="g-recaptcha"
-                :data-sitekey="config.recaptcha_sitekey"
+                :data-sitekey="String(config.recaptchaSitekey)"
               />
             </v-col>
           </v-row>
@@ -274,6 +274,8 @@
 import { ClientOnly } from "#components";
 import { ref } from "vue";
 import { useI18n } from "#imports";
+import { BackendUrl } from "~/composables/Settings";
+import { useRuntimeConfig } from "#imports";
 
 const router = useRouter();
 
@@ -287,10 +289,9 @@ const optionalTag = ref("");
 const dialogSuccessPost = ref(false);
 const pendingTweetText = ref("");
 const showPassword = ref(false);
+const config = useRuntimeConfig().public;
 
 const { t: i18nT } = useI18n();
-
-const config = useRuntimeConfig().public;
 
 let wasOpened = false;
 let postedReplayId = "";
@@ -316,22 +317,22 @@ function isUseNonVisibleASCII(val) {
 }
 
 const validateUserName = (value) =>
-  value.length <= config.username_length_limit ||
+  value.length <= Number(config.usernameLengthLimit) ||
   i18nT("pages.new_post.scripts.validations.string_length_limit", {
-    string_length_limit: config.username_length_limit,
+    string_length_limit: Number(config.usernameLengthLimit),
   });
 const validateUploadComment = (value) =>
-  value.length <= config.upload_comment_length_limit ||
+  value.length <= Number(config.uploadCommentLengthLimit) ||
   i18nT("pages.new_post.scripts.validations.string_length_limit", {
-    string_length_limit: config.upload_comment_length_limit,
+    string_length_limit: Number(config.uploadCommentLengthLimit),
   });
 const validateDeletePassword = (value) => {
   if (value.length === 0) {
     return i18nT("pages.new_post.scripts.validations.input_required");
   }
-  if (value.length > config.delete_password_length_limit) {
+  if (value.length > Number(config.deletePasswordLengthLimit)) {
     return i18nT("pages.new_post.scripts.validations.string_length_limit", {
-      string_length_limit: config.delete_password_length_limit,
+      string_length_limit: Number(config.deletePasswordLengthLimit),
     });
   }
   if (isUseNonVisibleASCII(value)) {
@@ -344,15 +345,15 @@ const validateDeletePassword = (value) => {
 };
 const validateReplayFile = (value) => {
   if (!value) return true;
-  if (value.size > config.filesize_kb_limit * 1024) {
+  if (value.size > Number(config.filesizeKbLimit) * 1024) {
     return i18nT("pages.new_post.scripts.validations.too_large_file");
   }
   return true;
 };
 const validateOptionalTag = (value) =>
-  value.length <= config.optional_tag_length_limit ||
+  value.length <= Number(config.optionalTagLengthLimit) ||
   i18nT("pages.new_post.scripts.validations.string_length_limit", {
-    string_length_limit: config.optional_tag_length_limit,
+    string_length_limit: Number(config.optionalTagLengthLimit),
   });
 
 onMounted(() => {
@@ -367,25 +368,29 @@ async function sendPostReplay() {
   if (userName.value === "") {
     snackbar.value.visible = true;
     snackbar.value.message = i18nT(
-      "pages.new_post.scripts.snack_bar.validations.username_required"
+      "pages.new_post.scripts.snack_bar.validations.username_required",
     );
     snackbar.value.color = "error";
     return;
   }
-  if (userName.value.length > config.username_length_limit) {
+  if (userName.value.length > Number(config.usernameLengthLimit)) {
     snackbar.value.visible = true;
     snackbar.value.message = i18nT(
       "pages.new_post.scripts.snack_bar.validations.username_length_limit_exceed",
-      { username_length_limit: config.username_length_limit }
+      {
+        username_length_limit: Number(config.usernameLengthLimit),
+      },
     );
     snackbar.value.color = "error";
     return;
   }
-  if (uploadComment.value.length > config.upload_comment_length_limit) {
+  if (uploadComment.value.length > Number(config.uploadCommentLengthLimit)) {
     snackbar.value.visible = true;
     snackbar.value.message = i18nT(
       "pages.new_post.scripts.snack_bar.validations.upload_comment_length_limit_exceed",
-      { upload_comment_length_limit: config.upload_comment_length_limit }
+      {
+        upload_comment_length_limit: Number(config.uploadCommentLengthLimit),
+      },
     );
     snackbar.value.color = "error";
     return;
@@ -393,7 +398,7 @@ async function sendPostReplay() {
   if (replayFile.value === null) {
     snackbar.value.visible = true;
     snackbar.value.message = i18nT(
-      "pages.new_post.scripts.snack_bar.validations.replay_file_required"
+      "pages.new_post.scripts.snack_bar.validations.replay_file_required",
     );
     snackbar.value.color = "error";
     return;
@@ -401,16 +406,18 @@ async function sendPostReplay() {
   if (isUseNonVisibleASCII(deletePassword.value)) {
     snackbar.value.visible = true;
     snackbar.value.message = i18nT(
-      "pages.new_post.scripts.snack_bar.validations.delete_password_is_only_ascii"
+      "pages.new_post.scripts.snack_bar.validations.delete_password_is_only_ascii",
     );
     snackbar.value.color = "error";
     return;
   }
-  if (deletePassword.value.length > config.delete_password_length_limit) {
+  if (deletePassword.value.length > Number(config.deletePasswordLengthLimit)) {
     snackbar.value.visible = true;
     snackbar.value.message = i18nT(
       "pages.new_post.scripts.snack_bar.validations.delete_password_length_limit_exceed",
-      { delete_password_length_limit: config.delete_password_length_limit }
+      {
+        delete_password_length_limit: Number(config.deletePasswordLengthLimit),
+      },
     );
     snackbar.value.color = "error";
     return;
@@ -418,7 +425,7 @@ async function sendPostReplay() {
   if (deletePassword.value === "") {
     snackbar.value.visible = true;
     snackbar.value.message = i18nT(
-      "pages.new_post.scripts.snack_bar.validations.delete_password_required"
+      "pages.new_post.scripts.snack_bar.validations.delete_password_required",
     );
     snackbar.value.color = "error";
     return;
@@ -426,31 +433,33 @@ async function sendPostReplay() {
   if (deletePassword.value.trim().length === 0) {
     snackbar.value.visible = true;
     snackbar.value.message = i18nT(
-      "pages.new_post.scripts.snack_bar.validations.delete_password_do_not_only_space"
+      "pages.new_post.scripts.snack_bar.validations.delete_password_do_not_only_space",
     );
     snackbar.value.color = "error";
     return;
   }
-  if (optionalTag.value.length > config.optional_tag_length_limit) {
+  if (optionalTag.value.length > Number(config.optionalTagLengthLimit)) {
     snackbar.value.visible = true;
     snackbar.value.message = i18nT(
       "pages.new_post.scripts.snack_bar.validations.optional_tag_length_limit_exceed",
-      { optional_tag_length_limit: config.optional_tag_length_limit }
+      {
+        optional_tag_length_limit: Number(config.optionalTagLengthLimit),
+      },
     );
     snackbar.value.color = "error";
     return;
   }
 
   let response = "";
-  if (config.recaptcha_enabled) {
+  if (Boolean(config.recaptchaEnabled)) {
     response = window.grecaptcha?.getResponse();
   } else {
     response = "";
   }
-  if (config.recaptcha_enabled && !response) {
+  if (Boolean(config.recaptchaEnabled) && !response) {
     snackbar.value.visible = true;
     snackbar.value.message = i18nT(
-      "pages.new_post.scripts.snack_bar.validations.recapcha_required"
+      "pages.new_post.scripts.snack_bar.validations.recapcha_required",
     );
     snackbar.value.color = "error";
     return;
@@ -465,7 +474,7 @@ async function sendPostReplay() {
   formData.append("optional_tag", optionalTag.value);
   formData.append("recaptcha_token", response);
   try {
-    await $fetch(`${useRuntimeConfig().public.backend_url}/replays`, {
+    await $fetch(`${BackendUrl()}/replays`, {
       method: "post",
       body: formData,
       onResponse({ response }) {
@@ -480,7 +489,7 @@ async function sendPostReplay() {
         }
         snackbar.value.visible = true;
         snackbar.value.message = i18nT(
-          "pages.new_post.scripts.snack_bar.http_requested.replay_submitted"
+          "pages.new_post.scripts.snack_bar.http_requested.replay_submitted",
         );
         snackbar.value.color = "success";
         postedReplayId = response._data["replay_id"];
@@ -491,7 +500,7 @@ async function sendPostReplay() {
     snackbar.value.color = "error";
     if (error?.response?.status === 429) {
       snackbar.value.message = i18nT(
-        "pages.new_post.scripts.snack_bar.http_required.too_many_requested"
+        "pages.new_post.scripts.snack_bar.http_required.too_many_requested",
       );
     } else {
       snackbar.value.message = `${error?.statusCode};${error?.statusMessage};${error?.data?.detail}`;
