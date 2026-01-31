@@ -59,7 +59,7 @@ interface Th12Replay {
         bombs: string | null;
         bomb_pieces: string | null;
         graze: string | null;
-      }
+      },
     ];
   };
 }
@@ -95,14 +95,14 @@ export function Th12Table(replay: Th12Replay) {
       minute: "2-digit",
     }),
     difficulty: useTableUtils().convertDifficulty(
-      replay.replay_meta.difficulty
+      replay.replay_meta.difficulty,
     ),
     shot_type: convertShotType(replay.replay_meta.shot_type),
     optional_division: null,
     optional_tag: replay.optional_tag,
     upload_comment: replay.upload_comment,
     replay_type: useTableUtils().convertReplayType(
-      replay.replay_meta.replay_type
+      replay.replay_meta.replay_type,
     ),
     category: useTableUtils().convertCategory(replay.category),
     replay_id: replay.replay_id,
@@ -149,19 +149,12 @@ export function Th12Table(replay: Th12Replay) {
         let lifeLabel;
         if (stage.lives !== null && stage.life_pieces !== null) {
           lifeLabel =
-            String(stage.lives) + " + (" + String(stage.life_pieces) + "/5)";
+            String(stage.lives) + " + (" + String(stage.life_pieces) + "/4)";
         } else {
           lifeLabel = "-";
         }
 
         let bombLabel;
-
-        if (stage.lives !== null && stage.life_pieces !== null) {
-          lifeLabel =
-            String(stage.lives) + " + (" + String(stage.life_pieces) + "/5)";
-        } else {
-          lifeLabel = "-";
-        }
 
         if (stage.bombs !== null && stage.bomb_pieces !== null) {
           bombLabel =
