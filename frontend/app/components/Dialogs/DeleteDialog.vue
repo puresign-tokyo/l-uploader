@@ -78,12 +78,13 @@
 import { ref } from "vue";
 import { useI18n } from "#imports";
 import { useRuntimeConfig } from "#imports";
-import { BackendUrl } from "~/composables/Settings";
+import { useBackendUrl } from "~/composables/Settings";
 const { t: i18nT } = useI18n();
 const deletePassword = ref("");
 const showPassword = ref(false);
 const deleteDialog = defineModel<boolean>();
 const config = useRuntimeConfig().public;
+const backendUrl = useBackendUrl();
 
 const recaptchaRef = ref<HTMLElement | null>(null);
 let widgetId: number | null = null;
@@ -202,7 +203,7 @@ async function sendDeleteReplay() {
   }
 
   try {
-    await $fetch(`${BackendUrl()}/replays/${props.replay_id}`, {
+    await $fetch(`${backendUrl}/replays/${props.replay_id}`, {
       method: "delete",
       body: {
         delete_password: deletePassword.value,

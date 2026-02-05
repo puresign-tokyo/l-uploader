@@ -197,7 +197,7 @@ import { ref, watch } from "vue";
 import { useDisplay } from "vuetify";
 import { ClientOnly } from "#components";
 import { useI18n } from "#imports";
-import { BackendUrl } from "~/composables/Settings";
+import { useBackendUrl } from "~/composables/Settings";
 import { useRuntimeConfig } from "#imports";
 
 import ReplayTable from "~/components/ReplayTable.vue";
@@ -236,6 +236,7 @@ const loadingReplayCounts = ref(true);
 const deleteDialog = ref(false);
 const shareDialog = ref(false);
 const config = useRuntimeConfig().public;
+const backendUrl = useBackendUrl();
 const { t: i18nT, locale } = useI18n();
 
 const snackbar = ref({
@@ -363,7 +364,7 @@ async function fetchReplayCounts() {
   const params = new URLSearchParams(buildCommonParams());
   try {
     const countData = await $fetch(
-      `${BackendUrl()}/replays/count?${params.toString()}`,
+      `${backendUrl}/replays/count?${params.toString()}`,
       {
         method: "get",
         server: false,
@@ -392,7 +393,7 @@ async function fetchReplays(page) {
   });
   try {
     const replaysData = await $fetch(
-      `${BackendUrl()}/replays?${params.toString()}`,
+      `${backendUrl}/replays?${params.toString()}`,
       {
         method: "get",
         server: false,

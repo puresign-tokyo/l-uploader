@@ -1,4 +1,4 @@
-export function BackendUrl() {
+export function useBackendUrl() {
   const config = useRuntimeConfig().public;
   const httpProtocol = String(config.httpProtocol);
   const backendHost = String(config.backendHost);
