@@ -44,9 +44,7 @@
               <v-fab icon="mdi-share-variant" @click="shareDialog = true" />
               <a
                 v-if="replayTable.replay_id"
-                :href="`${BackendUrl()}/replays/${
-                  replayTable.replay_id
-                }/file`"
+                :href="`${backendUrl}/replays/${replayTable.replay_id}/file`"
                 target="_blank"
                 rel="noopener"
                 style="text-decoration: none; color: inherit"
@@ -101,7 +99,7 @@
                           class="mr-1"
                           :title="
                             i18nT(
-                              'pages.replays.replay_id.template.card.user_name'
+                              'pages.replays.replay_id.template.card.user_name',
                             )
                           "
                         >
@@ -270,7 +268,7 @@
                     class="mr-1"
                     :title="
                       i18nT(
-                        'pages.replays.replay_id.template.card.optional_tag'
+                        'pages.replays.replay_id.template.card.optional_tag',
                       )
                     "
                   >
@@ -279,7 +277,7 @@
                   <span>
                     {{
                       i18nT(
-                        "pages.replays.replay_id.template.card.optional_tag"
+                        "pages.replays.replay_id.template.card.optional_tag",
                       )
                     }}
                   </span>
@@ -358,7 +356,7 @@
                     class="mr-1"
                     :title="
                       i18nT(
-                        'pages.replays.replay_id.template.card.upload_comment'
+                        'pages.replays.replay_id.template.card.upload_comment',
                       )
                     "
                   >
@@ -367,7 +365,7 @@
                   <span>
                     {{
                       i18nT(
-                        "pages.replays.replay_id.template.card.upload_comment"
+                        "pages.replays.replay_id.template.card.upload_comment",
                       )
                     }}
                   </span>
@@ -396,7 +394,7 @@
                     class="mr-1"
                     :title="
                       i18nT(
-                        'pages.replays.replay_id.template.card.stage_splits'
+                        'pages.replays.replay_id.template.card.stage_splits',
                       )
                     "
                   >
@@ -405,7 +403,7 @@
                   <span>
                     {{
                       i18nT(
-                        "pages.replays.replay_id.template.card.stage_splits"
+                        "pages.replays.replay_id.template.card.stage_splits",
                       )
                     }}
                   </span>
@@ -424,7 +422,7 @@
                   <span v-else>
                     {{
                       i18nT(
-                        "pages.replays.replay_id.template.card.cant_show_stage_splits"
+                        "pages.replays.replay_id.template.card.cant_show_stage_splits",
                       )
                     }}
                   </span>
@@ -460,7 +458,7 @@
         :upload_comment="
           replayTable.upload_comment ??
           i18nT(
-            'pages.replays.replay_id.template.dialog.unknown.upload_comment'
+            'pages.replays.replay_id.template.dialog.unknown.upload_comment',
           )
         "
         :game_name="replayTable.game_meta.name"
@@ -493,7 +491,7 @@
 import { useDisplay } from "vuetify";
 import { I18nT, useI18n } from "vue-i18n";
 import { ClientOnly } from "#components";
-import { BackendUrl } from "~/composables/Settings";
+import { useBackendUrl } from "~/composables/Settings";
 import DeleteDialog from "~/components/Dialogs/DeleteDialog.vue";
 import ShareDialog from "~/components/Dialogs/ShareDialog.vue";
 
@@ -522,6 +520,7 @@ import { AlcoTable } from "~/composables/Games/Alco";
 
 const display = useDisplay();
 const { t: i18nT, locale } = useI18n();
+const backendUrl = useBackendUrl();
 
 type StageDetailsRow = Record<string, string | number | boolean | null>;
 
@@ -600,12 +599,10 @@ const tableComponents: Record<string, TableParser> = {
 async function refreshReplay() {
   try {
     const response = await $fetch<{ game_id: string }>(
-      `${BackendUrl()}/replays/${
-        route.params.replay_id
-      }`,
+      `${backendUrl}/replays/${route.params.replay_id}`,
       {
         method: "get",
-      }
+      },
     );
     if (tableComponents[response?.game_id]) {
       replayTable = tableComponents[response?.game_id](response);

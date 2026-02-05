@@ -333,7 +333,7 @@
 
                   <a
                     v-if="props.replayTable.replay_id"
-                    :href="`${BackendUrl()}/replays/${
+                    :href="`${backendUrl}/replays/${
                       props.replayTable.replay_id
                     }/file`"
                     target="_blank"
@@ -392,10 +392,11 @@
 <script setup lang="ts">
 import { useDisplay } from "vuetify";
 import { useI18n, useLocalePath } from "#imports";
-import { BackendUrl } from "~/composables/Settings";
+import { useBackendUrl } from "~/composables/Settings";
 const { t: i18nT } = useI18n();
 const localePath = useLocalePath();
 const display = useDisplay();
+const backendUrl = useBackendUrl();
 
 interface ReplayTable {
   game_meta: {

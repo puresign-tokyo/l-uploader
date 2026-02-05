@@ -274,7 +274,7 @@
 import { ClientOnly } from "#components";
 import { ref } from "vue";
 import { useI18n } from "#imports";
-import { BackendUrl } from "~/composables/Settings";
+import { useBackendUrl } from "~/composables/Settings";
 import { useRuntimeConfig } from "#imports";
 
 const router = useRouter();
@@ -289,6 +289,7 @@ const optionalTag = ref("");
 const dialogSuccessPost = ref(false);
 const pendingTweetText = ref("");
 const showPassword = ref(false);
+const backendUrl = useBackendUrl();
 const config = useRuntimeConfig().public;
 
 const { t: i18nT } = useI18n();
@@ -474,7 +475,7 @@ async function sendPostReplay() {
   formData.append("optional_tag", optionalTag.value);
   formData.append("recaptcha_token", response);
   try {
-    await $fetch(`${BackendUrl()}/replays`, {
+    await $fetch(`${backendUrl}/replays`, {
       method: "post",
       body: formData,
       onResponse({ response }) {
