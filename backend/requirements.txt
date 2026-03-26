@@ -7,5 +7,5 @@ kaitaistruct==0.10
 tsadecode==0.6
 setuptools==80.7.1
 pymongo==4.13.0
-requests==2.32.4
+requests==2.33.0
 redis==6.2.0
