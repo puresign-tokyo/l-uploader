@@ -6,6 +6,7 @@ ENV LANG=C.UTF-8 \
 
 COPY ./app/package.json /app
 COPY ./app/package-lock.json /app
+COPY ./app/.npmrc /app
 
 RUN npm ci
 
