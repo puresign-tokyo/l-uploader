@@ -25,6 +25,6 @@
     "webfontloader": "^1.6.28"
   },
   "devDependencies": {
-    "@nuxtjs/i18n": "^9.5.5"
+    "@nuxtjs/i18n": "^10.2.4"
   }
 }
