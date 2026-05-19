@@ -640,6 +640,7 @@ interface Th143Replay {
   optional_tag: string;
   filename: string;
   replay_meta: {
+    game_version: string;
     name: string;
     level: string;
     scene: string;
@@ -663,6 +664,10 @@ export function Th143Table(replay: Th143Replay) {
     difficultyColor = useTableUtils().convertDifficulty("3").color;
   }
 
+  const game_version = replay.replay_meta.game_version
+    ? " ver " + replay.replay_meta.game_version
+    : "";
+
   return {
     game_meta: {
       theme_color: "#B6423C",
@@ -671,7 +676,7 @@ export function Th143Table(replay: Th143Replay) {
         full: "/images/full/th143.png",
         alt: "th143",
       },
-      name: "弾幕アマノジャク 〜 Impossible Spell Card.",
+      name: "弾幕アマノジャク 〜 Impossible Spell Card." + game_version,
     },
     filename: replay.filename,
     uploaded_at: new Date(replay.uploaded_at).toLocaleString("ja-JP", {
@@ -703,7 +708,7 @@ export function Th143Table(replay: Th143Replay) {
     optional_division: {
       label: convertSpellCard(
         String(replay.replay_meta.level),
-        String(replay.replay_meta.scene)
+        String(replay.replay_meta.scene),
       ).spellCard.ja,
       color: "light-blue-darken-3",
     },

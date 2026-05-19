@@ -41,6 +41,7 @@ interface Th11Replay {
   optional_tag: string;
   filename: string;
   replay_meta: {
+    game_version: string;
     name: string;
     shot_type: string;
     difficulty: string;
@@ -57,12 +58,16 @@ interface Th11Replay {
         lives: string | null;
         life_pieces: string | null;
         graze: string | null;
-      }
+      },
     ];
   };
 }
 
 export function Th11Table(replay: Th11Replay) {
+  const game_version = replay.replay_meta.game_version
+    ? " ver " + replay.replay_meta.game_version
+    : "";
+
   return {
     game_meta: {
       theme_color: "#591400",
@@ -71,7 +76,7 @@ export function Th11Table(replay: Th11Replay) {
         full: "/images/full/th11.png",
         alt: "th11",
       },
-      name: "東方地霊殿 〜 Subterranean Animism.",
+      name: "東方地霊殿 〜 Subterranean Animism." + game_version,
     },
     filename: replay.filename,
     uploaded_at: new Date(replay.uploaded_at).toLocaleString("ja-JP", {
@@ -93,14 +98,14 @@ export function Th11Table(replay: Th11Replay) {
       minute: "2-digit",
     }),
     difficulty: useTableUtils().convertDifficulty(
-      replay.replay_meta.difficulty
+      replay.replay_meta.difficulty,
     ),
     shot_type: convertShotType(replay.replay_meta.shot_type),
     optional_division: null,
     optional_tag: replay.optional_tag,
     upload_comment: replay.upload_comment,
     replay_type: useTableUtils().convertReplayType(
-      replay.replay_meta.replay_type
+      replay.replay_meta.replay_type,
     ),
     category: useTableUtils().convertCategory(replay.category),
     replay_id: replay.replay_id,

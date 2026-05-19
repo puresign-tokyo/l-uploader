@@ -41,6 +41,7 @@ interface Th12Replay {
   optional_tag: string;
   filename: string;
   replay_meta: {
+    game_version: string;
     name: string;
     shot_type: string;
     difficulty: string;
@@ -65,6 +66,10 @@ interface Th12Replay {
 }
 
 export function Th12Table(replay: Th12Replay) {
+  const game_version = replay.replay_meta.game_version
+    ? " ver " + replay.replay_meta.game_version
+    : "";
+
   return {
     game_meta: {
       theme_color: "#4169E1",
@@ -73,7 +78,7 @@ export function Th12Table(replay: Th12Replay) {
         full: "/images/full/th12.png",
         alt: "th12",
       },
-      name: "東方星蓮船 〜 Undefined Fantastic Object.",
+      name: "東方星蓮船 〜 Undefined Fantastic Object." + game_version,
     },
     filename: replay.filename,
     uploaded_at: new Date(replay.uploaded_at).toLocaleString("ja-JP", {

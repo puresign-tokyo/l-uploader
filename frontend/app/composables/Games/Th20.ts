@@ -510,6 +510,7 @@ interface Th20Replay {
   filename: string;
   parser_version: string;
   replay_meta: {
+    game_version: string;
     name: string;
     shot_type: string;
     difficulty: string;
@@ -529,7 +530,7 @@ interface Th20Replay {
         bombs: string | null;
         bomb_pieces: string | null;
         graze: string | null;
-      }
+      },
     ];
   };
 }
@@ -543,6 +544,10 @@ export function Th20Table(replay: Th20Replay) {
     };
   }
 
+  const game_version = replay.replay_meta.game_version
+    ? " ver " + replay.replay_meta.game_version
+    : "";
+
   return {
     game_meta: {
       theme_color: "#BCEDF0",
@@ -551,7 +556,7 @@ export function Th20Table(replay: Th20Replay) {
         full: "/images/full/th20.png",
         alt: "th20",
       },
-      name: "東方錦上京 〜 Fossilized Wonders.",
+      name: "東方錦上京 〜 Fossilized Wonders." + game_version,
     },
     filename: replay.filename,
     uploaded_at: new Date(replay.uploaded_at).toLocaleString("ja-JP", {
@@ -573,14 +578,14 @@ export function Th20Table(replay: Th20Replay) {
       minute: "2-digit",
     }),
     difficulty: useTableUtils().convertDifficulty(
-      replay.replay_meta.difficulty
+      replay.replay_meta.difficulty,
     ),
     shot_type: convertShotType(replay.replay_meta.shot_type),
     optional_division: optional_division,
     optional_tag: replay.optional_tag,
     upload_comment: replay.upload_comment,
     replay_type: useTableUtils().convertReplayType(
-      replay.replay_meta.replay_type
+      replay.replay_meta.replay_type,
     ),
     category: useTableUtils().convertCategory(replay.category),
     replay_id: replay.replay_id,

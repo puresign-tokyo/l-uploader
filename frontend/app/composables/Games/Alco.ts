@@ -10,6 +10,7 @@ interface AlcoReplay {
   optional_tag: string;
   filename: string;
   replay_meta: {
+    game_version?: string;
     name: string;
     total_score: string;
     slowdown: string;
@@ -19,7 +20,7 @@ interface AlcoReplay {
       {
         stage: string;
         score: string | null;
-      }
+      },
     ];
     parser_version: string;
   };
@@ -60,6 +61,10 @@ export function AlcoTable(replay: AlcoReplay) {
     }));
   }
 
+  const game_version = replay.replay_meta.game_version
+    ? " ver " + replay.replay_meta.game_version
+    : "";
+
   return {
     game_meta: {
       theme_color: "#C89600",
@@ -68,7 +73,7 @@ export function AlcoTable(replay: AlcoReplay) {
         full: "/images/full/alco.png",
         alt: "alco",
       },
-      name: "黄昏酒場 〜Uwabami Breakers～",
+      name: "黄昏酒場 〜Uwabami Breakers～" + game_version,
     },
     filename: replay.filename,
     uploaded_at: new Date(replay.uploaded_at).toLocaleString("ja-JP", {
@@ -79,6 +84,7 @@ export function AlcoTable(replay: AlcoReplay) {
       minute: "2-digit",
     }),
     user_name: replay.user_name,
+    game_version: game_version,
     total_score: Number(replay.replay_meta.total_score).toLocaleString(),
     replay_name: replay.replay_meta.name,
     slowdown: Number(replay.replay_meta.slowdown).toFixed(2) + "%",

@@ -284,6 +284,7 @@ interface Th17Replay {
   optional_tag: string;
   filename: string;
   replay_meta: {
+    game_version: string;
     name: string;
     shot_type: string;
     difficulty: string;
@@ -303,7 +304,7 @@ interface Th17Replay {
         bombs: string | null;
         bomb_pieces: string | null;
         graze: string | null;
-      }
+      },
     ];
   };
 }
@@ -317,6 +318,10 @@ export function Th17Table(replay: Th17Replay) {
     };
   }
 
+  const game_version = replay.replay_meta.game_version
+    ? " ver " + replay.replay_meta.game_version
+    : "";
+
   return {
     game_meta: {
       theme_color: "#190E0E",
@@ -325,7 +330,7 @@ export function Th17Table(replay: Th17Replay) {
         full: "/images/full/th17.png",
         alt: "th17",
       },
-      name: "東方鬼形獣 〜 Wily Beast and Weakest Creature.",
+      name: "東方鬼形獣 〜 Wily Beast and Weakest Creature." + game_version,
     },
     filename: replay.filename,
     uploaded_at: new Date(replay.uploaded_at).toLocaleString("ja-JP", {
@@ -347,14 +352,14 @@ export function Th17Table(replay: Th17Replay) {
       minute: "2-digit",
     }),
     difficulty: useTableUtils().convertDifficulty(
-      replay.replay_meta.difficulty
+      replay.replay_meta.difficulty,
     ),
     shot_type: convertShotType(replay.replay_meta.shot_type),
     optional_division: optional_division,
     optional_tag: replay.optional_tag,
     upload_comment: replay.upload_comment,
     replay_type: useTableUtils().convertReplayType(
-      replay.replay_meta.replay_type
+      replay.replay_meta.replay_type,
     ),
     category: useTableUtils().convertCategory(replay.category),
     replay_id: replay.replay_id,

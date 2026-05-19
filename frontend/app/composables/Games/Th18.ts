@@ -280,6 +280,7 @@ interface Th18Replay {
   optional_tag: string;
   filename: string;
   replay_meta: {
+    game_version: string;
     name: string;
     shot_type: string;
     difficulty: string;
@@ -299,7 +300,7 @@ interface Th18Replay {
         bombs: string | null;
         bomb_pieces: string | null;
         graze: string | null;
-      }
+      },
     ];
   };
 }
@@ -313,6 +314,10 @@ export function Th18Table(replay: Th18Replay) {
     };
   }
 
+  const game_version = replay.replay_meta.game_version
+    ? " ver " + replay.replay_meta.game_version
+    : "";
+
   return {
     game_meta: {
       theme_color: "#1DD294",
@@ -321,7 +326,7 @@ export function Th18Table(replay: Th18Replay) {
         full: "/images/full/th18.png",
         alt: "th18",
       },
-      name: "東方虹龍洞 〜 Unconnected Marketeers.",
+      name: "東方虹龍洞 〜 Unconnected Marketeers." + game_version,
     },
     filename: replay.filename,
     uploaded_at: new Date(replay.uploaded_at).toLocaleString("ja-JP", {
@@ -343,14 +348,14 @@ export function Th18Table(replay: Th18Replay) {
       minute: "2-digit",
     }),
     difficulty: useTableUtils().convertDifficulty(
-      replay.replay_meta.difficulty
+      replay.replay_meta.difficulty,
     ),
     shot_type: convertShotType(replay.replay_meta.shot_type),
     optional_division: optional_division,
     optional_tag: replay.optional_tag,
     upload_comment: replay.upload_comment,
     replay_type: useTableUtils().convertReplayType(
-      replay.replay_meta.replay_type
+      replay.replay_meta.replay_type,
     ),
     category: useTableUtils().convertCategory(replay.category),
     replay_id: replay.replay_id,

@@ -750,6 +750,7 @@ interface Th95Replay {
   optional_tag: string;
   filename: string;
   replay_meta: {
+    game_version: string;
     name: string;
     level: string;
     scene: string;
@@ -774,6 +775,10 @@ export function Th95Table(replay: Th95Replay) {
     difficultyColor = useTableUtils().convertDifficulty("3").color;
   }
 
+  const game_version = replay.replay_meta.game_version
+    ? " ver " + replay.replay_meta.game_version
+    : "";
+
   return {
     game_meta: {
       theme_color: "#009973",
@@ -782,7 +787,7 @@ export function Th95Table(replay: Th95Replay) {
         full: "/images/full/th95.png",
         alt: "th95",
       },
-      name: "東方文花帖 〜 Shoot the Bullet.",
+      name: "東方文花帖 〜 Shoot the Bullet." + game_version,
     },
     filename: replay.filename,
     uploaded_at: new Date(replay.uploaded_at).toLocaleString("ja-JP", {
@@ -814,7 +819,7 @@ export function Th95Table(replay: Th95Replay) {
     optional_division: {
       label: convertSpellCard(
         String(replay.replay_meta.level),
-        String(replay.replay_meta.scene)
+        String(replay.replay_meta.scene),
       ).spellCard.ja,
       color: "light-blue-darken-3",
     },
