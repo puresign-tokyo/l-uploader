@@ -29,6 +29,7 @@ class TH16Parser(BaseParser):
 
         if replay.header.spell_practice_id != 0xFFFFFFFF:
             return TH16ReplayInfo(
+                game_version=str(header.userdata.user_ver.value),
                 shot_type=get_shot(replay.header.shot, replay.header.season),
                 difficulty=replay.header.difficulty,
                 total_score=replay.header.score * 10,
@@ -70,6 +71,7 @@ class TH16Parser(BaseParser):
             r_type = "stage_practice"
 
         r = TH16ReplayInfo(
+            game_version=str(header.userdata.user_ver.value),
             shot_type=get_shot(replay.header.shot, replay.header.season),
             difficulty=replay.header.difficulty,
             total_score=replay.header.score * 10,

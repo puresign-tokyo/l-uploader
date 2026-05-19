@@ -50,6 +50,7 @@ class TH15Parser(BaseParser):
             r_type = "stage_practice"
 
         r = TH15ReplayInfo(
+            game_version=str(header.userdata.user_ver.value),
             shot_type=shot_types[replay.header.shot],
             difficulty=replay.header.difficulty,
             total_score=replay.header.score * 10,

@@ -20,6 +20,9 @@ class TH125Parser(BaseParser):
             raise ValueError("th125 replay file cannot be parsed")
 
         if replay.userdata.name.value is None:
+            raise ValueError("th125 replay file cannot be found version value")
+
+        if replay.userdata.user_ver is None:
             raise ValueError("th125 replay file cannot be found level value")
 
         if replay.userdata.level is None:
@@ -49,6 +52,7 @@ class TH125Parser(BaseParser):
         spell_scene = int(replay.userdata.scene.value)
 
         return TH125ReplayInfo(
+            game_version=str(replay.userdata.user_ver.value),
             total_score=int(replay.userdata.score.value),
             # 機体名の末尾にスペースがついている
             shot_type=replay.userdata.shot.value.rstrip(),

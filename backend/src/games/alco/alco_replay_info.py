@@ -16,6 +16,7 @@ class AlcoStageDetail(BaseModel, StageDetail):
 
 
 class AlcoReplayInfo(BaseModel, ReplayInfo):
+    game_version: str = ""
     name: str = ""
     timestamp: datetime
     total_score: int = Field(..., ge=0, le=1000000000)
@@ -26,6 +27,7 @@ class AlcoReplayInfo(BaseModel, ReplayInfo):
     def convert_to_dict(self):
         return {
             "game_id": "alco",
+            "game_version": self.game_version,
             "name": self.name,
             "timestamp": self.timestamp.isoformat(),
             "total_score": self.total_score,

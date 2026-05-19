@@ -50,6 +50,7 @@ class TH128Parser(BaseParser):
             rep_stages.append(s)
 
         return TH128ReplayInfo(
+            game_version=str(header.userdata.user_ver.value),
             route=routes[replay.header.route] if replay.header.route != 6 else "extra",
             replay_type="full_game",
             name=replay.header.name.replace("\x00", ""),

@@ -20,6 +20,9 @@ class TH165Parser(BaseParser):
         if replay.userdata is None:
             raise ValueError("th165 replay file cannot be parsed")
 
+        if replay.userdata.user_ver.value is None:
+            raise ValueError("th165 replay file cannot be found version value")
+
         if replay.userdata.name.value is None:
             raise ValueError("th165 replay file cannot be found name value")
 
@@ -40,6 +43,7 @@ class TH165Parser(BaseParser):
         # リプレイ構造が解析されたら parser version2 でスコアを取得したい
 
         return TH165ReplayInfo(
+            game_version=str(replay.userdata.user_ver.value),
             timestamp=datetime.strptime(replay.userdata.date.value, "%y/%m/%d %H:%M"),
             name=replay.userdata.name.value,
             level=int(replay.userdata.level.value),

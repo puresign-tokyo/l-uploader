@@ -24,6 +24,7 @@ class TH128StageDetail(BaseModel, StageDetail):
 
 
 class TH128ReplayInfo(BaseModel, ReplayInfo):
+    game_version: str = ""
     name: str = ""
     difficulty: int = -1
     total_score: int = Field(..., ge=0, le=10000000000)
@@ -38,6 +39,7 @@ class TH128ReplayInfo(BaseModel, ReplayInfo):
     def convert_to_dict(self):
         return {
             "game_id": "th128",
+            "game_version": self.game_version,
             "name": self.name,
             "difficulty": self.difficulty,
             "route": self.route,

@@ -43,6 +43,7 @@ class TH20Parser(BaseParser):
 
         if replay.header.spell_practice_id != 0xFFFFFFFF:
             r = TH20ReplayInfo(
+                game_version=str(header.userdata.user_ver.value),
                 shot_type=shot,
                 equipment=stones,
                 difficulty=replay.header.difficulty,

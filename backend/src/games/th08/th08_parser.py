@@ -21,6 +21,11 @@ class TH08Parser(BaseParser):
         #   th08_userdata is a modified version of thmodern adapted to ZUN's early userdata format
         user = th08_userdata.Th08Userdata.from_bytes(rep_raw)
 
+        if user.userdata is not None:
+            game_version = str(user.userdata.version.value)
+        else:
+            game_version = ""
+
         td.decrypt06(comp_data, rep_raw[21])
         #   basically copied from _Parse07()
         #   0x68 (104) - 24 = 80
@@ -47,6 +52,7 @@ class TH08Parser(BaseParser):
 
         if replay.header.spell_card_id != 65535:  # FF FF
             return TH08ReplayInfo(
+                game_version=game_version,
                 name=replay.header.name.replace("\x00", ""),
                 shot_type=shot_types[replay.header.shot],
                 difficulty=replay.header.difficulty,
@@ -105,6 +111,7 @@ class TH08Parser(BaseParser):
             replay_type = "stage_practice"
 
         r = TH08ReplayInfo(
+            game_version=game_version,
             name=replay.header.name.replace("\x00", ""),
             shot_type=shot_types[replay.header.shot],
             difficulty=replay.header.difficulty,
