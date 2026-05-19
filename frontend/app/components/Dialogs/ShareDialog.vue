@@ -21,7 +21,7 @@
           @click="shareToLink"
           :title="
             i18nT(
-              'components.dialogs.share_dialog.template.share.contents.button_link'
+              'components.dialogs.share_dialog.template.share.contents.button_link',
             )
           "
         />
@@ -30,7 +30,7 @@
           class="mx-4"
           :title="
             i18nT(
-              'components.dialogs.share_dialog.template.share.contents.button_meta'
+              'components.dialogs.share_dialog.template.share.contents.button_meta',
             )
           "
           @click="shareMeta"
@@ -40,7 +40,7 @@
           class="mx-4"
           :title="
             i18nT(
-              'components.dialogs.share_dialog.template.share.contents.button_twitter'
+              'components.dialogs.share_dialog.template.share.contents.button_twitter',
             )
           "
           @click="shareToTweet"
@@ -54,7 +54,7 @@
         <v-btn
           :text="
             i18nT(
-              'components.dialogs.share_dialog.template.share.contents.button_close'
+              'components.dialogs.share_dialog.template.share.contents.button_close',
             )
           "
           variant="plain"
@@ -67,9 +67,10 @@
 
 <script setup lang="ts">
 import { useI18n } from "#imports";
+import { useRuntimeConfig } from "#imports";
 const shareDialog = defineModel<boolean>();
-const config = useRuntimeConfig().public;
 const { t: i18nT } = useI18n();
+const config = useRuntimeConfig().public;
 
 const props = defineProps<{
   game_name: string;
@@ -82,7 +83,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (
     e: "result",
-    payload: { success: boolean; message: string; page_reload: boolean }
+    payload: { success: boolean; message: string; page_reload: boolean },
   ): void;
 }>();
 
@@ -102,11 +103,11 @@ const shareToTweet = () => {
 
   const user_name = truncateWithEllipsis(
     props.user_name,
-    Number(config.username_share_length_limit)
+    Number(config.usernameShareLengthLimit),
   );
   const upload_comment = truncateWithEllipsis(
     props.upload_comment,
-    Number(config.upload_comment_share_length_limit)
+    Number(config.uploadCommentShareLengthLimit),
   );
   const text = encodeURIComponent(
     i18nT("components.dialogs.share_dialog.scripts.share_to_tweet.text", {
@@ -114,17 +115,17 @@ const shareToTweet = () => {
       game_name: props.game_name,
       user_name: props.user_name,
       upload_comment: props.upload_comment,
-    })
+    }),
   );
   const url = encodeURIComponent(
-    `${window.location.origin}/replays/${props.replay_id}`
+    `${window.location.origin}/replays/${props.replay_id}`,
   );
   window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`);
   shareDialog.value = false;
   emit("result", {
     success: true,
     message: i18nT(
-      "components.dialogs.share_dialog.scripts.share_to_tweet.action_message"
+      "components.dialogs.share_dialog.scripts.share_to_tweet.action_message",
     ),
     page_reload: false,
   });
@@ -136,20 +137,20 @@ const shareMeta = async () => {
 
     const user_name = truncateWithEllipsis(
       props.user_name,
-      Number(config.username_share_length_limit)
+      Number(config.usernameShareLengthLimit),
     );
     const upload_comment = truncateWithEllipsis(
       props.upload_comment,
-      Number(config.upload_comment_share_length_limit)
+      Number(config.uploadCommentShareLengthLimit),
     );
     await navigator.clipboard.writeText(
       `${game_name} ${user_name}
-${upload_comment}`
+${upload_comment}`,
     );
     emit("result", {
       success: true,
       message: i18nT(
-        "components.dialogs.share_dialog.scripts.share_meta.action_message"
+        "components.dialogs.share_dialog.scripts.share_meta.action_message",
       ),
       page_reload: false,
     });
@@ -165,12 +166,12 @@ ${upload_comment}`
 const shareToLink = async () => {
   try {
     await navigator.clipboard.writeText(
-      `${window.location.origin}/replays/${props.replay_id}`
+      `${window.location.origin}/replays/${props.replay_id}`,
     );
     emit("result", {
       success: true,
       message: i18nT(
-        "components.dialogs.share_dialog.scripts.share_to_link.action_message"
+        "components.dialogs.share_dialog.scripts.share_to_link.action_message",
       ),
       page_reload: false,
     });

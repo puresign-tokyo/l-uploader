@@ -18,8 +18,8 @@ WORKDIR /app
 
 
 # 現在のディレクトリの内容をコンテナ内の/appにコピー
-COPY ./requirements.txt /app
-RUN pip install -r requirements.txt
+COPY ./requirements.lock /app
+RUN pip install --require-hashes -r requirements.lock
 COPY ./src /app
 COPY ./cron/cron.conf /etc/cron.d/cron.conf
 
