@@ -44,7 +44,7 @@ types:
         terminator: 0xa
         encoding: ASCII
       - id: user_ver
-        type: crlfstring
+        type: userdata_field
       - id: name
         type: userdata_field
       - id: date

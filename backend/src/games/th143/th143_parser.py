@@ -19,6 +19,9 @@ class TH143Parser(BaseParser):
         if replay.userdata is None:
             raise ValueError("th143 replay file cannot be parsed")
 
+        if replay.userdata.user_ver.value is None:
+            raise ValueError("th143 replay file cannot be found version value")
+
         if replay.userdata.name.value is None:
             raise ValueError("th143 replay file cannot be found name value")
 
@@ -38,6 +41,7 @@ class TH143Parser(BaseParser):
             raise ValueError("th143 replay file cannot be found slowdown value")
 
         return TH143ReplayInfo(
+            game_version=str(replay.userdata.user_ver.value),
             total_score=int(replay.userdata.score.value),
             timestamp=datetime.strptime(replay.userdata.date.value, "%y/%m/%d %H:%M"),
             name=replay.userdata.name.value,

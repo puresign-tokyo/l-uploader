@@ -42,6 +42,10 @@ types:
         type: userdata_field
       - id: slowdown
         type: userdata_field
+      - id: human_rate
+        type: userdata_field
+      - id: version
+        type: userdata_field
   crlfstring:
     seq:
       - id: value

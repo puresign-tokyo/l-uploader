@@ -933,6 +933,7 @@ interface Th165Replay {
   optional_tag: string;
   filename: string;
   replay_meta: {
+    game_version: string;
     name: string;
     level: string;
     scene: string;
@@ -956,6 +957,10 @@ export function Th165Table(replay: Th165Replay) {
     difficultyColor = useTableUtils().convertDifficulty("3").color;
   }
 
+  const game_version = replay.replay_meta.game_version
+    ? " ver " + replay.replay_meta.game_version
+    : "";
+
   return {
     game_meta: {
       theme_color: "#AE11D5",
@@ -964,7 +969,7 @@ export function Th165Table(replay: Th165Replay) {
         full: "/images/full/th165.png",
         alt: "th165",
       },
-      name: "秘封ナイトメアダイアリー 〜 Violet Detector.",
+      name: "秘封ナイトメアダイアリー 〜 Violet Detector." + game_version,
     },
     filename: replay.filename,
     uploaded_at: new Date(replay.uploaded_at).toLocaleString("ja-JP", {
@@ -996,7 +1001,7 @@ export function Th165Table(replay: Th165Replay) {
     optional_division: {
       label: convertSpellCard(
         String(replay.replay_meta.level),
-        String(replay.replay_meta.scene)
+        String(replay.replay_meta.scene),
       ).spellCard.ja,
       color: "light-blue-darken-3",
     },

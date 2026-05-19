@@ -17,6 +17,9 @@ class TH95Parser(BaseParser):
         if replay.userdata is None:
             raise ValueError("th95 replay file cannot be parsed")
 
+        if replay.userdata.version.value is None:
+            raise ValueError("th95 replay file cannot be found version value")
+
         if replay.userdata.level.value is None:
             raise ValueError("th95 replay file cannot be found level value")
 
@@ -44,6 +47,7 @@ class TH95Parser(BaseParser):
         spell_scene = int(replay.userdata.scene.value)
 
         return TH95ReplayInfo(
+            game_version=str(replay.userdata.version.value),
             total_score=int(replay.userdata.score.value),
             timestamp=datetime.strptime(replay.userdata.date.value, "%y/%m/%d %H:%M"),
             name=replay.userdata.username.value,

@@ -27,6 +27,7 @@ interface Th128Replay {
   optional_tag: string;
   filename: string;
   replay_meta: {
+    game_version: string;
     name: string;
     difficulty: string;
     route: string;
@@ -42,12 +43,17 @@ interface Th128Replay {
         perfect_freeze: string | null;
         frozen_area: string | null;
         graze: string | null;
-      }
+      },
     ];
   };
 }
 
 export function Th128Table(replay: Th128Replay) {
+
+  const game_version = replay.replay_meta.game_version
+    ? " ver " + replay.replay_meta.game_version
+    : "";
+
   return {
     game_meta: {
       theme_color: "#00C8C8",
@@ -56,7 +62,7 @@ export function Th128Table(replay: Th128Replay) {
         full: "/images/full/th128.png",
         alt: "th128",
       },
-      name: "妖精大戦争 〜 東方三月精",
+      name: "妖精大戦争 〜 東方三月精" + game_version,
     },
     filename: replay.filename,
     uploaded_at: new Date(replay.uploaded_at).toLocaleString("ja-JP", {
@@ -78,14 +84,14 @@ export function Th128Table(replay: Th128Replay) {
       minute: "2-digit",
     }),
     difficulty: useTableUtils().convertDifficulty(
-      replay.replay_meta.difficulty
+      replay.replay_meta.difficulty,
     ),
     shot_type: null,
     optional_division: convertRoute(replay.replay_meta.route),
     optional_tag: replay.optional_tag,
     upload_comment: replay.upload_comment,
     replay_type: useTableUtils().convertReplayType(
-      replay.replay_meta.replay_type
+      replay.replay_meta.replay_type,
     ),
     category: useTableUtils().convertCategory(replay.category),
     replay_id: replay.replay_id,

@@ -4,6 +4,7 @@ from datetime import datetime
 
 
 class TH125ReplayInfo(BaseModel, ReplayInfo):
+    game_version: str = ""
     name: str = ""
     timestamp: datetime
     shot_type: str = ""
@@ -15,6 +16,7 @@ class TH125ReplayInfo(BaseModel, ReplayInfo):
     def convert_to_dict(self):
         return {
             "game_id": "th125",
+            "game_version": self.game_version,
             "name": self.name,
             "shot_type": self.shot_type,
             "level": self.level,

@@ -22,6 +22,7 @@ class TH10StageDetail(BaseModel, StageDetail):
 
 
 class TH10ReplayInfo(BaseModel, ReplayInfo):
+    game_version: str = ""
     name: str = ""
     shot_type: str = ""
     difficulty: int = -1
@@ -36,6 +37,7 @@ class TH10ReplayInfo(BaseModel, ReplayInfo):
     def convert_to_dict(self):
         return {
             "game_id": "th10",
+            "game_version": self.game_version,
             "name": self.name,
             "shot_type": self.shot_type,
             "difficulty": self.difficulty,

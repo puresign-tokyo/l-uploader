@@ -37,6 +37,7 @@ class AlcoParser(BaseParser):
             rep_stages.append(s)
 
         return AlcoReplayInfo(
+            game_version=str(header.userdata.user_ver.value),
             total_score=int(replay.header.total_score),
             timestamp=datetime.fromtimestamp(replay.header.timestamp, tz=timezone.utc),
             name=replay.header.name.replace("\x00", ""),

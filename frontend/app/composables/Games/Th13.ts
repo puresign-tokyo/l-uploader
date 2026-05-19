@@ -355,6 +355,7 @@ interface Th13Replay {
   optional_tag: string;
   filename: string;
   replay_meta: {
+    game_version: string;
     name: string;
     shot_type: string;
     difficulty: string;
@@ -376,7 +377,7 @@ interface Th13Replay {
         graze: string | null;
         trance: string | null;
         extends: string | null;
-      }
+      },
     ];
   };
 }
@@ -398,6 +399,11 @@ export function Th13Table(replay: Th13Replay) {
       replay.replay_meta.difficulty
     );
   }
+
+  const game_version = replay.replay_meta.game_version
+    ? " ver " + replay.replay_meta.game_version
+    : "";
+
   return {
     game_meta: {
       theme_color: "#4A808C",
@@ -406,7 +412,7 @@ export function Th13Table(replay: Th13Replay) {
         full: "/images/full/th13.png",
         alt: "th13",
       },
-      name: "東方神霊廟 〜 Ten Desires.",
+      name: "東方神霊廟 〜 Ten Desires." + game_version,
     },
     filename: replay.filename,
     uploaded_at: new Date(replay.uploaded_at).toLocaleString("ja-JP", {
@@ -433,7 +439,7 @@ export function Th13Table(replay: Th13Replay) {
     optional_tag: replay.optional_tag,
     upload_comment: replay.upload_comment,
     replay_type: useTableUtils().convertReplayType(
-      replay.replay_meta.replay_type
+      replay.replay_meta.replay_type,
     ),
     category: useTableUtils().convertCategory(replay.category),
     replay_id: replay.replay_id,

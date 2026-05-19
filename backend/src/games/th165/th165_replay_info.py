@@ -4,6 +4,7 @@ from datetime import datetime
 
 
 class TH165ReplayInfo(BaseModel, ReplayInfo):
+    game_version: str = ""
     name: str = ""
     level: int = -1
     scene: int = -1
@@ -13,6 +14,7 @@ class TH165ReplayInfo(BaseModel, ReplayInfo):
     def convert_to_dict(self):
         return {
             "game_id": "th165",
+            "game_version": self.game_version,
             "name": self.name,
             "level": self.level,
             "scene": self.scene,

@@ -832,6 +832,7 @@ interface Th125Replay {
   optional_tag: string;
   filename: string;
   replay_meta: {
+    game_version: string;
     name: string;
     shot_type: string;
     level: string;
@@ -858,6 +859,10 @@ export function Th125Table(replay: Th125Replay) {
     difficultyColor = useTableUtils().convertDifficulty("3").color;
   }
 
+  const game_version = replay.replay_meta.game_version
+    ? " ver " + replay.replay_meta.game_version
+    : "";
+
   return {
     game_meta: {
       theme_color: "#7D3884",
@@ -866,7 +871,7 @@ export function Th125Table(replay: Th125Replay) {
         full: "/images/full/th125.png",
         alt: "th125",
       },
-      name: "ダブルスポイラー 〜 東方文花帖",
+      name: "ダブルスポイラー 〜 東方文花帖" + game_version,
     },
     filename: replay.filename,
     uploaded_at: new Date(replay.uploaded_at).toLocaleString("ja-JP", {
@@ -898,7 +903,7 @@ export function Th125Table(replay: Th125Replay) {
     optional_division: {
       label: convertSpellCard(
         String(replay.replay_meta.level),
-        String(replay.replay_meta.scene)
+        String(replay.replay_meta.scene),
       ).spellCard.ja,
       color: "light-blue-darken-3",
     },
