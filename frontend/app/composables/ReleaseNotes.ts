@@ -2,6 +2,11 @@ export function Releases() {
   // 要素番号が小さいものほど最新であるようにすること
   const releases = [
     {
+      version: "1.1.2",
+      date: "2026-05-19",
+      changes: ["リプレイファイル定義の軽微な修正"],
+    },
+    {
       version: "1.1.1",
       date: "2026-01-31",
       changes: [

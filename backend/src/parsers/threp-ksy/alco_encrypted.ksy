@@ -34,11 +34,11 @@ types:
         type: u2
       - id: unknown_1
         size: 6
-      - id: next_stage_offset
+      - id: len_stage_data
         type: u4
       - id: score
         type: u4
       - id: unknown_2
         size: 8
       - id: stage_data
-        size: next_stage_offset
+        size: len_stage_data
