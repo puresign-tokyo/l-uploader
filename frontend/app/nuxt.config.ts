@@ -95,7 +95,6 @@ export default defineNuxtConfig({
         language: "en-US",
       },
     ],
-    lazy: true,
     langDir: "locales/",
     compilation: {
       strictMessage: false,
@@ -103,7 +102,6 @@ export default defineNuxtConfig({
     },
     bundle: {
       fullInstall: true,
-      optimizeTranslationDirective: false,
     },
   },
   vite: {
