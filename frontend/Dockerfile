@@ -5,14 +5,17 @@ ENV LANG=C.UTF-8 \
     TZ=Asia/Tokyo
 
 COPY ./app/package.json /app
-COPY ./app/package-lock.json /app
+COPY ./app/pnpm-lock.yaml /app
 COPY ./app/.npmrc /app
 
-RUN npm ci
+RUN corepack enable && \
+    corepack prepare pnpm@10.30.3 --activate && \
+    pnpm install --frozen-lockfile --ignore-scripts
 
 COPY ./app .
 
-RUN npm run build
+RUN --network=none pnpm nuxt:prepare && \
+    pnpm build
 
 FROM node:24.13.0-bullseye-slim
 

@@ -2,6 +2,11 @@ export function Releases() {
   // 要素番号が小さいものほど最新であるようにすること
   const releases = [
     {
+      version: "1.2.1",
+      date: "2026-05-20",
+      changes: ["ウェブ画面のセキュリティ対策"],
+    },
+    {
       version: "1.2.0",
       date: "2026-05-20",
       changes: ["ゲームバージョン表記の対応(紅魔郷, 妖々夢, 花映塚を除く)"],

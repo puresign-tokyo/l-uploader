@@ -41,6 +41,9 @@ export default defineNuxtConfig({
   },
   devtools: { enabled: true },
   modules: ["@nuxtjs/seo", "@nuxtjs/i18n"],
+  ogImage: {
+    enabled: false,
+  },
   site: {
     url: "https://l-uploader.puresign.tokyo",
     name: "えるろだ",
