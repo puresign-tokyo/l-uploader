@@ -49,7 +49,7 @@ types:
         terminator: 0x0
       - id: name
         type: str
-        encoding: SJIS
+        encoding: Shift_JIS
         terminator: 0x0
         size: 9
       - id: unknown_2

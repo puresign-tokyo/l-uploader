@@ -18,7 +18,7 @@ types:
       - id: name
         type: str
         size: 9
-        encoding: SJIS
+        encoding: Shift_JIS
         terminator: 0x0
       - id: unknown_3
         type: u2

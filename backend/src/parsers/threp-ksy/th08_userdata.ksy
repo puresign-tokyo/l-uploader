@@ -51,7 +51,7 @@ types:
       - id: value
         type: str
         terminator: 0xd
-        encoding: SJIS
+        encoding: Shift_JIS
       - id: term
         type: u1
   userdata_field:
@@ -59,10 +59,10 @@ types:
       - id: name
         type: str
         terminator: 0x09
-        encoding: SJIS
+        encoding: Shift_JIS
       - id: value
         type: str
         terminator: 0xd
-        encoding: SJIS
+        encoding: Shift_JIS
       - id: term
         type: u1

@@ -16,7 +16,7 @@ types:
       type: str
       size: 12
       terminator: 0
-      encoding: SJIS
+      encoding: Shift_JIS
     - id: timestamp
       type: u8
     - id: score
