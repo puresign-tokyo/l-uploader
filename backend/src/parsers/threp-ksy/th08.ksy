@@ -51,7 +51,7 @@ types:
         terminator: 0x0
       - id: name
         type: str
-        encoding: SJIS
+        encoding: Shift_JIS
         terminator: 0x0
         size: 10
       - id: spell_card_id
@@ -59,7 +59,7 @@ types:
       - id: spell_card_name
         type: str
         size: 50
-        encoding: SJIS
+        encoding: Shift_JIS
         terminator: 0x0
       - id: score
         type: u4

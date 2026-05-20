@@ -63,7 +63,7 @@ types:
       - id: value
         type: str
         terminator: 0xd
-        encoding: SJIS
+        encoding: Shift_JIS
       - id: term
         type: u1
   userdata_field:

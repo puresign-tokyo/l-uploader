@@ -15,7 +15,7 @@ types:
       - id: name
         type: str
         size: 12
-        encoding: SJIS
+        encoding: Shift_JIS
       - id: timestamp
         type: u4
       - id: total_score
