@@ -2,10 +2,12 @@
   "name": "nuxt-app",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@10.30.3",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
+    "nuxt:prepare": "nuxt prepare",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
