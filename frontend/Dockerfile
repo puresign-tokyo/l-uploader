@@ -14,7 +14,7 @@ RUN corepack enable && \
 
 COPY ./app .
 
-RUN pnpm nuxt:prepare && \
+RUN --network=none pnpm nuxt:prepare && \
     pnpm build
 
 FROM node:24.13.0-bullseye-slim
