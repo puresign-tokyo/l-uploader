@@ -1,0 +1,3 @@
+[submodule "backend/kaitai_struct_compiler"]
+	path = backend/kaitai_struct_compiler
+	url = git@github.com:kaitai-io/kaitai_struct_compiler.git
