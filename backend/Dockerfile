@@ -1,10 +1,10 @@
-FROM sbtscala/scala-sbt:eclipse-temurin-21.0.8_9_1.11.6_2.13.16 AS kaitai-builder
+FROM sbtscala/scala-sbt:eclipse-temurin-21.0.8_9_1.11.6_2.13.16@sha256:7f8d1f78e15fd13905253b41b984ac9d52ae035b20e8376d385317e91c68bf13 AS kaitai-builder
 
 WORKDIR /build/kaitai_struct_compiler
 COPY ./kaitai_struct_compiler ./
 RUN mkdir -p /build/formats && sbt compilerJVM/stage
 
-FROM eclipse-temurin:21.0.8_9-jre AS parser-builder
+FROM eclipse-temurin:21.0.8_9-jre@sha256:66bb900643426ad01996d25bada7d56751913f9cec3b827fcb715d2ec9a0fbfc AS parser-builder
 
 WORKDIR /app
 COPY --from=kaitai-builder /build/kaitai_struct_compiler/jvm/target/universal/stage /opt/kaitai-struct-compiler
@@ -15,7 +15,7 @@ RUN mkdir -p /app/parsers/py_code && \
     find /app/parsers/threp-ksy -name "*.ksy" -exec kaitai-struct-compiler -t python --outdir /app/parsers/py_code {} \;
 
 # Pythonランタイムを親イメージとして使用
-FROM python:3.12
+FROM python:3.12@sha256:5b4cd1450900015d505c9801bf953922bc4cf607bfb22ee3c347a348ccccf16d
 
 RUN groupadd -g 10001 app && useradd -u 10001 -g app -m -s /usr/sbin/nologin app
 
