@@ -1,4 +1,4 @@
-FROM node:24.13.0-bullseye-slim as build-stage
+FROM node:24.13.0-bullseye-slim@sha256:8c1784228377880d8e8992ce35aa3f4a496e5ee00960a33262bbc7d17718890f as build-stage
 
 WORKDIR /app
 ENV LANG=C.UTF-8 \
@@ -17,7 +17,7 @@ COPY ./app .
 RUN --network=none pnpm nuxt:prepare && \
     pnpm build
 
-FROM node:24.13.0-bullseye-slim
+FROM node:24.13.0-bullseye-slim@sha256:8c1784228377880d8e8992ce35aa3f4a496e5ee00960a33262bbc7d17718890f
 
 WORKDIR /app
 

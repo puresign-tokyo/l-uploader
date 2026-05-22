@@ -73,7 +73,7 @@ services:
     tty: true
 
   postgresql:
-    image: postgres:17.8
+    image: postgres:17.8@sha256:69dddb030ab69d669d8d7c6abf67aeb448178e5270d5f123a21f4f7ac8b46a24
     container_name: ${POSTGRES_HOST:-postgresql}
     volumes:
       - postgresql_table:/var/lib/postgresql/data/
@@ -88,7 +88,7 @@ services:
       - 5432
 
   mongodb:
-    image: mongo:8.0.17
+    image: mongo:8.0.17@sha256:9814652e33f0cf8b9fddea8b46dfc9d8e19b130dcfdd7b510ca58bb0d40c8b71
     container_name: ${MONGO_HOST:-mongodb}
     volumes:
       - mongodb_table:/data/db
