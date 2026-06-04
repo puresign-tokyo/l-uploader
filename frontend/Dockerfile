@@ -14,6 +14,7 @@ RUN corepack enable && \
 
 COPY ./app .
 
+# 何故かunheadがコピーされなかったので決め打ちでコピー
 RUN --network=none pnpm nuxt:prepare && \
     pnpm build && \
     rm -rf .output/server/node_modules/unhead && \
