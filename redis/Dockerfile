@@ -1,4 +1,4 @@
-FROM redis:8.0@sha256:ae471bdc20de180beed36e347d170ec0bdf8faa327959ea1f24692f22b05b955
+FROM redis:8.6.3-trixie@sha256:4d25e2fe601f7ffaeb4437cb6ced3518bc36edf34ebe98863c80836943d94529
 WORKDIR /app
 COPY ./config/redis-conf.sh /app/redis-conf.sh
 CMD ["/bin/bash", "-c", "/bin/bash /app/redis-conf.sh && redis-server /app/redis.conf"]
