@@ -24,6 +24,8 @@ services:
     tmpfs:
       - "/tmp"
     read_only: true
+    security_opt:
+      - "no-new-privileges:true"
 
   backend:
     build: ./backend
@@ -77,6 +79,8 @@ services:
     tmpfs:
       - "/tmp"
     read_only: true
+    security_opt:
+      - "no-new-privileges:true"
 
   postgresql:
     image: postgres:17.8@sha256:69dddb030ab69d669d8d7c6abf67aeb448178e5270d5f123a21f4f7ac8b46a24
@@ -96,6 +100,8 @@ services:
       - "/tmp"
       - "/var/run/postgresql"
     read_only: true
+    security_opt:
+      - "no-new-privileges:true"
 
   mongodb:
     image: mongo:8.0.17@sha256:9814652e33f0cf8b9fddea8b46dfc9d8e19b130dcfdd7b510ca58bb0d40c8b71
@@ -116,6 +122,8 @@ services:
     tmpfs:
       - "/tmp"
     read_only: true
+    security_opt:
+      - "no-new-privileges:true"
 
   redis:
     build: ./redis
@@ -130,6 +138,8 @@ services:
     tmpfs:
       - "/tmp"
     read_only: true
+    security_opt:
+      - "no-new-privileges:true"
 
 volumes:
   postgresql_table:
