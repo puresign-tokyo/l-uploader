@@ -74,7 +74,6 @@ services:
       - REPLAY_RATE_DELETE_MAX_REQUEST=${REPLAY_RATE_DELETE_MAX_REQUEST:-10}
       - CACHE_EXPIRE_SEC=${CACHE_EXPIRE_SEC:-300}
       - PYTHONDONTWRITEBYTECODE=1
-    tty: true
     tmpfs:
       - "/tmp"
     read_only: true
