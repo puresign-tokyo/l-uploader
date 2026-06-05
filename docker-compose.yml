@@ -21,6 +21,13 @@ services:
     ports:
       # nuxt3の本番環境で動くnitroのデフォルトポートは3000
       - ${FRONTEND_PORT_INTERNAL:-80}:3000
+    tmpfs:
+      - "/tmp"
+    read_only: true
+    security_opt:
+      - "no-new-privileges:true"
+    networks:
+      - public
 
   backend:
     build: ./backend
@@ -70,14 +77,24 @@ services:
       - REPLAY_RATE_DELETE_WINDOW_SEC=${REPLAY_RATE_DELETE_WINDOW_SEC:-300}
       - REPLAY_RATE_DELETE_MAX_REQUEST=${REPLAY_RATE_DELETE_MAX_REQUEST:-10}
       - CACHE_EXPIRE_SEC=${CACHE_EXPIRE_SEC:-300}
-    tty: true
+      - PYTHONDONTWRITEBYTECODE=1
+    tmpfs:
+      - "/tmp"
+    read_only: true
+    security_opt:
+      - "no-new-privileges:true"
+    networks:
+      - public
+      - private_postgres
+      - private_mongo
+      - private_redis
 
   postgresql:
     image: postgres:17.8@sha256:69dddb030ab69d669d8d7c6abf67aeb448178e5270d5f123a21f4f7ac8b46a24
     container_name: ${POSTGRES_HOST:-postgresql}
     volumes:
       - postgresql_table:/var/lib/postgresql/data/
-      - ./postgresql/init/:/docker-entrypoint-initdb.d/
+      - ./postgresql/init/:/docker-entrypoint-initdb.d/:ro
     environment:
       - POSTGRES_DB=${POSTGRES_DB:-public}
       - POSTGRES_USER=${POSTGRES_USER:-adminuser}
@@ -86,6 +103,14 @@ services:
       - POSTGRES_APP_PASS=${POSTGRES_APP_PASS:-apppass}
     expose:
       - 5432
+    tmpfs:
+      - "/tmp"
+      - "/var/run/postgresql"
+    read_only: true
+    security_opt:
+      - "no-new-privileges:true"
+    networks:
+      - private_postgres
 
   mongodb:
     image: mongo:8.0.17@sha256:9814652e33f0cf8b9fddea8b46dfc9d8e19b130dcfdd7b510ca58bb0d40c8b71
@@ -93,7 +118,7 @@ services:
     volumes:
       - mongodb_table:/data/db
       - mongodb_config:/data/configdb
-      - ./mongo/init/:/docker-entrypoint-initdb.d/
+      - ./mongo/init/:/docker-entrypoint-initdb.d/:ro
     environment:
       - MONGO_INITDB_DATABASE=${MONGO_DATABASE:-mongodb}
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USER:-adminuser}
@@ -103,6 +128,13 @@ services:
       - MONGO_DATABASE=${MONGO_DATABASE:-mongodb}
     expose:
       - 27017
+    tmpfs:
+      - "/tmp"
+    read_only: true
+    security_opt:
+      - "no-new-privileges:true"
+    networks:
+      - private_mongo
 
   redis:
     build: ./redis
@@ -114,6 +146,13 @@ services:
       - 6379
     volumes:
       - redis_data:/data
+    tmpfs:
+      - "/tmp"
+    read_only: true
+    security_opt:
+      - "no-new-privileges:true"
+    networks:
+      - private_redis
 
 volumes:
   postgresql_table:
@@ -121,3 +160,12 @@ volumes:
   mongodb_config:
   replays:
   redis_data:
+
+networks:
+  public:
+  private_postgres:
+    internal: true
+  private_mongo:
+    internal: true
+  private_redis:
+    internal: true

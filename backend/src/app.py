@@ -558,4 +558,4 @@ def get_returner():
 
 
 if __name__ == "__main__":
-    uvicorn.run(app="app:app", host="0.0.0.0", port=5001, reload=True)
+    uvicorn.run(app="app:app", host="0.0.0.0", port=5001, reload=False)
