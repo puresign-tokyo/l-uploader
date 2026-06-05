@@ -85,7 +85,9 @@ services:
       - "no-new-privileges:true"
     networks:
       - public
-      - private
+      - private_postgres
+      - private_mongo
+      - private_redis
 
   postgresql:
     image: postgres:17.8@sha256:69dddb030ab69d669d8d7c6abf67aeb448178e5270d5f123a21f4f7ac8b46a24
@@ -108,7 +110,7 @@ services:
     security_opt:
       - "no-new-privileges:true"
     networks:
-      - private
+      - private_postgres
 
   mongodb:
     image: mongo:8.0.17@sha256:9814652e33f0cf8b9fddea8b46dfc9d8e19b130dcfdd7b510ca58bb0d40c8b71
@@ -132,7 +134,7 @@ services:
     security_opt:
       - "no-new-privileges:true"
     networks:
-      - private
+      - private_mongo
 
   redis:
     build: ./redis
@@ -150,7 +152,7 @@ services:
     security_opt:
       - "no-new-privileges:true"
     networks:
-      - private
+      - private_redis
 
 volumes:
   postgresql_table:
@@ -161,5 +163,9 @@ volumes:
 
 networks:
   public:
-  private:
+  private_postgres:
+    internal: true
+  private_mongo:
+    internal: true
+  private_redis:
     internal: true
