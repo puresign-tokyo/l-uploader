@@ -26,6 +26,8 @@ services:
     read_only: true
     security_opt:
       - "no-new-privileges:true"
+    networks:
+      - public
 
   backend:
     build: ./backend
@@ -81,6 +83,9 @@ services:
     read_only: true
     security_opt:
       - "no-new-privileges:true"
+    networks:
+      - public
+      - private
 
   postgresql:
     image: postgres:17.8@sha256:69dddb030ab69d669d8d7c6abf67aeb448178e5270d5f123a21f4f7ac8b46a24
@@ -102,6 +107,8 @@ services:
     read_only: true
     security_opt:
       - "no-new-privileges:true"
+    networks:
+      - private
 
   mongodb:
     image: mongo:8.0.17@sha256:9814652e33f0cf8b9fddea8b46dfc9d8e19b130dcfdd7b510ca58bb0d40c8b71
@@ -124,6 +131,8 @@ services:
     read_only: true
     security_opt:
       - "no-new-privileges:true"
+    networks:
+      - private
 
   redis:
     build: ./redis
@@ -140,6 +149,8 @@ services:
     read_only: true
     security_opt:
       - "no-new-privileges:true"
+    networks:
+      - private
 
 volumes:
   postgresql_table:
@@ -147,3 +158,8 @@ volumes:
   mongodb_config:
   replays:
   redis_data:
+
+networks:
+  public:
+  private:
+    internal: true
