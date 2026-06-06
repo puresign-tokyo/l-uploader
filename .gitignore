@@ -175,3 +175,5 @@ cython_debug/
 
 .python-version
 *.code-workspace
+
+.pnpm-store

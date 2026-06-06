@@ -87,3 +87,6 @@
      - `sudo docker compose up --build`
    - loki 環境がある場合
      - `sudo docker compose -f docker-compose.yml -f docker-override-loki.yml up --build`
+
+## 注意事項
+- このソフトウェアは `/internal` 配下に管理者用APIがありますが、ソフトウェアとして接続制限をかけているわけではないです。リバースプロキシを挟んで `/internal` 配下を全て403を返すことを想定しています。

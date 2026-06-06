@@ -1,0 +1,21 @@
+services:
+  devcontainer:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    command: sleep infinity
+    volumes:
+      - ..:/workspace/l-uploader:cached
+      - ${HOME}/.gnupg:/home/vscode/.gnupg
+      - ${HOME}/.ssh:/home/vscode/.ssh:ro
+      - pnpm_store:/workspace/.pnpm-store
+      - codex_home:/home/vscode/.codex
+      - vscode_server:/home/vscode/.vscode-server
+      - ../ai-skills:/home/vscode/.agents/skills:ro
+    environment:
+      PYTHONPATH: /workspace/l-uploader/backend/src
+
+volumes:
+  pnpm_store:
+  codex_home:
+  vscode_server:
