@@ -11,9 +11,9 @@ description: l-uploader の devcontainer 内作業向けガイダンス。devcon
 
 ## 作業ルール
 
-- ファイル削除、volume 削除、Git 状態のリセット、履歴の書き換えなどの破壊的操作は、必ず事前にユーザーへ確認する。
+- ファイル削除、volume 削除、Git 状態のリセット、履歴の書き換えなどの破壊的操作は、必ず事前にユーザへ確認する。
 - プロジェクトツールに依存するコマンドは、できるだけ devcontainer 環境で実行する。
-- ユーザー固有の状態は `/home/vscode`、プロジェクトの状態は `/workspace/l-uploader` に置く。
+- ユーザ固有の状態は `/home/vscode`、プロジェクトの状態は `/workspace/l-uploader` に置く。
 - devcontainer 外でも skill を有効にしたい場合を除き、Codex skill を repo root の `.agents/skills` に移動しない。
 - 生成物や依存 cache は、リポジトリが明示的に管理していない限り Git に含めない。
 

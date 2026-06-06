@@ -14,8 +14,8 @@ ENV LANG=C.UTF-8 \
     JAVA_HOME=/opt/java/openjdk \
     PATH=/workspace/l-uploader/backend/kaitai_struct_compiler/jvm/target/universal/stage/bin:/home/vscode/.local/bin:/usr/share/sbt/bin:/opt/java/openjdk/bin:/usr/local/bin:${PATH}
 
-RUN mkdir -p /workspace/l-uploader /workspace/.cache/sbt /workspace/.cache/ivy2 /workspace/.cache/coursier /workspace/.pnpm-store /home/vscode/.agents /home/vscode/.codex /home/vscode/.vscode-server \
-    && chown -R vscode:vscode /workspace /home/vscode/.agents /home/vscode/.codex /home/vscode/.vscode-server \
+RUN mkdir -p /workspace/l-uploader /workspace/.cache/sbt /workspace/.cache/ivy2 /workspace/.cache/coursier /workspace/.pnpm-store /home/vscode/.agents /home/vscode/.ssh /home/vscode/.codex /home/vscode/.vscode-server \
+    && chown -R vscode:vscode /workspace /home/vscode/.agents /home/vscode/.ssh /home/vscode/.codex /home/vscode/.vscode-server \
     && printf '\nexport GPG_TTY=$(tty)\n' >> /etc/bash.bashrc
 
 USER vscode

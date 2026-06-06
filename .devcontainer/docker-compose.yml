@@ -7,14 +7,13 @@ services:
     volumes:
       - ..:/workspace/l-uploader:cached
       - ${HOME}/.gnupg:/home/vscode/.gnupg
+      - ${HOME}/.ssh:/home/vscode/.ssh:ro
       - pnpm_store:/workspace/.pnpm-store
       - codex_home:/home/vscode/.codex
       - vscode_server:/home/vscode/.vscode-server
       - ../ai-skills:/home/vscode/.agents/skills:ro
-      - ${SSH_AUTH_SOCK}:/ssh-agent
     environment:
       PYTHONPATH: /workspace/l-uploader/backend/src
-      SSH_AUTH_SOCK: /ssh-agent
 
 volumes:
   pnpm_store:
