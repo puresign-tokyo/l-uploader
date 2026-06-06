@@ -25,7 +25,8 @@
         "ms-python.python",
         "ms-python.vscode-pylance",
         "ms-azuretools.vscode-docker",
-        "openai.chatgpt"
+        "openai.chatgpt",
+        "ms-python.black-formatter"
       ],
       "settings": {
         "eslint.workingDirectories": [
@@ -34,7 +35,12 @@
             "changeProcessCWD": true
           }
         ],
-        "eslint.packageManager": "pnpm"
+        "eslint.packageManager": "pnpm",
+        "[python]": {
+          "editor.defaultFormatter": "ms-python.black-formatter",
+          "editor.formatOnSave": true
+        },
+        "black-formatter.importStrategy": "useBundled"
       }
     }
   }
