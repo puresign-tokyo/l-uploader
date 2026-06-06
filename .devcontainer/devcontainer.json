@@ -24,7 +24,7 @@
         "Vue.volar",
         "ms-python.python",
         "ms-python.vscode-pylance",
-        "ms-azuretools.vscode-docker",
+        "ms-azuretools.vscode-containers",
         "openai.chatgpt",
         "ms-python.black-formatter",
         "esbenp.prettier-vscode",
