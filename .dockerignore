@@ -1,0 +1,17 @@
+# Git metadata
+.git
+
+# Dependency directories and package-manager caches
+**/node_modules
+.pnpm-store
+
+# Build outputs and tool caches
+**/target
+**/.cache
+**/.pytest_cache
+**/__pycache__
+*.pyc
+
+# Local editor/runtime state
+.vscode
+.devcontainer/.env

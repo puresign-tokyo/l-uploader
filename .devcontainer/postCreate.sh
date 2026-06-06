@@ -54,12 +54,5 @@ pushd frontend/app
 corepack pnpm install --frozen-lockfile
 popd
 
-pushd backend/kaitai_struct_compiler
-sbt -Dsbt.global.base=/workspace/.cache/sbt \
-  -Dsbt.boot.directory=/workspace/.cache/sbt/boot \
-  -Dsbt.ivy.home=/workspace/.cache/ivy2 \
-  -Dsbt.coursier.home=/workspace/.cache/coursier \
-  "project compilerJVM" stage
-popd
 
 .devcontainer/regenerate-kaitai-parsers.sh
