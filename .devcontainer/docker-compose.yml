@@ -11,8 +11,10 @@ services:
       - codex_home:/home/vscode/.codex
       - vscode_server:/home/vscode/.vscode-server
       - ../ai-skills:/home/vscode/.agents/skills:ro
+      - ${SSH_AUTH_SOCK}:/ssh-agent
     environment:
       PYTHONPATH: /workspace/l-uploader/backend/src
+      SSH_AUTH_SOCK: /ssh-agent
 
 volumes:
   pnpm_store:
