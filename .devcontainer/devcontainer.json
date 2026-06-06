@@ -26,7 +26,16 @@
         "ms-python.vscode-pylance",
         "ms-azuretools.vscode-docker",
         "openai.chatgpt"
-      ]
+      ],
+      "settings": {
+        "eslint.workingDirectories": [
+          {
+            "directory": "frontend/app",
+            "changeProcessCWD": true
+          }
+        ],
+        "eslint.packageManager": "pnpm"
+      }
     }
   }
 }
