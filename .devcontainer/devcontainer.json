@@ -27,7 +27,8 @@
         "ms-azuretools.vscode-docker",
         "openai.chatgpt",
         "ms-python.black-formatter",
-        "esbenp.prettier-vscode"
+        "esbenp.prettier-vscode",
+        "redhat.vscode-yaml"
       ],
       "settings": {
         "eslint.workingDirectories": [
@@ -52,6 +53,18 @@
         },
         "[javascript]": {
           "editor.defaultFormatter": "esbenp.prettier-vscode",
+          "editor.formatOnSave": true
+        },
+        "[json]": {
+          "editor.defaultFormatter": "vscode.json-language-features",
+          "editor.formatOnSave": true
+        },
+        "[jsonc]": {
+          "editor.defaultFormatter": "vscode.json-language-features",
+          "editor.formatOnSave": true
+        },
+        "[yaml]": {
+          "editor.defaultFormatter": "redhat.vscode-yaml",
           "editor.formatOnSave": true
         }
       }
