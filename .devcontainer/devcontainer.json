@@ -26,7 +26,8 @@
         "ms-python.vscode-pylance",
         "ms-azuretools.vscode-docker",
         "openai.chatgpt",
-        "ms-python.black-formatter"
+        "ms-python.black-formatter",
+        "esbenp.prettier-vscode"
       ],
       "settings": {
         "eslint.workingDirectories": [
@@ -40,7 +41,19 @@
           "editor.defaultFormatter": "ms-python.black-formatter",
           "editor.formatOnSave": true
         },
-        "black-formatter.importStrategy": "useBundled"
+        "black-formatter.importStrategy": "useBundled",
+        "[vue]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode",
+          "editor.formatOnSave": true
+        },
+        "[typescript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode",
+          "editor.formatOnSave": true
+        },
+        "[javascript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode",
+          "editor.formatOnSave": true
+        }
       }
     }
   }
