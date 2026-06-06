@@ -1,0 +1,32 @@
+{
+  "name": "l-uploader",
+  "dockerComposeFile": [
+    "docker-compose.yml"
+  ],
+  "service": "devcontainer",
+  "workspaceFolder": "/workspace/l-uploader",
+  "forwardPorts": [
+    3000,
+    5001
+  ],
+  "portsAttributes": {
+    "3000": {
+      "label": "Nuxt"
+    },
+    "5001": {
+      "label": "FastAPI"
+    }
+  },
+  "postCreateCommand": ".devcontainer/postCreate.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "Vue.volar",
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-azuretools.vscode-docker",
+        "openai.chatgpt"
+      ]
+    }
+  }
+}
