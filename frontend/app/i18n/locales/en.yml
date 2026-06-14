@@ -106,7 +106,7 @@ pages:
         dialog:
           unknown:
             filename: Unknown File
-            user: Unknown User
+            user_name: Unknown User
             upload_comment: Unknown Comment
             replay_id: error
         snack_bar:

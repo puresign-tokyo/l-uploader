@@ -106,7 +106,7 @@ pages:
         dialog:
           unknown:
             filename: 不明なファイル
-            user: 不明なユーザ
+            user_name: 不明なユーザ
             upload_comment: 不明なコメント
             replay_id: error
 
