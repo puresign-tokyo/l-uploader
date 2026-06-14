@@ -2,6 +2,13 @@ export function Releases() {
   // 要素番号が小さいものほど最新であるようにすること
   const releases = [
     {
+      version: "1.2.4",
+      date: "2026-06-15",
+      changes: [
+        "投稿一覧で検索条件とページ番号がブラウザバック後も維持されるようになった",
+      ],
+    },
+    {
       version: "1.2.3",
       date: "2026-06-06",
       changes: ["サービスインフラの要塞化"],
