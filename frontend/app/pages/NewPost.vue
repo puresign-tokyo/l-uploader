@@ -460,7 +460,7 @@ async function sendPostReplay() {
   if (Boolean(config.recaptchaEnabled) && !response) {
     snackbar.value.visible = true;
     snackbar.value.message = i18nT(
-      "pages.new_post.scripts.snack_bar.validations.recapcha_required",
+      "pages.new_post.scripts.snack_bar.validations.recaptcha_required",
     );
     snackbar.value.color = "error";
     return;
@@ -501,7 +501,7 @@ async function sendPostReplay() {
     snackbar.value.color = "error";
     if (error?.response?.status === 429) {
       snackbar.value.message = i18nT(
-        "pages.new_post.scripts.snack_bar.http_required.too_many_requested",
+        "pages.new_post.scripts.snack_bar.http_requested.too_many_requested",
       );
     } else {
       snackbar.value.message = `${error?.statusCode};${error?.statusMessage};${error?.data?.detail}`;
