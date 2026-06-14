@@ -196,7 +196,7 @@
 import { ref, watch } from "vue";
 import { useDisplay } from "vuetify";
 import { ClientOnly } from "#components";
-import { useI18n } from "#imports";
+import { useI18n, useRoute, useRouter } from "#imports";
 import { useBackendUrl } from "~/composables/Settings";
 import { useRuntimeConfig } from "#imports";
 
@@ -238,6 +238,8 @@ const shareDialog = ref(false);
 const config = useRuntimeConfig().public;
 const backendUrl = useBackendUrl();
 const { t: i18nT, locale } = useI18n();
+const route = useRoute();
+const router = useRouter();
 
 const snackbar = ref({
   visible: false,
@@ -261,16 +263,9 @@ async function openSnackBar(payload) {
 const pendingDeleteItem = ref({});
 const pendingShareItem = ref({});
 
-const replayPagination = ref(1);
 const replayPaginationLimit = ref(1);
 
-const selectedGame = ref("全作品");
-const selectedCategory = ref("全て");
-const inputedTag = ref("");
-const selectedTag = ref("");
-
 const release = ref(Releases()[0]);
-let suppressPaginationWatch = false;
 
 // 日付整形
 const formatDate = (iso) =>
@@ -316,6 +311,104 @@ const dropMenuCategories = {
   ノーボム: "no_bomb",
   ノーミス: "no_miss",
   その他: "others",
+};
+
+const defaultReplayQuery = {
+  game_id: "all",
+  category: "all",
+  optional_tag: "",
+  page: 1,
+};
+const gameLabelByValue = Object.fromEntries(
+  Object.entries(dropMenuGames).map(([label, value]) => [value, label]),
+);
+const categoryLabelByValue = Object.fromEntries(
+  Object.entries(dropMenuCategories).map(([label, value]) => [value, label]),
+);
+
+const getQueryValue = (value) => (Array.isArray(value) ? value[0] : value);
+
+const parseReplayQuery = (query) => {
+  const queryGameId = getQueryValue(query.game_id);
+  const queryCategory = getQueryValue(query.category);
+  const optionalTag = getQueryValue(query.optional_tag);
+  const page = Number(getQueryValue(query.page));
+
+  return {
+    game_id:
+      gameLabelByValue[queryGameId] === undefined
+        ? defaultReplayQuery.game_id
+        : queryGameId,
+    category:
+      categoryLabelByValue[queryCategory] === undefined
+        ? defaultReplayQuery.category
+        : queryCategory,
+    optional_tag:
+      typeof optionalTag === "string" &&
+      optionalTag.length <= Number(config.optionalTagLengthLimit)
+        ? optionalTag
+        : defaultReplayQuery.optional_tag,
+    page: Number.isInteger(page) && page >= 1 ? page : defaultReplayQuery.page,
+  };
+};
+
+const initialReplayQuery = parseReplayQuery(route.query);
+const replayPagination = ref(initialReplayQuery.page);
+const selectedGame = ref(gameLabelByValue[initialReplayQuery.game_id]);
+const selectedCategory = ref(
+  categoryLabelByValue[initialReplayQuery.category],
+);
+const inputedTag = ref(initialReplayQuery.optional_tag);
+const selectedTag = ref(initialReplayQuery.optional_tag);
+
+let skipNextFilterWatch = false;
+let skipNextPaginationWatch = false;
+let lastFetchedReplayQueryKey = "";
+
+const replayQueryKey = (query) =>
+  JSON.stringify({
+    game_id: query.game_id,
+    category: query.category,
+    optional_tag: query.optional_tag,
+    page: query.page,
+  });
+
+const buildReplayQuery = (page = replayPagination.value) => ({
+  game_id: dropMenuGames[selectedGame.value],
+  category: dropMenuCategories[selectedCategory.value],
+  optional_tag: selectedTag.value,
+  page,
+});
+
+const replaceReplayQuery = async (page = replayPagination.value) => {
+  await router.replace({ query: buildReplayQuery(page) });
+};
+
+const pushReplayQuery = async (page = replayPagination.value) => {
+  await router.push({ query: buildReplayQuery(page) });
+};
+
+const applyParsedReplayQuery = (parsedQuery) => {
+  const nextGame = gameLabelByValue[parsedQuery.game_id];
+  const nextCategory = categoryLabelByValue[parsedQuery.category];
+  const filtersWillChange =
+    selectedGame.value !== nextGame ||
+    selectedCategory.value !== nextCategory ||
+    selectedTag.value !== parsedQuery.optional_tag;
+  const paginationWillChange = replayPagination.value !== parsedQuery.page;
+
+  if (filtersWillChange) {
+    skipNextFilterWatch = true;
+  }
+  if (paginationWillChange) {
+    skipNextPaginationWatch = true;
+  }
+
+  selectedGame.value = nextGame;
+  selectedCategory.value = nextCategory;
+  inputedTag.value = parsedQuery.optional_tag;
+  selectedTag.value = parsedQuery.optional_tag;
+  replayPagination.value = parsedQuery.page;
 };
 
 // コンポーネントの取得
@@ -414,12 +507,17 @@ async function fetchReplays(page) {
 
 async function refreshReplays(page) {
   await fetchReplayCounts();
-  const cappedPage = Math.min(page, replayPaginationLimit.value);
-  if (cappedPage !== replayPagination.value) {
-    suppressPaginationWatch = true;
-    replayPagination.value = cappedPage;
+  const normalizedPage =
+    page > replayPaginationLimit.value ? defaultReplayQuery.page : page;
+  if (normalizedPage !== page || normalizedPage !== replayPagination.value) {
+    if (replayPagination.value !== normalizedPage) {
+      skipNextPaginationWatch = true;
+    }
+    replayPagination.value = normalizedPage;
+    await replaceReplayQuery(normalizedPage);
   }
-  await fetchReplays(cappedPage);
+  await fetchReplays(normalizedPage);
+  lastFetchedReplayQueryKey = replayQueryKey(buildReplayQuery(normalizedPage));
 }
 
 await refreshReplays(replayPagination.value);
@@ -444,45 +542,42 @@ const applyTag = () => {
   }
 };
 
-watch(selectedTag, () => {
-  if (replayPagination.value === 1) {
-    onPageChanged(1);
-  } else {
-    replayPagination.value = 1;
+watch([selectedTag, selectedGame, selectedCategory], async () => {
+  if (skipNextFilterWatch) {
+    skipNextFilterWatch = false;
+    return;
   }
-});
-
-watch(selectedGame, () => {
-  if (replayPagination.value === 1) {
-    onPageChanged(1);
-  } else {
-    replayPagination.value = 1;
+  if (replayPagination.value !== defaultReplayQuery.page) {
+    skipNextPaginationWatch = true;
   }
-});
-
-watch(selectedCategory, () => {
-  if (replayPagination.value === 1) {
-    onPageChanged(1);
-  } else {
-    replayPagination.value = 1;
-  }
+  replayPagination.value = defaultReplayQuery.page;
+  await pushReplayQuery(defaultReplayQuery.page);
 });
 
 watch(locale, () => {
-  if (replayPagination.value === 1) {
-    onPageChanged(1);
-  } else {
-    replayPagination.value = 1;
-  }
+  onPageChanged(replayPagination.value);
 });
 
-watch(replayPagination, (newPage) => {
-  if (suppressPaginationWatch) {
-    suppressPaginationWatch = false;
+watch(replayPagination, async (newPage) => {
+  if (skipNextPaginationWatch) {
+    skipNextPaginationWatch = false;
     return;
   }
-  onPageChanged(newPage);
+  await pushReplayQuery(newPage);
 });
+
+watch(
+  () => route.query,
+  (query) => {
+    const parsedQuery = parseReplayQuery(query);
+    const parsedQueryKey = replayQueryKey(parsedQuery);
+    applyParsedReplayQuery(parsedQuery);
+    if (parsedQueryKey === lastFetchedReplayQueryKey) {
+      return;
+    }
+    onPageChanged(parsedQuery.page);
+  },
+);
 
 // ダイアログ操作
 function openDeleteDialog(payload) {
