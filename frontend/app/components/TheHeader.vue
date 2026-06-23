@@ -46,31 +46,30 @@
     </v-navigation-drawer>
   </ClientOnly>
 
-  <v-app-bar color="#8255C8">
-    <v-app-bar-nav-icon
-      v-if="display.smAndDown.value"
-      @click="drawer = !drawer"
-    />
-    <v-img
+  <v-app-bar :height="THE_HEADER_HEIGHT" color="#8255C8">
+    <v-app-bar-nav-icon class="d-flex d-md-none" @click="drawer = !drawer" />
+    <img
       src="/images/logo/header_purple_noback.png"
+      width="133"
       height="50"
+      alt="L-Uploader"
       class="ml-2"
       style="max-width: 133px"
+      loading="eager"
+      fetchpriority="high"
     />
     <v-btn
-      v-if="!display.smAndDown.value"
       v-for="internalLink in internalLinks"
       :key="internalLink.path"
       :to="internalLink.path"
-      class="ml-2"
+      class="ml-2 d-none d-md-flex"
     >
       {{ internalLink.label }}
     </v-btn>
     <v-spacer />
     <v-btn
-      v-if="display.smAndDown.value"
       variant="text"
-      class="ml-auto"
+      class="ml-auto d-flex d-md-none"
       :to="switchLocalePath(locale === 'ja' ? 'en' : 'ja')"
     >
       {{
@@ -79,29 +78,39 @@
           : localeOptions.find((option) => option.code === "ja")?.label
       }}
     </v-btn>
-    <template v-else>
-      <v-btn
-        v-for="option in localeOptions"
-        :key="option.code"
-        :to="switchLocalePath(option.code)"
-        class="ml-2"
-        size="small"
-        :variant="locale === option.code ? 'outlined' : 'text'"
-        :disabled="locale === option.code"
-      >
-        {{ option.label }}
-      </v-btn>
-    </template>
+    <v-btn
+      v-for="option in localeOptions"
+      :key="option.code"
+      :to="switchLocalePath(option.code)"
+      class="ml-2 d-none d-md-inline-flex"
+      size="small"
+      :variant="locale === option.code ? 'outlined' : 'text'"
+      :disabled="locale === option.code"
+    >
+      {{ option.label }}
+    </v-btn>
   </v-app-bar>
 </template>
 
 <script setup>
-import { computed, ref, watch } from "vue";
-import { useDisplay } from "vuetify";
-import { useI18n, useLocalePath, useSwitchLocalePath } from "#imports";
+import { computed, ref } from "vue";
+import { useHead, useI18n, useLocalePath, useSwitchLocalePath } from "#imports";
+
+const THE_HEADER_HEIGHT = 64;
+
+useHead({
+  style: [
+    {
+      key: "the-header-layout-offset",
+      innerHTML:
+        ".default-layout .v-main { padding-top: " +
+        THE_HEADER_HEIGHT +
+        "px !important; }",
+    },
+  ],
+});
 
 const { t: i18nT } = useI18n();
-const display = useDisplay();
 const drawer = ref(false);
 
 const { locale } = useI18n();
@@ -126,12 +135,6 @@ const internalLinks = computed(() =>
   baseInternalLinks.map((link) => ({
     path: localePath(link.path),
     label: i18nT(link.labelKey),
-  }))
+  })),
 );
-
-watch(display.smAndDown, (isSmall) => {
-  if (!isSmall) {
-    drawer.value = false;
-  }
-});
 </script>
