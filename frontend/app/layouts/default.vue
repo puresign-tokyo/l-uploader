@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app class="default-layout">
     <TheHeader />
     <slot />
     <ClientOnly>

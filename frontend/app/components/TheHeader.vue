@@ -46,7 +46,7 @@
     </v-navigation-drawer>
   </ClientOnly>
 
-  <v-app-bar color="#8255C8">
+  <v-app-bar :height="THE_HEADER_HEIGHT" color="#8255C8">
     <v-app-bar-nav-icon
       v-if="display.smAndDown.value"
       @click="drawer = !drawer"
@@ -98,7 +98,21 @@
 <script setup>
 import { computed, ref, watch } from "vue";
 import { useDisplay } from "vuetify";
-import { useI18n, useLocalePath, useSwitchLocalePath } from "#imports";
+import { useHead, useI18n, useLocalePath, useSwitchLocalePath } from "#imports";
+
+const THE_HEADER_HEIGHT = 64;
+
+useHead({
+  style: [
+    {
+      key: "the-header-layout-offset",
+      innerHTML:
+        ".default-layout .v-main { padding-top: " +
+        THE_HEADER_HEIGHT +
+        "px !important; }",
+    },
+  ],
+});
 
 const { t: i18nT } = useI18n();
 const display = useDisplay();
@@ -126,7 +140,7 @@ const internalLinks = computed(() =>
   baseInternalLinks.map((link) => ({
     path: localePath(link.path),
     label: i18nT(link.labelKey),
-  }))
+  })),
 );
 
 watch(display.smAndDown, (isSmall) => {
