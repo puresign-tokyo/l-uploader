@@ -95,17 +95,17 @@ types:
       - id: unknown_5
         size: 0x20
 
-      - id: life
+      - id: lives
         type: u4
       - id: unknown_6
         size: 0x04
-      - id: life_piece
+      - id: life_pieces
         type: u4
       - id: unknown_7
         size: 0x08
-      - id: bomb
+      - id: bombs
         type: u4
-      - id: bomb_piece
+      - id: bomb_pieces
         type: u4
 
       - id: unknown_8
