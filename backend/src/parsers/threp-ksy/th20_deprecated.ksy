@@ -1,5 +1,5 @@
 meta:
-  id: th20
+  id: th20_deprecated
   file-extension: raw
   endian: le
 seq:
