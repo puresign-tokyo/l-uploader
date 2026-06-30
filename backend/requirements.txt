@@ -457,9 +457,9 @@ pymongo==4.13.0 \
     --hash=sha256:fca24e4df05501420b2ce2207c03f21fcbdfac1e3f41e312e61b8f416c5b4963 \
     --hash=sha256:fe497c885b08600a022646f00f4d3303697c5289990acec250e2be2e1699ca23
     # via -r requirements.in
-python-multipart==0.0.27 \
-    --hash=sha256:6fccfad17a27334bd0193681b369f476eda3409f17381a2d65aa7df3f7275645 \
-    --hash=sha256:9870a6a8c5a20a5bf4f07c017bd1489006ff8836cff097b6933355ee2b49b602
+python-multipart==0.0.31 \
+    --hash=sha256:8408153d68a9773291fc1da39a8b85a50044bddbabd2dd72e9229776b7b15e28 \
+    --hash=sha256:fc631183bb13e56db3158a4909908dfb2e23565286744e798241e63750e5d680
     # via -r requirements.in
 redis==6.2.0 \
     --hash=sha256:c8ddf316ee0aab65f04a11229e94a64b2618451dab7a67cb2f77eb799d872d5e \
