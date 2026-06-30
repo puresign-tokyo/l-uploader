@@ -651,7 +651,7 @@ export function Th20Table(replay: Th20Replay) {
       },
     ];
     stage_detail_items = replay.replay_meta.stage_details.map((stage) => ({
-      stage: String(stage.stage),
+      stage: String(stage.stage) !== "7" ? stage.stage : "Ex",
       score: stage.score !== null ? Number(stage.score).toLocaleString() : "-",
       lives:
         stage.lives !== null && stage.life_pieces !== null
