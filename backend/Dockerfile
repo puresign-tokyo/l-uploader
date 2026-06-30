@@ -24,7 +24,7 @@ WORKDIR /app
 
 # 現在のディレクトリの内容をコンテナ内の/appにコピー
 COPY ./requirements.lock /app
-RUN pip install --require-hashes -r requirements.lock
+RUN pip install --require-hashes -r requirements.txt
 COPY ./src /app
 COPY --from=parser-builder /app/parsers/py_code /app/parsers/py_code
 
