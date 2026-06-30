@@ -48,7 +48,7 @@ configure_git_signing() {
 configure_git_signing
 
 
-python -m pip install --user --require-hashes -r backend/requirements.lock
+python -m pip install --user --require-hashes -r backend/requirements.txt
 
 pushd frontend/app
 corepack pnpm install --frozen-lockfile

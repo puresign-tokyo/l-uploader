@@ -23,8 +23,8 @@ RUN groupadd -g 10001 app && useradd -u 10001 -g app -m -s /usr/sbin/nologin app
 WORKDIR /app
 
 # 現在のディレクトリの内容をコンテナ内の/appにコピー
-COPY ./requirements.lock /app
-RUN pip install --require-hashes -r requirements.lock
+COPY ./requirements.txt /app
+RUN pip install --require-hashes -r requirements.txt
 COPY ./src /app
 COPY --from=parser-builder /app/parsers/py_code /app/parsers/py_code
 
