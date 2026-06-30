@@ -1,3 +1,4 @@
+import type { ListItem } from "vuetify/lib/composables/list-items.mjs";
 import { useTableUtils } from "./TableUtils";
 const spellCardMap: Record<string, { ja: string; en: string }> = {
   0: {
@@ -508,11 +509,12 @@ interface Th20Replay {
   category: string;
   optional_tag: string;
   filename: string;
-  parser_version: string;
   replay_meta: {
+    parser_version: string;
     game_version: string;
     name: string;
     shot_type: string;
+    equipment: [string]; // パーサバージョン2で追加
     difficulty: string;
     total_score: string;
     slowdown: string;
@@ -520,6 +522,7 @@ interface Th20Replay {
     replay_type: string;
     spell_card_id: string;
     stage_details: [
+      // パーサバージョン2で追加
       {
         stage: string;
         score: string | null;
@@ -529,11 +532,25 @@ interface Th20Replay {
         life_pieces: string | null;
         bombs: string | null;
         bomb_pieces: string | null;
-        graze: string | null;
+        hyper: string | null;
+        red: string | null;
+        blue: string | null;
+        yellow: string | null;
+        green: string | null;
+        total_stone_count: string | null;
       },
     ];
   };
 }
+
+interface StageDetailHeader {
+  title: string;
+  key: string;
+  sortable: boolean;
+  fixed: boolean;
+}
+
+type StageDetailsRow = Record<string, string | number | boolean | null>;
 
 export function Th20Table(replay: Th20Replay) {
   let optional_division = null;
@@ -544,6 +561,127 @@ export function Th20Table(replay: Th20Replay) {
     };
   }
 
+  let stage_detail_headers: StageDetailHeader[] = [];
+  let stage_detail_items: StageDetailsRow[] = [];
+
+  if (Number(replay.replay_meta.parser_version) >= 2) {
+    let hyper_max: Number | null = null;
+    switch (replay.replay_meta.equipment[0]) {
+      case "Red":
+        hyper_max = 130;
+        break;
+      case "Red2":
+        hyper_max = 130;
+        break;
+      case "Blue":
+        hyper_max = 150;
+        break;
+      case "Blue2":
+        hyper_max = 150;
+        break;
+      case "Yellow":
+        hyper_max = 180;
+        break;
+      case "Yellow2":
+        hyper_max = 130;
+        break;
+      case "Green":
+        hyper_max = 130;
+        break;
+      case "Green2":
+        hyper_max = 150;
+        break;
+      default:
+        hyper_max = null;
+    }
+    stage_detail_headers = [
+      {
+        title: "ステージ",
+        key: "stage",
+        sortable: false,
+        fixed: true,
+      },
+      {
+        title: "スコア",
+        key: "score",
+        sortable: false,
+        fixed: false,
+      },
+      {
+        title: "残機",
+        key: "lives",
+        sortable: false,
+        fixed: false,
+      },
+      {
+        title: "ボム",
+        key: "bombs",
+        sortable: false,
+        fixed: false,
+      },
+      {
+        title: "パワー",
+        key: "power",
+        sortable: false,
+        fixed: false,
+      },
+      {
+        title: "異変値",
+        key: "piv",
+        sortable: false,
+        fixed: false,
+      },
+      {
+        title: "異変攻撃ゲージ",
+        key: "hyper",
+        sortable: false,
+        fixed: false,
+      },
+      {
+        title: "異変敵総召喚数",
+        key: "total_stone_count",
+        sortable: false,
+        fixed: false,
+      },
+      {
+        title: "異変敵レベル(赤/青/黄/緑)",
+        key: "enemy_levels",
+        sortable: false,
+        fixed: false,
+      },
+    ];
+    stage_detail_items = replay.replay_meta.stage_details.map((stage) => ({
+      stage: String(stage.stage),
+      score: stage.score !== null ? Number(stage.score).toLocaleString() : "-",
+      lives:
+        stage.lives !== null && stage.life_pieces !== null
+          ? stage.lives + "+" + stage.life_pieces + "/3"
+          : "-",
+      bombs:
+        stage.bombs !== null && stage.bomb_pieces !== null
+          ? stage.bombs + "+" + stage.bomb_pieces + "/3"
+          : "-",
+      power:
+        stage.power !== null ? (Number(stage.power) / 100).toFixed(2) : "-",
+      piv: stage.piv !== null ? (Number(stage.piv) / 100).toFixed(2) : "-",
+      hyper: stage.hyper !== null ? stage.hyper + "/" + hyper_max : "-",
+      total_stone_count:
+        stage.total_stone_count !== null ? stage.total_stone_count : "-",
+      enemy_levels:
+        stage.red !== null &&
+        stage.blue !== null &&
+        stage.yellow !== null &&
+        stage.green !== null
+          ? stage.red +
+            "/" +
+            stage.blue +
+            "/" +
+            stage.yellow +
+            "/" +
+            stage.green
+          : "-",
+    }));
+  }
   const game_version = replay.replay_meta.game_version
     ? " ver " + replay.replay_meta.game_version
     : "";
@@ -590,8 +728,8 @@ export function Th20Table(replay: Th20Replay) {
     category: useTableUtils().convertCategory(replay.category),
     replay_id: replay.replay_id,
     stage_details: {
-      headers: [],
-      items: [],
+      headers: stage_detail_headers,
+      items: stage_detail_items,
     },
   };
 }
