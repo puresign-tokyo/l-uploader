@@ -644,7 +644,7 @@ export function Th20Table(replay: Th20Replay) {
         fixed: false,
       },
       {
-        title: "異変敵レベル(赤/青/黄/緑)",
+        title: "異変レベル(赤/青/黄/緑)",
         key: "enemy_levels",
         sortable: false,
         fixed: false,
