@@ -90,7 +90,7 @@ services:
       - private_redis
 
   postgresql:
-    image: postgres:17.8@sha256:69dddb030ab69d669d8d7c6abf67aeb448178e5270d5f123a21f4f7ac8b46a24
+    image: postgres:17.11@sha256:e38411452a464af89e5adadb8d223bf53b898d47d6ef918b2d58c08707350449
     container_name: ${POSTGRES_HOST:-postgresql}
     volumes:
       - postgresql_table:/var/lib/postgresql/data/
