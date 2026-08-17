@@ -5,7 +5,7 @@ python-multipart==0.0.31
 psycopg==3.2.9
 kaitaistruct==0.11
 tsadecode==0.6
-setuptools==80.7.1
+setuptools==83.0.0
 pymongo==4.13.0
 requests==2.33.0
 redis==6.2.0
