@@ -497,6 +497,8 @@ import ShareDialog from "~/components/Dialogs/ShareDialog.vue";
 
 import { ErrorTable } from "~/composables/Games/Error";
 import { Th06Table } from "~/composables/Games/Th06";
+import { Th06cTable } from "~/composables/Games/Th06c";
+import { Th06ncTable } from "~/composables/Games/Th06nc";
 import { Th07Table } from "~/composables/Games/Th07";
 import { Th08Table } from "~/composables/Games/Th08";
 import { Th09Table } from "~/composables/Games/Th09";
@@ -573,6 +575,8 @@ let replayTable: ReplayTable;
 type TableParser = (data: any) => ReplayTable;
 const tableComponents: Record<string, TableParser> = {
   th6: Th06Table,
+  th6c: Th06cTable,
+  th6nc: Th06ncTable,
   th7: Th07Table,
   th8: Th08Table,
   th9: Th09Table,
