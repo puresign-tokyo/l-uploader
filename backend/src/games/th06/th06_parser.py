@@ -11,7 +11,7 @@ class TH06Parser(BaseParser):
         return "th6"
 
     def can_parse(self, rep_raw: bytes) -> bool:
-        return rep_raw[:4] == b"T6RP"
+        return rep_raw[:4] == b"T6RP" and rep_raw[4] == 0x02
 
     def parse(self, rep_raw: bytes):
         cryptdata = bytearray(rep_raw[15:])
