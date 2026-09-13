@@ -36,6 +36,8 @@ import uvicorn
 
 # TODO いつか個々の作品を import するのをなくしたい
 from games.th06.th06_parser import TH06Parser
+from games.th06c.th06c_parser import TH06cParser
+from games.th06nc.th06nc_parser import TH06ncParser
 from games.th07.th07_parser import TH07Parser
 from games.th08.th08_parser import TH08Parser
 from games.th09.th09_parser import TH09Parser

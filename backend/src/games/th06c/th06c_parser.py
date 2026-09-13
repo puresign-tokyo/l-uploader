@@ -1,22 +1,22 @@
 from datetime import datetime
-from parsers.py_code import th06
+from parsers.py_code import th06c
 from parsers.base_parser import BaseParser
 import tsadecode as td
-from games.th06.th06_replay_info import TH06ReplayInfo, TH06StageDetail
+from games.th06c.th06c_replay_info import TH06cReplayInfo, TH06cStageDetail
 
 
-class TH06Parser(BaseParser):
+class TH06cParser(BaseParser):
 
     def get_supported_game_id(self) -> str:
-        return "th6"
+        return "th6c"
 
     def can_parse(self, rep_raw: bytes) -> bool:
-        return rep_raw[:4] == b"T6RP" and rep_raw[4] == 0x02
+        return rep_raw[:4] == b"T6RP" and rep_raw[4] == 0x03
 
     def parse(self, rep_raw: bytes):
         cryptdata = bytearray(rep_raw[15:])
         td.decrypt06(cryptdata, rep_raw[14])
-        replay = th06.Th06.from_bytes(cryptdata)
+        replay = th06c.Th06c.from_bytes(cryptdata)
 
         shot_types = ["ReimuA", "ReimuB", "MarisaA", "MarisaB"]
 
@@ -32,7 +32,7 @@ class TH06Parser(BaseParser):
             enumerated_non_dummy_stages,
             enumerated_non_dummy_stages[1:] + [(None, None)],
         ):
-            s = TH06StageDetail(stage=i + 1, score=current_stage.score)
+            s = TH06cStageDetail(stage=i + 1, score=current_stage.score)
             if next_stage is not None:
                 s.power = next_stage.power
                 s.lives = next_stage.lives
@@ -45,7 +45,7 @@ class TH06Parser(BaseParser):
         if len(rep_stages) == 1 and rep_raw[7] != 4:
             replay_type = "stage_practice"
 
-        r = TH06ReplayInfo(
+        r = TH06cReplayInfo(
             shot_type=shot_types[rep_raw[6]],
             difficulty=rep_raw[7],
             total_score=replay.file_header.score,
@@ -59,4 +59,4 @@ class TH06Parser(BaseParser):
         return r
 
 
-TH06Parser()
+TH06cParser()

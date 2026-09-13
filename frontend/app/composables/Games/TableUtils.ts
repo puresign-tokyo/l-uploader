@@ -40,6 +40,7 @@ export function useTableUtils() {
 
   const replayTypeMap: Record<string, { label: string; color: string }> = {
     full_game: { label: "通しプレイ", color: "indigo darken-3" },
+    nc_challenge: { label: "チャレンジモード", color: "deep-orange darken-2" },
     stage_practice: { label: "ステージプラクティス", color: "blue darken-2" },
     spell_card: { label: "スペルプラクティス", color: "deep-purple darken-1" },
     player_vs_player: { label: "対戦モード", color: "grey darken-2" },

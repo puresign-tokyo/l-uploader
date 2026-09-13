@@ -206,6 +206,8 @@ import ShareDialog from "~/components/Dialogs/ShareDialog.vue";
 
 import { ErrorTable } from "~/composables/Games/Error";
 import { Th06Table } from "~/composables/Games/Th06";
+import { Th06cTable } from "~/composables/Games/Th06c";
+import { Th06ncTable } from "~/composables/Games/Th06nc";
 import { Th07Table } from "~/composables/Games/Th07";
 import { Th08Table } from "~/composables/Games/Th08";
 import { Th09Table } from "~/composables/Games/Th09";
@@ -283,6 +285,8 @@ const formatDate = (iso) =>
 const dropMenuGames = {
   全作品: "all",
   東方紅魔郷: "th6",
+  東方紅魔郷C: "th6c",
+  東方紅魔郷NC: "th6nc",
   東方妖々夢: "th7",
   東方永夜抄: "th8",
   東方花映塚: "th9",
@@ -355,9 +359,7 @@ const parseReplayQuery = (query) => {
 const initialReplayQuery = parseReplayQuery(route.query);
 const replayPagination = ref(initialReplayQuery.page);
 const selectedGame = ref(gameLabelByValue[initialReplayQuery.game_id]);
-const selectedCategory = ref(
-  categoryLabelByValue[initialReplayQuery.category],
-);
+const selectedCategory = ref(categoryLabelByValue[initialReplayQuery.category]);
 const inputedTag = ref(initialReplayQuery.optional_tag);
 const selectedTag = ref(initialReplayQuery.optional_tag);
 
@@ -414,6 +416,8 @@ const applyParsedReplayQuery = (parsedQuery) => {
 // コンポーネントの取得
 const tableComponents = {
   th6: Th06Table,
+  th6c: Th06cTable,
+  th6nc: Th06ncTable,
   th7: Th07Table,
   th8: Th08Table,
   th9: Th09Table,
