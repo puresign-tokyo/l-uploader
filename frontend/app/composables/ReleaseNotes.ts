@@ -3,7 +3,7 @@ export function Releases() {
   const releases = [
     {
       version: "1.2.7",
-      date: "2026-09-12",
+      date: "2026-09-13",
       changes: ["紅魔郷C, 紅魔郷NCに対応"],
     },
     {
