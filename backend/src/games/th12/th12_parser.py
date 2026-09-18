@@ -68,5 +68,8 @@ class TH12Parser(BaseParser):
 
         return r
 
+    def filename_prefix(self) -> str:
+        return "th12"
+
 
 TH12Parser()

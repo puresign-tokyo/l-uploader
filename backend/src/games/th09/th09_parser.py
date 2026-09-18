@@ -126,5 +126,8 @@ class TH09Parser(BaseParser):
 
         return r
 
+    def filename_prefix(self) -> str:
+        return "th9"
+
 
 TH09Parser()

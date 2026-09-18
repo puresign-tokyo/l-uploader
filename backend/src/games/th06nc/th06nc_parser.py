@@ -75,5 +75,8 @@ class TH06ncParser(BaseParser):
 
         return r
 
+    def filename_prefix(self) -> str:
+        return "th6"
+
 
 TH06ncParser()

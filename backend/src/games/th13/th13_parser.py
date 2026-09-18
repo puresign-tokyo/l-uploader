@@ -100,5 +100,8 @@ class TH13Parser(BaseParser):
 
         return r
 
+    def filename_prefix(self) -> str:
+        return "th13"
+
 
 TH13Parser()

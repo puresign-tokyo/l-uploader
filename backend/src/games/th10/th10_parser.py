@@ -59,5 +59,8 @@ class TH10Parser(BaseParser):
 
         return r
 
+    def filename_prefix(self) -> str:
+        return "th10"
+
 
 TH10Parser()

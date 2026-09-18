@@ -45,5 +45,8 @@ class AlcoParser(BaseParser):
             stage_details=rep_stages,
         )
 
+    def filename_prefix(self) -> str:
+        return "alco"
+
 
 AlcoParser()
