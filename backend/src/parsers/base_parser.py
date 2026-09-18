@@ -27,3 +27,6 @@ class BaseParser(ABC):
 
     @abstractmethod
     def parse(self, rep_raw: bytes) -> ReplayInfo: ...
+
+    @abstractmethod
+    def filename_prefix(self) -> str: ...
