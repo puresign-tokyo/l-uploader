@@ -108,8 +108,9 @@ class Usecase:
         )
 
         for post in result["posts"]:
+            parser = GameRegistry.get_game_with_none_check(post["game_id"])["parser"]
             post["filename"] = (
-                f"{post["game_id"]}_ud{filename.id_to_filename(post["replay_id"])}.rpy"
+                f"{parser.filename_prefix()}_ud{filename.id_to_filename(post['replay_id'])}.rpy"
             )
 
         return result["posts"]
@@ -132,9 +133,12 @@ class Usecase:
         result = SQLReplays.select_replay(replay_id)
         if result["state"] != "success":
             return result
+        parser = GameRegistry.get_game_with_none_check(result["post"]["game_id"])[
+            "parser"
+        ]
         result["post"][
             "filename"
-        ] = f"{result["post"]["game_id"]}_ud{filename.id_to_filename(result["post"]["replay_id"])}.rpy"
+        ] = f"{parser.filename_prefix()}_ud{filename.id_to_filename(result['post']['replay_id'])}.rpy"
         return result
 
     @staticmethod
@@ -146,10 +150,11 @@ class Usecase:
         # read処理なのでトランザクション外でも許される
         result_file = FileHandler.get_replay_file_path(str(replay_id))
 
+        parser = GameRegistry.get_game_with_none_check(result_sql["game_id"])["parser"]
         returning = {
             "state": "success",
             "path": result_file["path"],
-            "filename": f"{result_sql["game_id"]}_ud{filename.id_to_filename(replay_id)}.rpy",
+            "filename": f"{parser.filename_prefix()}_ud{filename.id_to_filename(replay_id)}.rpy",
         }
         return returning
 
