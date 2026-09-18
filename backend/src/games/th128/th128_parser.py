@@ -61,5 +61,8 @@ class TH128Parser(BaseParser):
             stage_details=rep_stages,
         )
 
+    def filename_prefix(self) -> str:
+        return "th128"
+
 
 TH128Parser()

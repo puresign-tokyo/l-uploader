@@ -85,5 +85,8 @@ class TH16Parser(BaseParser):
 
         return r
 
+    def filename_prefix(self) -> str:
+        return "th16"
+
 
 TH16Parser()

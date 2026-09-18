@@ -49,3 +49,9 @@ class TH143Parser(BaseParser):
             scene=int(replay.userdata.scene.value),
             slow_down=float(replay.userdata.slowdown.value),
         )
+
+    def filename_prefix(self) -> str:
+        return "th143"
+
+
+TH143Parser()

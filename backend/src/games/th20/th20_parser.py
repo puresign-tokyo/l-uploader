@@ -107,5 +107,8 @@ class TH20Parser(BaseParser):
 
         return r
 
+    def filename_prefix(self) -> str:
+        return "th20"
+
 
 TH20Parser()

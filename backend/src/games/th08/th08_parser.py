@@ -133,5 +133,8 @@ class TH08Parser(BaseParser):
 
         return r
 
+    def filename_prefix(self) -> str:
+        return "th8"
+
 
 TH08Parser()

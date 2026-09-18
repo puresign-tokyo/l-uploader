@@ -62,3 +62,9 @@ class TH125Parser(BaseParser):
             scene=spell_scene,
             slowdown=float(replay.userdata.slowdown.value),
         )
+
+    def filename_prefix(self) -> str:
+        return "th125"
+
+
+TH125Parser()
