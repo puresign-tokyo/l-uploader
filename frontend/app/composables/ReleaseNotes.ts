@@ -2,6 +2,11 @@ export function Releases() {
   // 要素番号が小さいものほど最新であるようにすること
   const releases = [
     {
+      version: "1.2.9",
+      date: "2026-09-27",
+      changes: ["紅魔郷NCのスペカ名を定義"],
+    },
+    {
       version: "1.2.8",
       date: "2026-09-18",
       changes: ["紅魔郷C, 紅魔郷NCのファイル名prefixが誤っていたことの修正"],
