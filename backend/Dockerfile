@@ -14,28 +14,25 @@ ENV JAVA_HOME=/opt/java/openjdk \
 RUN mkdir -p /app/parsers/py_code && \
     find /app/parsers/threp-ksy -name "*.ksy" -exec kaitai-struct-compiler -t python --outdir /app/parsers/py_code {} \;
 
-# Pythonランタイムを親イメージとして使用
-FROM python:3.12@sha256:5b4cd1450900015d505c9801bf953922bc4cf607bfb22ee3c347a348ccccf16d
+FROM python:3.13-trixie@sha256:71d866ed79158f6ff25b096687f90ca706684937ea2032b86e479a060d9eaa7d AS python-dependencies
 
-RUN groupadd -g 10001 app && useradd -u 10001 -g app -m -s /usr/sbin/nologin app
+WORKDIR /build
+COPY ./requirements.txt ./
+RUN python -m pip install --no-compile --require-hashes --target /opt/site-packages -r requirements.txt
+RUN mkdir -p /home/app/replays && chown -R 10001:10001 /home/app
 
-# 作業ディレクトリを/appに設定
+FROM gcr.io/distroless/python3-debian13:nonroot@sha256:774595d652a294b54c9bd575b2d9fdd1a4b47547dc17b8bfa4c0e953c64855b3
+
 WORKDIR /app
 
-# 現在のディレクトリの内容をコンテナ内の/appにコピー
-COPY ./requirements.txt /app
-RUN pip install --require-hashes -r requirements.txt
-COPY ./src /app
-COPY --from=parser-builder /app/parsers/py_code /app/parsers/py_code
+COPY --chown=10001:10001 ./src /app
+COPY --chown=10001:10001 --from=parser-builder /app/parsers/py_code /app/parsers/py_code
+COPY --chown=10001:10001 --from=python-dependencies /opt/site-packages /usr/lib/python3/dist-packages
+COPY --from=python-dependencies /home/app /home/app
 
-RUN chown -R app:app /app
-RUN mkdir -p /home/app/replays && chown -R app:app /home/app/replays
-
-USER app
+USER 10001:10001
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONPATH=/app
 
-
-# # コンテナ起動時にapp.pyを実行
-CMD ["python", "/app/container_entrypoint.py"]
+CMD ["/app/container_entrypoint.py"]
