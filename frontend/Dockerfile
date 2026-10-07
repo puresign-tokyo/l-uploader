@@ -20,7 +20,7 @@ RUN --network=none pnpm nuxt:prepare && \
     rm -rf .output/server/node_modules/unhead && \
     cp -aL node_modules/unhead .output/server/node_modules/unhead
 
-FROM node:24.13.0-bullseye-slim@sha256:8c1784228377880d8e8992ce35aa3f4a496e5ee00960a33262bbc7d17718890f
+FROM gcr.io/distroless/nodejs24-debian13:nonroot@sha256:9eeb7f5887d0e239e78264b06f7f11d2e14be534050481803a9e4728fcdd278e
 
 WORKDIR /app
 
@@ -32,6 +32,4 @@ COPY --from=build-stage /app/package.json ./package.json
 
 ENV NODE_ENV=production
 
-USER node
-
-CMD ["node", ".output/server/index.mjs"]
+CMD [".output/server/index.mjs"]
