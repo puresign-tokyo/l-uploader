@@ -27,7 +27,7 @@ class TH06ncReplayInfo(BaseModel, ReplayInfo):
     name: str = ""
     shot_type: str = ""
     difficulty: int = -1
-    total_score: int = Field(..., ge=0, le=1500000000)
+    total_score: int = Field(..., ge=0, le=3000000000)
     slowdown: float = Field(..., ge=0, le=100)
     timestamp: datetime
 
