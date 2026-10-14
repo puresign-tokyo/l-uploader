@@ -6,6 +6,8 @@ ENV LANG=C.UTF-8 \
 
 COPY ./app/package.json /app
 COPY ./app/pnpm-lock.yaml /app
+COPY ./app/pnpm-workspace.yaml /app
+COPY ./app/patches /app/patches
 COPY ./app/.npmrc /app
 
 RUN corepack enable && \
