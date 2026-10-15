@@ -1,9 +1,9 @@
 from datetime import datetime, timezone
 import math
-from parsers.py_code import th20_header, th20
-from parsers.base_parser import BaseParser
+from backend.src.parsers.py_code import th20_header, th20
+from backend.src.parsers.base_parser import BaseParser
 import tsadecode as td
-from games.th20.th20_replay_info import TH20ReplayInfo
+from backend.src.games.th20.th20_replay_info import TH20ReplayInfo
 
 
 def subshot_to_stone(stone_id: int) -> str:

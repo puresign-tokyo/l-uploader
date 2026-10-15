@@ -12,8 +12,6 @@ services:
       - codex_home:/home/vscode/.codex
       - vscode_server:/home/vscode/.vscode-server
       - ../ai-skills:/home/vscode/.agents/skills:ro
-    environment:
-      PYTHONPATH: /workspace/l-uploader/backend/src
 
 volumes:
   pnpm_store:

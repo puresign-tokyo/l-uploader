@@ -1,6 +1,6 @@
-from games.th10.th10_parser import TH10Parser
+from backend.src.games.th10.th10_parser import TH10Parser
 from pathlib import Path
-from parsers.test_parse import test_parse_replay
+from backend.src.parsers.test_parse import test_parse_replay
 
 parser = TH10Parser()
 this_path = Path(__file__).resolve().parent

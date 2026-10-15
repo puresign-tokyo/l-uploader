@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Type
 from typing import Optional, TypedDict, cast
 
 if TYPE_CHECKING:
-    from parsers.base_parser import BaseParser
+    from backend.src.parsers.base_parser import BaseParser
 
     # from backend.src.base_database_handler import BaseDatabaseHandler
 
@@ -41,7 +41,7 @@ class GameRegistry:
 
     @classmethod
     def add_parser(cls, parser_type: "Type[BaseParser]") -> None:
-        from parsers.base_parser import BaseParser
+        from backend.src.parsers.base_parser import BaseParser
 
         if not isinstance(parser_type, type):
             raise TypeError(f"{parser_type} must be class")

@@ -25,14 +25,14 @@ FROM gcr.io/distroless/python3-debian13:nonroot@sha256:774595d652a294b54c9bd575b
 
 WORKDIR /app
 
-COPY --chown=10001:10001 ./src /app
-COPY --chown=10001:10001 --from=parser-builder /app/parsers/py_code /app/parsers/py_code
+COPY --chown=10001:10001 ./__init__.py /app/backend/__init__.py
+COPY --chown=10001:10001 ./src /app/backend/src
+COPY --chown=10001:10001 --from=parser-builder /app/parsers/py_code /app/backend/src/parsers/py_code
 COPY --chown=10001:10001 --from=python-dependencies /opt/site-packages /usr/lib/python3/dist-packages
 COPY --from=python-dependencies /home/app /home/app
 
 USER 10001:10001
 
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
 
-CMD ["/app/container_entrypoint.py"]
+CMD ["-m", "backend.src.container_entrypoint"]

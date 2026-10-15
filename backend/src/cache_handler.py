@@ -1,8 +1,8 @@
 from redis.client import Redis
-from getenv import getenv_secure
+from backend.src.getenv import getenv_secure
 import json
 import threading
-from log.log_manager import get_logger
+from backend.src.log.log_manager import get_logger
 from typing import cast
 
 logger = get_logger()

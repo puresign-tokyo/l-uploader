@@ -1,6 +1,6 @@
 import requests
 import json
-from getenv import getenv_secure
+from backend.src.getenv import getenv_secure
 
 
 RECAPTCHA_SECRET = getenv_secure("RECAPTCHA_SECRET")

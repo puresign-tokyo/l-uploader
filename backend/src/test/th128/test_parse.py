@@ -1,4 +1,4 @@
-from games.th128.th128_parser import TH128Parser
+from backend.src.games.th128.th128_parser import TH128Parser
 from pathlib import Path
 
 parser = TH128Parser()

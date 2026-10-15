@@ -1,4 +1,4 @@
-from parsers.base_parser import BaseParser
+from backend.src.parsers.base_parser import BaseParser
 from pathlib import Path
 import json
 

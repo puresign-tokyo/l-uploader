@@ -90,3 +90,19 @@
 
 ## 注意事項
 - このソフトウェアは `/internal` 配下に管理者用APIがありますが、ソフトウェアとして接続制限をかけているわけではないです。リバースプロキシを挟んで `/internal` 配下を全て403を返すことを想定しています。
+
+## backend の開発実行
+
+依存関係をセットアップ済みの devcontainer で、リポジトリ直下からモジュールとして実行します。`PYTHONPATH` の設定は不要です。
+
+```sh
+python -m backend.src.app
+```
+
+API と定期処理を一緒に起動する場合は `python -m backend.src.container_entrypoint` を使います。DB 等の接続先は環境変数で設定してください。
+
+parser の動作確認も、リポジトリ直下から実行できます。
+
+```sh
+python -m backend.src.test.th06.test_parse
+```

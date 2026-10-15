@@ -1,7 +1,7 @@
 from datetime import datetime
-from parsers.py_code import alco
-from parsers.base_parser import BaseParser
-from games.alco.alco_replay_info import AlcoReplayInfo
+from backend.src.parsers.py_code import alco
+from backend.src.parsers.base_parser import BaseParser
+from backend.src.games.alco.alco_replay_info import AlcoReplayInfo
 
 
 class AlcoParser(BaseParser):

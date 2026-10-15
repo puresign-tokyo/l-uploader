@@ -1,6 +1,6 @@
-from games.th17.th17_parser import TH17Parser
+from backend.src.games.th17.th17_parser import TH17Parser
 from pathlib import Path
-from parsers.test_parse import test_parse_replay
+from backend.src.parsers.test_parse import test_parse_replay
 
 parser = TH17Parser()
 this_path = Path(__file__).resolve().parent
