@@ -102,6 +102,7 @@
               />
               <v-btn
                 icon="mdi-magnify"
+                :aria-label="i18nT('pages.index.template.search_components.tag_search.title')"
                 class="ml-2"
                 variant="tonal"
                 size="small"

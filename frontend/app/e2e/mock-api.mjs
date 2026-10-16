@@ -1,4 +1,5 @@
 import { createServer } from "node:http";
+import { BASE_URL, POSTS_PER_PAGE } from "./settings.mjs";
 
 // SSRとブラウザの両方が利用する、外部依存のないインメモリAPI。
 // 本物のリプレイparserや認証の動作は保証しない。
@@ -22,14 +23,15 @@ async function readBody(request) {
 }
 
 const server = createServer(async (request, response) => {
-  response.setHeader("Access-Control-Allow-Origin", "http://127.0.0.1:3100");
+  response.setHeader("Access-Control-Allow-Origin", BASE_URL);
   response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   response.setHeader("Access-Control-Allow-Headers", "Content-Type");
   const send = (status, body) => {
     response.writeHead(status, { "Content-Type": "application/json" });
     response.end(JSON.stringify(body));
   };
-  const path = new URL(request.url, `http://${HOST}:${PORT}`).pathname;
+  const url = new URL(request.url, `http://${HOST}:${PORT}`);
+  const path = url.pathname;
   try {
     if (request.method === "OPTIONS") {
       response.writeHead(204);
@@ -41,7 +43,7 @@ const server = createServer(async (request, response) => {
     }
     if (request.method === "POST" && path === "/__control") {
       const options = JSON.parse((await readBody(request)).toString());
-      replays = [];
+      replays = options.replays ?? [];
       uploadStatus = options.uploadStatus ?? 201;
       uploadCount = 0;
       lastUpload = null;
@@ -51,10 +53,18 @@ const server = createServer(async (request, response) => {
       return send(200, { uploadCount, lastUpload });
     }
     if (request.method === "GET" && path === "/replays/count") {
-      return send(200, { count: replays.length });
+      return send(200, { count: filterReplays(url.searchParams).length });
     }
     if (request.method === "GET" && path === "/replays") {
-      return send(200, replays);
+      const page = Number(url.searchParams.get("page") ?? 0);
+      if (!Number.isInteger(page) || page < 0) {
+        return send(422, { detail: "Invalid page" });
+      }
+      const matching = filterReplays(url.searchParams).sort((a, b) => {
+        const difference = Date.parse(a.uploaded_at) - Date.parse(b.uploaded_at);
+        return url.searchParams.get("order") === "asc" ? difference : -difference;
+      });
+      return send(200, matching.slice(page * POSTS_PER_PAGE, (page + 1) * POSTS_PER_PAGE));
     }
     if (request.method === "POST" && path === "/replays") {
       uploadCount++;
@@ -102,6 +112,17 @@ const server = createServer(async (request, response) => {
     return send(500, { detail: "Mock API error" });
   }
 });
+
+function filterReplays(params) {
+  return replays.filter((replay) => {
+    const game = params.get("game_id");
+    const category = params.get("category");
+    const tag = params.get("optional_tag");
+    return (!game || game === "all" || replay.game_id === game)
+      && (!category || category === "all" || replay.category === category)
+      && (!tag || replay.optional_tag === tag);
+  });
+}
 
 server.listen(PORT, HOST);
 for (const signal of ["SIGINT", "SIGTERM"]) {

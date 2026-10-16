@@ -1,6 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 
-const API = "http://127.0.0.1:3101";
+import { API } from "./settings.mjs";
+import { blockExternalRequests, waitForHydration } from "./support";
 const INPUT = {
   username: "E2E霊夢",
   password: "e2e-password",
@@ -31,12 +32,7 @@ const locales = [
 async function openForm(page: Page, prefix: string) {
   await page.goto(`${prefix}/NewPost`);
   // SSRのHTML表示だけでなく、イベントを処理できるhydration完了まで待つ。
-  await page.waitForFunction(() => {
-    const root = document.querySelector("#__nuxt") as HTMLElement & {
-      __vue_app__?: { config: { globalProperties: { $nuxt?: { isHydrating: boolean } } } };
-    };
-    return root?.__vue_app__?.config.globalProperties.$nuxt?.isHydrating === false;
-  });
+  await waitForHydration(page);
 }
 
 async function fillForm(page: Page, labels: typeof locales[number]) {
@@ -54,10 +50,7 @@ async function fillForm(page: Page, labels: typeof locales[number]) {
 test.beforeEach(async ({ context, request }) => {
   expect((await request.post(`${API}/__control`, { data: {} })).ok()).toBeTruthy();
   // reCAPTCHA等の外部サービスへ通信せず、ローカルのアプリと模擬APIだけ利用する。
-  await context.route("**/*", (route) => {
-    const host = new URL(route.request().url()).hostname;
-    return host === "127.0.0.1" ? route.continue() : route.abort();
-  });
+  await blockExternalRequests(context);
 });
 
 for (const labels of locales) {
