@@ -101,8 +101,16 @@ python -m backend.src.app
 
 API と定期処理を一緒に起動する場合は `python -m backend.src.container_entrypoint` を使います。DB 等の接続先は環境変数で設定してください。
 
-parser の動作確認も、リポジトリ直下から実行できます。
+backend の全テストは、リポジトリ直下から次の1行で実行できます。
 
 ```sh
-python -m backend.src.test.th06.test_parse
+python -m unittest discover -s backend/tests -t . -v
+```
+
+テストコードとリプレイデータは `backend/tests/` にあり、本番イメージには含まれません。失敗したリプレイはテスト結果の `replay` に表示され、コマンドは非ゼロで終了します。
+
+GitHub Actions は push・pull request 時に`backend/Dockerfile.test` からテスト専用イメージをビルドし、同じコマンドを実行します。CI と同じ parser 生成・依存関係を使って確認する場合は、次のように実行します。
+
+```sh
+docker build -f backend/Dockerfile.test -t l-uploader-backend-tests backend && docker run --rm l-uploader-backend-tests
 ```
