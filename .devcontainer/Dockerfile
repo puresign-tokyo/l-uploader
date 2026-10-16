@@ -4,6 +4,12 @@ FROM sbtscala/scala-sbt:eclipse-temurin-21.0.8_9_1.11.6_2.13.16@sha256:7f8d1f78e
 
 FROM mcr.microsoft.com/devcontainers/python:3.12-bookworm@sha256:e1f700bf0e30d38d1d3aae95f35ab3fb6dc0708a6fb199841e7b3f31a7893b2b
 
+# Corepack/pnpm is used here. Disable the inherited Yarn APT source so that
+# its signing-key rotation cannot block unrelated dependency installations.
+RUN if [ -f /etc/apt/sources.list.d/yarn.list ]; then \
+      sed -i '/dl\.yarnpkg\.com/s/^deb /# Disabled (pnpm project): deb /' /etc/apt/sources.list.d/yarn.list; \
+    fi
+
 COPY --from=node /usr/local/ /usr/local/
 COPY --from=sbt /opt/java/openjdk/ /opt/java/openjdk/
 COPY --from=sbt /usr/share/sbt/ /usr/share/sbt/
