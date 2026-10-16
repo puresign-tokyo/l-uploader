@@ -30,8 +30,8 @@ def main() -> int:
     signal.signal(signal.SIGTERM, handle_signal)
     signal.signal(signal.SIGINT, handle_signal)
 
-    cron = subprocess.Popen([sys.executable, "/app/cron_runner.py"])
-    app = subprocess.Popen([sys.executable, "/app/app.py"])
+    cron = subprocess.Popen([sys.executable, "-m", "backend.src.cron_runner"])
+    app = subprocess.Popen([sys.executable, "-m", "backend.src.app"])
     children.extend([cron, app])
 
     while not shutting_down:

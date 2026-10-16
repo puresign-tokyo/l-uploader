@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from replay_info import ReplayInfo
+from backend.src.replay_info import ReplayInfo
 
 
 class BaseParser(ABC):
@@ -8,7 +8,7 @@ class BaseParser(ABC):
 
     def __init_subclass__(cls):
         # 循環参照をなくすため
-        from game_registry import GameRegistry
+        from backend.src.game_registry import GameRegistry
 
         GameRegistry.add_parser(cls)
 

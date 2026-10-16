@@ -1,8 +1,8 @@
 from datetime import datetime
-from parsers.py_code import th06
-from parsers.base_parser import BaseParser
+from backend.src.parsers.py_code import th06
+from backend.src.parsers.base_parser import BaseParser
 import tsadecode as td
-from games.th06.th06_replay_info import TH06ReplayInfo, TH06StageDetail
+from backend.src.games.th06.th06_replay_info import TH06ReplayInfo, TH06StageDetail
 
 
 class TH06Parser(BaseParser):

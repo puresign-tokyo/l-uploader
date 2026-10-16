@@ -1,8 +1,8 @@
 from datetime import datetime, timezone
-from parsers.py_code import th11, th_modern
-from parsers.base_parser import BaseParser
+from backend.src.parsers.py_code import th11, th_modern
+from backend.src.parsers.base_parser import BaseParser
 import tsadecode as td
-from games.th11.th11_replay_info import TH11ReplayInfo, TH11StageDetail
+from backend.src.games.th11.th11_replay_info import TH11ReplayInfo, TH11StageDetail
 
 
 class TH11Parser(BaseParser):

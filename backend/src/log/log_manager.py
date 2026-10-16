@@ -6,7 +6,7 @@ from functools import cache
 from logging import StreamHandler
 from fastapi import Request
 
-from log.client_ip import client_ip_context
+from backend.src.log.client_ip import client_ip_context
 
 
 class ClientIpFilter(Filter):

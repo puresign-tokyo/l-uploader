@@ -1,8 +1,8 @@
 from datetime import datetime
-from parsers.py_code import th08, th08_userdata
-from parsers.base_parser import BaseParser
+from backend.src.parsers.py_code import th08, th08_userdata
+from backend.src.parsers.base_parser import BaseParser
 import tsadecode as td
-from games.th08.th08_replay_info import TH08ReplayInfo, TH08StageDetail
+from backend.src.games.th08.th08_replay_info import TH08ReplayInfo, TH08StageDetail
 
 
 class TH08Parser(BaseParser):

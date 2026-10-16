@@ -1,9 +1,9 @@
 from datetime import datetime, timezone
 import math
-from parsers.py_code import th125, th_modern
-from parsers.base_parser import BaseParser
+from backend.src.parsers.py_code import th125, th_modern
+from backend.src.parsers.base_parser import BaseParser
 import tsadecode as td
-from games.th125.th125_replay_info import TH125ReplayInfo
+from backend.src.games.th125.th125_replay_info import TH125ReplayInfo
 
 
 class TH125Parser(BaseParser):

@@ -20,11 +20,11 @@ from enum import StrEnum
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
-from getenv import getenv_secure, get_env_secure_bool
+from backend.src.getenv import getenv_secure, get_env_secure_bool
 
 import logging
-import log.log_manager as log_manager
-from log.client_ip import client_ip_context
+import backend.src.log.log_manager as log_manager
+from backend.src.log.client_ip import client_ip_context
 
 
 import io
@@ -35,33 +35,33 @@ import uvicorn
 
 
 # TODO いつか個々の作品を import するのをなくしたい
-from games.th06.th06_parser import TH06Parser
-from games.th06c.th06c_parser import TH06cParser
-from games.th06nc.th06nc_parser import TH06ncParser
-from games.th07.th07_parser import TH07Parser
-from games.th08.th08_parser import TH08Parser
-from games.th09.th09_parser import TH09Parser
-from games.th10.th10_parser import TH10Parser
-from games.th11.th11_parser import TH11Parser
-from games.th12.th12_parser import TH12Parser
-from games.th13.th13_parser import TH13Parser
-from games.th14.th14_parser import TH14Parser
-from games.th15.th15_parser import TH15Parser
-from games.th16.th16_parser import TH16Parser
-from games.th17.th17_parser import TH17Parser
-from games.th18.th18_parser import TH18Parser
-from games.th20.th20_parser import TH20Parser
-from games.th95.th95_parser import TH95Parser
-from games.th125.th125_parser import TH125Parser
-from games.th128.th128_parser import TH128Parser
-from games.th143.th143_parser import TH143Parser
-from games.th165.th165_parser import TH165Parser
-from games.alco.alco_parser import AlcoParser
+from backend.src.games.th06.th06_parser import TH06Parser
+from backend.src.games.th06c.th06c_parser import TH06cParser
+from backend.src.games.th06nc.th06nc_parser import TH06ncParser
+from backend.src.games.th07.th07_parser import TH07Parser
+from backend.src.games.th08.th08_parser import TH08Parser
+from backend.src.games.th09.th09_parser import TH09Parser
+from backend.src.games.th10.th10_parser import TH10Parser
+from backend.src.games.th11.th11_parser import TH11Parser
+from backend.src.games.th12.th12_parser import TH12Parser
+from backend.src.games.th13.th13_parser import TH13Parser
+from backend.src.games.th14.th14_parser import TH14Parser
+from backend.src.games.th15.th15_parser import TH15Parser
+from backend.src.games.th16.th16_parser import TH16Parser
+from backend.src.games.th17.th17_parser import TH17Parser
+from backend.src.games.th18.th18_parser import TH18Parser
+from backend.src.games.th20.th20_parser import TH20Parser
+from backend.src.games.th95.th95_parser import TH95Parser
+from backend.src.games.th125.th125_parser import TH125Parser
+from backend.src.games.th128.th128_parser import TH128Parser
+from backend.src.games.th143.th143_parser import TH143Parser
+from backend.src.games.th165.th165_parser import TH165Parser
+from backend.src.games.alco.alco_parser import AlcoParser
 
 
-from game_registry import GameRegistry
+from backend.src.game_registry import GameRegistry
 
-from usecase import Usecase, AdminUsecase
+from backend.src.usecase import Usecase, AdminUsecase
 
 ALLOW_ORIGIN = getenv_secure("ALLOW_FRONTEND_ORIGIN")
 
@@ -560,4 +560,4 @@ def get_returner():
 
 
 if __name__ == "__main__":
-    uvicorn.run(app="app:app", host="0.0.0.0", port=5001, reload=False)
+    uvicorn.run(app="backend.src.app:app", host="0.0.0.0", port=5001, reload=False)

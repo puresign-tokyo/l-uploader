@@ -1,7 +1,7 @@
 from datetime import datetime
-from parsers.py_code import th95
-from parsers.base_parser import BaseParser
-from games.th95.th95_replay_info import TH95ReplayInfo
+from backend.src.parsers.py_code import th95
+from backend.src.parsers.base_parser import BaseParser
+from backend.src.games.th95.th95_replay_info import TH95ReplayInfo
 
 
 class TH95Parser(BaseParser):

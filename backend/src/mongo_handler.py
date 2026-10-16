@@ -1,8 +1,8 @@
 import os
 from pymongo import MongoClient
-from log import log_manager
+from backend.src.log import log_manager
 from contextlib import contextmanager
-from getenv import getenv_secure
+from backend.src.getenv import getenv_secure
 
 logger = log_manager.get_logger()
 

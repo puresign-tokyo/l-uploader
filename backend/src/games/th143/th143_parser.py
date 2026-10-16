@@ -1,9 +1,9 @@
 from datetime import datetime, timezone
 import math
-from parsers.py_code import th143, th_modern
-from parsers.base_parser import BaseParser
+from backend.src.parsers.py_code import th143, th_modern
+from backend.src.parsers.base_parser import BaseParser
 import tsadecode as td
-from games.th143.th143_replay_info import TH143ReplayInfo
+from backend.src.games.th143.th143_replay_info import TH143ReplayInfo
 
 
 class TH143Parser(BaseParser):

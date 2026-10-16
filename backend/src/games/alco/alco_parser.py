@@ -1,8 +1,8 @@
 from datetime import datetime, timezone
-from parsers.py_code import alco_encrypted, alco_userdata
-from parsers.base_parser import BaseParser
+from backend.src.parsers.py_code import alco_encrypted, alco_userdata
+from backend.src.parsers.base_parser import BaseParser
 import tsadecode as td
-from games.alco.alco_replay_info import AlcoReplayInfo, AlcoStageDetail
+from backend.src.games.alco.alco_replay_info import AlcoReplayInfo, AlcoStageDetail
 
 
 class AlcoParser(BaseParser):

@@ -1,5 +1,5 @@
 from pathlib import Path
-import log.log_manager as log_manager
+import backend.src.log.log_manager as log_manager
 import re
 
 logger = log_manager.get_logger()

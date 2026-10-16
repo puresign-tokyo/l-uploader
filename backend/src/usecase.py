@@ -1,14 +1,14 @@
-import http_requester as http_requester
-from log import log_manager
-from postgres_handler import SQLReplays
-from postgres_handler import SQLReplays
-from file_handler import FileHandler
-from game_registry import GameRegistry
+import backend.src.http_requester as http_requester
+from backend.src.log import log_manager
+from backend.src.postgres_handler import SQLReplays
+from backend.src.postgres_handler import SQLReplays
+from backend.src.file_handler import FileHandler
+from backend.src.game_registry import GameRegistry
 from datetime import datetime
 from hashlib import sha256
-import filename
-from getenv import getenv_secure, get_env_secure_bool
-from cache_handler import CacheClient
+from backend.src import filename
+from backend.src.getenv import getenv_secure, get_env_secure_bool
+from backend.src.cache_handler import CacheClient
 
 logger = log_manager.get_logger()
 

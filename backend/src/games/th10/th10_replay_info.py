@@ -1,4 +1,4 @@
-from replay_info import ReplayInfo, StageDetail
+from backend.src.replay_info import ReplayInfo, StageDetail
 from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
