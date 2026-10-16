@@ -82,7 +82,7 @@ async function selectFilter(page: Page, label: string, option: string, key: stri
 }
 
 async function searchTag(page: Page, label: string, tag: string) {
-  await page.getByLabel(label, { exact: true }).fill(tag);
+  await page.getByRole("textbox", { name: label, exact: true }).fill(tag);
   await Promise.all([
     listResponse(page, "optional_tag", tag),
     page.getByRole("button", { name: label, exact: true }).click(),
@@ -155,7 +155,7 @@ for (const labels of locales) {
       await page.reload();
       await waitForHydration(page);
       await expectCards(page, secondPage);
-      await expect(page.getByLabel(labels.tag, { exact: true })).toHaveValue(TARGET_TAG);
+      await expect(page.getByRole("textbox", { name: labels.tag, exact: true })).toHaveValue(TARGET_TAG);
       await expect(page.getByRole("combobox", { name: labels.game, exact: true })).toHaveValue(GAME_NAME);
       await expect(page.getByRole("combobox", { name: labels.category, exact: true })).toHaveValue(CATEGORY_NAME);
       await expectQuery(page, { game_id: "th6", category: "clear", optional_tag: TARGET_TAG, page: "2" });
@@ -176,7 +176,7 @@ for (const labels of locales) {
       await page.goBack();
       await expect(page).toHaveURL((url) => url.pathname.replace(/\/$/, "") === labels.prefix && url.searchParams.get("page") === "2");
       await expectQuery(page, { game_id: "th6", category: "clear", optional_tag: TARGET_TAG });
-      await expect(page.getByLabel(labels.tag, { exact: true })).toHaveValue(TARGET_TAG);
+      await expect(page.getByRole("textbox", { name: labels.tag, exact: true })).toHaveValue(TARGET_TAG);
       await expectCards(page, secondPage);
     });
   });
