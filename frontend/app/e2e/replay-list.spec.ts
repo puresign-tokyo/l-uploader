@@ -69,11 +69,16 @@ async function listResponse(page: Page, key: string, value: string) {
 }
 
 async function selectFilter(page: Page, label: string, option: string, key: string, value: string) {
-  await page.getByRole("combobox", { name: label, exact: true }).click();
+  const combobox = page.getByRole("combobox", { name: label, exact: true });
+  // VSelectの内部inputは表示用要素に覆われるため、対応するキー操作で開く。
+  await combobox.press("ArrowDown");
+  await expect(combobox).toHaveAttribute("aria-expanded", "true");
   await Promise.all([
     listResponse(page, key, value),
     page.getByRole("option", { name: option, exact: true }).click(),
   ]);
+  await expect(combobox).toHaveValue(option);
+  await expect(combobox).toHaveAttribute("aria-expanded", "false");
 }
 
 async function searchTag(page: Page, label: string, tag: string) {
