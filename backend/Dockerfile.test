@@ -18,7 +18,8 @@ FROM python:3.13-trixie@sha256:71d866ed79158f6ff25b096687f90ca706684937ea2032b86
 
 WORKDIR /build
 COPY ./requirements.txt ./
-RUN python -m pip install --no-compile --require-hashes --target /opt/site-packages -r requirements.txt
+COPY ./requirements-test.txt ./
+RUN python -m pip install --no-compile --require-hashes --target /opt/site-packages -r requirements.txt -r requirements-test.txt
 
 FROM python:3.13-trixie@sha256:71d866ed79158f6ff25b096687f90ca706684937ea2032b86e479a060d9eaa7d AS backend-tests
 

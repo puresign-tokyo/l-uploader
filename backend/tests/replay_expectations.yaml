@@ -1,0 +1,1837 @@
+# Full regression baselines for every replay fixture, captured from the current parser.
+# Not independently verified against in-game displays; review intentional changes.
+# exact: true checks all keys and stage numbers, including nulls and empty lists.
+test_replay_parse:
+  th6_02_st3_prac:
+    replay_file: th6_02_st3_prac.rpy
+    exact: true
+    expect:
+      game_id: th6
+      name: "        "
+      shot_type: ReimuB
+      difficulty: 3
+      total_score: 2999010
+      timestamp: "2021-10-05T00:00:00"
+      slowdown: 1.4084458351135254
+      replay_type: stage_practice
+      stage_details:
+        - stage: 3
+          score: 2999310
+          power: null
+          lives: null
+          bombs: null
+          rank: null
+      parser_version: 1
+  th6_15_full_game:
+    replay_file: th6_15_full_game.rpy
+    exact: true
+    expect:
+      game_id: th6
+      name: "WEF     "
+      shot_type: ReimuB
+      difficulty: 2
+      total_score: 113105290
+      timestamp: "2021-09-29T00:00:00"
+      slowdown: 0.3324151039123535
+      replay_type: full_game
+      stage_details:
+        - stage: 1
+          score: 5615590
+          power: 74
+          lives: 2
+          bombs: 3
+          rank: 27
+        - stage: 2
+          score: 17568770
+          power: 128
+          lives: 3
+          bombs: 4
+          rank: 32
+        - stage: 3
+          score: 34876430
+          power: 128
+          lives: 5
+          bombs: 2
+          rank: 30
+        - stage: 4
+          score: 62371160
+          power: 128
+          lives: 7
+          bombs: 0
+          rank: 32
+        - stage: 5
+          score: 78892310
+          power: 128
+          lives: 6
+          bombs: 0
+          rank: 32
+        - stage: 6
+          score: 113105290
+          power: null
+          lives: null
+          bombs: null
+          rank: null
+      parser_version: 1
+  th6_ud_extra:
+    replay_file: th6_ud_extra.rpy
+    exact: true
+    expect:
+      game_id: th6
+      name: "int     "
+      shot_type: ReimuB
+      difficulty: 4
+      total_score: 668332780
+      timestamp: "2024-07-06T00:00:00"
+      slowdown: 0.09773969650268555
+      replay_type: full_game
+      stage_details:
+        - stage: 7
+          score: 668332780
+          power: null
+          lives: null
+          bombs: null
+          rank: null
+      parser_version: 1
+  th7_09_extra:
+    replay_file: th7_09_extra.rpy
+    exact: true
+    expect:
+      game_id: th7
+      name: "WEF     "
+      shot_type: ReimuB
+      difficulty: 4
+      total_score: 1039111820
+      timestamp: "1904-06-21T00:00:00"
+      slowdown: 0.044667720794677734
+      replay_type: full_game
+      stage_details:
+        - stage: 7
+          score: 1039111820
+          point_items: null
+          graze: null
+          piv: null
+          cherry: null
+          cherry_max: null
+          power: null
+          lives: null
+          bombs: null
+      parser_version: 1
+  th7_10_st4_prac:
+    replay_file: th7_10_st4_prac.rpy
+    exact: true
+    expect:
+      game_id: th7
+      name: "WEF     "
+      shot_type: SakuyaB
+      difficulty: 3
+      total_score: 534930
+      timestamp: "1904-05-18T00:00:00"
+      slowdown: 2.6315808296203613
+      replay_type: stage_practice
+      stage_details:
+        - stage: 4
+          score: 534930
+          point_items: null
+          graze: null
+          piv: null
+          cherry: null
+          cherry_max: null
+          power: null
+          lives: null
+          bombs: null
+      parser_version: 1
+  th7_11_full_game:
+    replay_file: th7_11_full_game.rpy
+    exact: true
+    expect:
+      game_id: th7
+      name: "WEF     "
+      shot_type: ReimuB
+      difficulty: 3
+      total_score: 927772650
+      timestamp: "1904-06-26T00:00:00"
+      slowdown: 0.049042701721191406
+      replay_type: full_game
+      stage_details:
+        - stage: 1
+          score: 24639220
+          point_items: 38
+          graze: 405
+          piv: 152010
+          cherry: 21030
+          cherry_max: 323360
+          power: 121
+          lives: 2
+          bombs: 3
+        - stage: 2
+          score: 79175840
+          point_items: 114
+          graze: 913
+          piv: 358770
+          cherry: 7420
+          cherry_max: 358770
+          power: 128
+          lives: 3
+          bombs: 4
+        - stage: 3
+          score: 145667850
+          point_items: 199
+          graze: 1748
+          piv: 373430
+          cherry: 27820
+          cherry_max: 373430
+          power: 128
+          lives: 2
+          bombs: 3
+        - stage: 4
+          score: 382159190
+          point_items: 620
+          graze: 3707
+          piv: 451580
+          cherry: 43320
+          cherry_max: 451580
+          power: 128
+          lives: 4
+          bombs: 4
+        - stage: 5
+          score: 546653200
+          point_items: 871
+          graze: 4462
+          piv: 438800
+          cherry: 40980
+          cherry_max: 465400
+          power: 128
+          lives: 4
+          bombs: 3
+        - stage: 6
+          score: 927772650
+          point_items: null
+          graze: null
+          piv: null
+          cherry: null
+          cherry_max: null
+          power: null
+          lives: null
+          bombs: null
+      parser_version: 1
+  th8_06_extra:
+    replay_file: th8_06_extra.rpy
+    exact: true
+    expect:
+      game_id: th8
+      game_version: 1.00d
+      name: "WEF     "
+      shot_type: Youmu_and_Yuyuko
+      difficulty: 4
+      total_score: 2349513190
+      slowdown: 0.05238056182861328
+      timestamp: "2023-08-30T22:31:22"
+      route: ""
+      replay_type: full_game
+      spell_card_id: 65535
+      stage_details:
+        - stage: 9
+          score: 2349513190
+          point_items: null
+          graze: null
+          piv: null
+          power: null
+          lives: null
+          bombs: null
+      parser_version: 1
+  th8_07_spell_card:
+    replay_file: th8_07_spell_card.rpy
+    exact: true
+    expect:
+      game_id: th8
+      game_version: 1.00d
+      name: "WEF     "
+      shot_type: Reimu_and_Yukari
+      difficulty: 1
+      total_score: 15550190
+      slowdown: 2.325582504272461
+      timestamp: "2025-05-08T23:39:46"
+      route: ""
+      replay_type: spell_card
+      spell_card_id: 78
+      stage_details: []
+      parser_version: 1
+  th8_08_st3_prac:
+    replay_file: th8_08_st3_prac.rpy
+    exact: true
+    expect:
+      game_id: th8
+      game_version: 1.00d
+      name: "WEF     "
+      shot_type: Youmu_and_Yuyuko
+      difficulty: 3
+      total_score: 14894790
+      slowdown: 0.0
+      timestamp: "2020-11-30T04:16:49"
+      route: ""
+      replay_type: stage_practice
+      spell_card_id: 65535
+      stage_details:
+        - stage: 3
+          score: 14894790
+          point_items: null
+          graze: null
+          piv: null
+          power: null
+          lives: null
+          bombs: null
+      parser_version: 1
+  th8_14_full_game:
+    replay_file: th8_14_full_game.rpy
+    exact: true
+    expect:
+      game_id: th8
+      game_version: 1.00d
+      name: "WEF     "
+      shot_type: Youmu
+      difficulty: 3
+      total_score: 2830255870
+      slowdown: 0.0
+      timestamp: "2020-12-20T10:07:03"
+      route: Final_B
+      replay_type: full_game
+      spell_card_id: 65535
+      stage_details:
+        - stage: 1
+          score: 104048030
+          point_items: 61
+          graze: 491
+          piv: 332120
+          power: 113
+          lives: 2
+          bombs: 3
+        - stage: 2
+          score: 325165440
+          point_items: 207
+          graze: 1414
+          piv: 400680
+          power: 128
+          lives: 3
+          bombs: 3
+        - stage: 3
+          score: 650538900
+          point_items: 482
+          graze: 2434
+          piv: 464710
+          power: 128
+          lives: 4
+          bombs: 3
+        - stage: 5
+          score: 1113935370
+          point_items: 818
+          graze: 3400
+          piv: 529370
+          power: 128
+          lives: 4
+          bombs: 3
+        - stage: 6
+          score: 1615937700
+          point_items: 1057
+          graze: 4767
+          piv: 601410
+          power: 128
+          lives: 5
+          bombs: 2
+        - stage: 8
+          score: 2830255870
+          point_items: null
+          graze: null
+          piv: null
+          power: null
+          lives: null
+          bombs: null
+      parser_version: 1
+  th9_01_vs_cpu2:
+    replay_file: th9_01_vs_cpu2.rpy
+    exact: true
+    expect:
+      game_id: th9
+      name: "WEF     "
+      shot_type: Mystia
+      difficulty: 3
+      total_score: 0
+      timestamp: "2021-01-26T00:00:00"
+      replay_type: player_vs_player
+      stage_details:
+        - stage: 1
+          score: 0
+          lives: null
+          p1_cpu: false
+          p2_cpu: false
+          p2_shot: Mystia
+          p2_score: 0
+      parser_version: 1
+  th9_02_extra:
+    replay_file: th9_02_extra.rpy
+    exact: true
+    expect:
+      game_id: th9
+      name: "WEF     "
+      shot_type: Medicine
+      difficulty: 4
+      total_score: 35577980
+      timestamp: "2021-08-16T00:00:00"
+      replay_type: full_game
+      stage_details:
+        - stage: 1
+          score: 1509230
+          lives: 0
+          p1_cpu: false
+          p2_cpu: true
+          p2_shot: Lyrica
+          p2_score: 276840
+        - stage: 2
+          score: 5272150
+          lives: 1
+          p1_cpu: false
+          p2_cpu: true
+          p2_shot: Mystia
+          p2_score: 622280
+        - stage: 3
+          score: 8704900
+          lives: 1
+          p1_cpu: false
+          p2_cpu: true
+          p2_shot: Tewi
+          p2_score: 561480
+        - stage: 4
+          score: 13764020
+          lives: 2
+          p1_cpu: false
+          p2_cpu: true
+          p2_shot: Reisen
+          p2_score: 1022160
+        - stage: 5
+          score: 15777040
+          lives: 3
+          p1_cpu: false
+          p2_cpu: true
+          p2_shot: Marisa
+          p2_score: 341580
+        - stage: 6
+          score: 26780750
+          lives: 5
+          p1_cpu: false
+          p2_cpu: true
+          p2_shot: Sakuya
+          p2_score: 4762720
+        - stage: 7
+          score: 31817240
+          lives: 6
+          p1_cpu: false
+          p2_cpu: true
+          p2_shot: Yuuka
+          p2_score: 3153240
+        - stage: 8
+          score: 35577980
+          lives: 6
+          p1_cpu: false
+          p2_cpu: true
+          p2_shot: Komachi
+          p2_score: 852500
+        - stage: 9
+          score: null
+          lives: null
+          p1_cpu: false
+          p2_cpu: true
+          p2_shot: Eiki
+          p2_score: null
+      parser_version: 1
+  th9_04_lunatic:
+    replay_file: th9_04_lunatic.rpy
+    exact: true
+    expect:
+      game_id: th9
+      name: "WEF     "
+      shot_type: Medicine
+      difficulty: 3
+      total_score: 48417640
+      timestamp: "2021-08-21T00:00:00"
+      replay_type: full_game
+      stage_details:
+        - stage: 1
+          score: 2853540
+          lives: 2
+          p1_cpu: false
+          p2_cpu: true
+          p2_shot: Lyrica
+          p2_score: 461070
+        - stage: 2
+          score: 8607100
+          lives: 2
+          p1_cpu: false
+          p2_cpu: true
+          p2_shot: Mystia
+          p2_score: 1469080
+        - stage: 3
+          score: 13841620
+          lives: 3
+          p1_cpu: false
+          p2_cpu: true
+          p2_shot: Tewi
+          p2_score: 1062170
+        - stage: 4
+          score: 18544590
+          lives: 3
+          p1_cpu: false
+          p2_cpu: true
+          p2_shot: Reisen
+          p2_score: 1184270
+        - stage: 5
+          score: 23562800
+          lives: 3
+          p1_cpu: false
+          p2_cpu: true
+          p2_shot: Reimu
+          p2_score: 1000770
+        - stage: 6
+          score: 31443390
+          lives: 4
+          p1_cpu: false
+          p2_cpu: true
+          p2_shot: Sakuya
+          p2_score: 1310360
+        - stage: 7
+          score: 38986210
+          lives: 4
+          p1_cpu: false
+          p2_cpu: true
+          p2_shot: Yuuka
+          p2_score: 1836130
+        - stage: 8
+          score: 48417640
+          lives: 4
+          p1_cpu: false
+          p2_cpu: true
+          p2_shot: Komachi
+          p2_score: 2143500
+        - stage: 9
+          score: null
+          lives: null
+          p1_cpu: false
+          p2_cpu: true
+          p2_shot: Eiki
+          p2_score: null
+      parser_version: 1
+  th9_05_cpu_vs_cpu:
+    replay_file: th9_05_cpu_vs_cpu.rpy
+    exact: true
+    expect:
+      game_id: th9
+      name: "WEF     "
+      shot_type: Marisa
+      difficulty: 2
+      total_score: 0
+      timestamp: "2025-05-15T00:00:00"
+      replay_type: player_vs_player
+      stage_details:
+        - stage: 1
+          score: 0
+          lives: null
+          p1_cpu: false
+          p2_cpu: false
+          p2_shot: Marisa
+          p2_score: 0
+      parser_version: 1
+  th9_18_pvp:
+    replay_file: th9_18_pvp.rpy
+    exact: true
+    expect:
+      game_id: th9
+      name: "F ^     "
+      shot_type: Mystia
+      difficulty: 3
+      total_score: 0
+      timestamp: "2016-05-02T00:00:00"
+      replay_type: player_vs_player
+      stage_details:
+        - stage: 1
+          score: 0
+          lives: null
+          p1_cpu: false
+          p2_cpu: false
+          p2_shot: Eiki
+          p2_score: 0
+      parser_version: 1
+  th9_20_vs_cpu1:
+    replay_file: th9_20_vs_cpu1.rpy
+    exact: true
+    expect:
+      game_id: th9
+      name: 3MinNoMi
+      shot_type: Mystia
+      difficulty: 3
+      total_score: 0
+      timestamp: "2016-05-04T00:00:00"
+      replay_type: player_vs_player
+      stage_details:
+        - stage: 1
+          score: 0
+          lives: null
+          p1_cpu: false
+          p2_cpu: false
+          p2_shot: Mystia
+          p2_score: 0
+      parser_version: 1
+  th10_01_full_game:
+    replay_file: th10_01_full_game.rpy
+    exact: true
+    expect:
+      game_id: th10
+      game_version: 1.00a
+      name: "WEF     "
+      shot_type: ReimuA
+      difficulty: 3
+      total_score: 584232050
+      slowdown: 0.0
+      timestamp: "2020-07-13T01:51:00+00:00"
+      replay_type: full_game
+      stage_details:
+        - stage: 1
+          score: 21020550
+          piv: 221520
+          power: 80
+          lives: 3
+        - stage: 2
+          score: 68943680
+          piv: 414530
+          power: 60
+          lives: 4
+        - stage: 3
+          score: 134859310
+          piv: 663970
+          power: 31
+          lives: 6
+        - stage: 4
+          score: 237529410
+          piv: 616490
+          power: 2
+          lives: 6
+        - stage: 5
+          score: 369690130
+          piv: 535560
+          power: 44
+          lives: 5
+        - stage: 6
+          score: 584232050
+          piv: null
+          power: null
+          lives: null
+      parser_version: 1
+  th10_10_st4_prac:
+    replay_file: th10_10_st4_prac.rpy
+    exact: true
+    expect:
+      game_id: th10
+      game_version: 1.00a
+      name: EFUMAIKA
+      shot_type: ReimuA
+      difficulty: 2
+      total_score: 17048300
+      slowdown: 0.0
+      timestamp: "2014-03-20T16:30:57+00:00"
+      replay_type: stage_practice
+      stage_details:
+        - stage: 4
+          score: 17048300
+          piv: null
+          power: null
+          lives: null
+      parser_version: 1
+  th10_18_extra:
+    replay_file: th10_18_extra.rpy
+    exact: true
+    expect:
+      game_id: th10
+      game_version: 1.00a
+      name: Wefmaika
+      shot_type: ReimuA
+      difficulty: 4
+      total_score: 586998850
+      slowdown: 0.0119476318359375
+      timestamp: "2016-04-16T10:42:31+00:00"
+      replay_type: full_game
+      stage_details:
+        - stage: 7
+          score: 586998850
+          piv: null
+          power: null
+          lives: null
+      parser_version: 1
+  th11_01_st3_prac:
+    replay_file: th11_01_st3_prac.rpy
+    exact: true
+    expect:
+      game_id: th11
+      game_version: 1.00a
+      name: "WEF     "
+      shot_type: ReimuA
+      difficulty: 3
+      total_score: 16312260
+      timestamp: "2021-03-11T12:13:33+00:00"
+      replay_type: stage_practice
+      slowdown: 0.0
+      stage_details:
+        - stage: 3
+          score: 16312260
+          power: null
+          piv: null
+          lives: null
+          life_pieces: null
+          graze: null
+      parser_version: 1
+  th11_05_extra:
+    replay_file: th11_05_extra.rpy
+    exact: true
+    expect:
+      game_id: th11
+      game_version: 1.00a
+      name: WEFUMAIK
+      shot_type: ReimuA
+      difficulty: 4
+      total_score: 517568040
+      timestamp: "2014-06-07T12:43:05+00:00"
+      replay_type: full_game
+      slowdown: 0.05371856689453125
+      stage_details:
+        - stage: 7
+          score: 517568040
+          power: null
+          piv: null
+          lives: null
+          life_pieces: null
+          graze: null
+      parser_version: 1
+  th11_07_full_game:
+    replay_file: th11_07_full_game.rpy
+    exact: true
+    expect:
+      game_id: th11
+      game_version: 1.00a
+      name: "WEF 1M  "
+      shot_type: ReimuA
+      difficulty: 3
+      total_score: 1217153370
+      timestamp: "2024-03-09T15:29:13+00:00"
+      replay_type: full_game
+      slowdown: 0.0
+      stage_details:
+        - stage: 1
+          score: 37117710
+          power: 79
+          piv: 208340
+          lives: 3
+          life_pieces: 2
+          graze: 1726
+        - stage: 2
+          score: 75358790
+          power: 80
+          piv: 213020
+          lives: 4
+          life_pieces: 4
+          graze: 2302
+        - stage: 3
+          score: 121937680
+          power: 80
+          piv: 214080
+          lives: 6
+          life_pieces: 1
+          graze: 4371
+        - stage: 4
+          score: 264274310
+          power: 80
+          piv: 219540
+          lives: 8
+          life_pieces: 0
+          graze: 9717
+        - stage: 5
+          score: 445213490
+          power: 80
+          piv: 201560
+          lives: 8
+          life_pieces: 3
+          graze: 12667
+        - stage: 6
+          score: 1217153370
+          power: null
+          piv: null
+          lives: null
+          life_pieces: null
+          graze: null
+      parser_version: 1
+  th12_02_full_game:
+    replay_file: th12_02_full_game.rpy
+    exact: true
+    expect:
+      game_id: th12
+      game_version: 1.00b
+      name: "WEF     "
+      shot_type: SanaeB
+      difficulty: 3
+      total_score: 2568971300
+      timestamp: "2021-09-27T11:37:08+00:00"
+      replay_type: full_game
+      slowdown: 0.0
+      stage_details:
+        - stage: 1
+          score: 20323140
+          power: 266
+          piv: 26300
+          lives: 3
+          life_pieces: 2
+          bombs: 2
+          bomb_pieces: 0.0
+          graze: 1184
+        - stage: 2
+          score: 71261480
+          power: 400
+          piv: 38350
+          lives: 4
+          life_pieces: 2
+          bombs: 0
+          bomb_pieces: 0.0
+          graze: 3939
+        - stage: 3
+          score: 206647420
+          power: 400
+          piv: 66360
+          lives: 4
+          life_pieces: 2
+          bombs: 0
+          bomb_pieces: 1.0
+          graze: 25392
+        - stage: 4
+          score: 541274750
+          power: 353
+          piv: 82760
+          lives: 3
+          life_pieces: 3
+          bombs: 2
+          bomb_pieces: 2.0
+          graze: 28241
+        - stage: 5
+          score: 1510815610
+          power: 372
+          piv: 96040
+          lives: 1
+          life_pieces: 0
+          bombs: 1
+          bomb_pieces: 2.0
+          graze: 34849
+        - stage: 6
+          score: 2568971300
+          power: null
+          piv: null
+          lives: null
+          life_pieces: null
+          bombs: null
+          bomb_pieces: null
+          graze: null
+      parser_version: 1
+  th12_07_st5_fail:
+    replay_file: th12_07_st5_fail.rpy
+    exact: true
+    expect:
+      game_id: th12
+      game_version: 1.00b
+      name: "WEF     "
+      shot_type: SanaeB
+      difficulty: 3
+      total_score: 1444146110
+      timestamp: "2021-09-07T21:22:37+00:00"
+      replay_type: full_game
+      slowdown: 0.0
+      stage_details:
+        - stage: 1
+          score: 18536620
+          power: 266
+          piv: 26350
+          lives: 3
+          life_pieces: 2
+          bombs: 2
+          bomb_pieces: 0.0
+          graze: 1234
+        - stage: 2
+          score: 62420570
+          power: 400
+          piv: 38100
+          lives: 4
+          life_pieces: 2
+          bombs: 0
+          bomb_pieces: 0.0
+          graze: 3747
+        - stage: 3
+          score: 176772130
+          power: 400
+          piv: 65810
+          lives: 4
+          life_pieces: 2
+          bombs: 0
+          bomb_pieces: 1.0
+          graze: 25093
+        - stage: 4
+          score: 490276520
+          power: 400
+          piv: 81790
+          lives: 4
+          life_pieces: 3
+          bombs: 0
+          bomb_pieces: 2.0
+          graze: 27447
+        - stage: 5
+          score: 1444146110
+          power: null
+          piv: null
+          lives: null
+          life_pieces: null
+          bombs: null
+          bomb_pieces: null
+          graze: null
+      parser_version: 1
+  th12_08_st5_prac:
+    replay_file: th12_08_st5_prac.rpy
+    exact: true
+    expect:
+      game_id: th12
+      game_version: 1.00b
+      name: "WEF     "
+      shot_type: SanaeB
+      difficulty: 3
+      total_score: 1680
+      timestamp: "2021-09-14T03:32:09+00:00"
+      replay_type: stage_practice
+      slowdown: 0.0
+      stage_details:
+        - stage: 5
+          score: 1680
+          power: null
+          piv: null
+          lives: null
+          life_pieces: null
+          bombs: null
+          bomb_pieces: null
+          graze: null
+      parser_version: 1
+  th12_ud1029_extra:
+    replay_file: th12_ud1029_extra.rpy
+    exact: true
+    expect:
+      game_id: th12
+      game_version: 1.00b
+      name: "OMEGA   "
+      shot_type: MarisaB
+      difficulty: 4
+      total_score: 630651970
+      timestamp: "2013-12-30T01:43:09+00:00"
+      replay_type: full_game
+      slowdown: 0.0572967529296875
+      stage_details:
+        - stage: 7
+          score: 630651970
+          power: null
+          piv: null
+          lives: null
+          life_pieces: null
+          bombs: null
+          bomb_pieces: null
+          graze: null
+      parser_version: 1
+  th13_13_full_game:
+    replay_file: th13_13_full_game.rpy
+    exact: true
+    expect:
+      game_id: th13
+      game_version: 1.00c
+      name: "WEF     "
+      shot_type: Youmu
+      difficulty: 2
+      total_score: 3614778200
+      timestamp: "2017-11-21T14:36:35+00:00"
+      replay_type: full_game
+      slowdown: 0.0
+      spell_card_id: 4294967295
+      stage_details:
+        - stage: 1
+          score: 29375200
+          power: 310
+          piv: 52110
+          lives: 2
+          life_pieces: 7
+          bombs: 0
+          bomb_pieces: 7
+          graze: 921
+          trance: 260
+          extends: 0
+        - stage: 2
+          score: 158132630
+          power: 400
+          piv: 123600
+          lives: 2
+          life_pieces: 8
+          bombs: 2
+          bomb_pieces: 7
+          graze: 1631
+          trance: 15
+          extends: 1
+        - stage: 3
+          score: 368966500
+          power: 400
+          piv: 175780
+          lives: 3
+          life_pieces: 7
+          bombs: 0
+          bomb_pieces: 1
+          graze: 2988
+          trance: 600
+          extends: 2
+        - stage: 4
+          score: 961761690
+          power: 376
+          piv: 301540
+          lives: 2
+          life_pieces: 5
+          bombs: 0
+          bomb_pieces: 1
+          graze: 3496
+          trance: 600
+          extends: 3
+        - stage: 5
+          score: 1896203670
+          power: 400
+          piv: 429550
+          lives: 2
+          life_pieces: 4
+          bombs: 0
+          bomb_pieces: 5
+          graze: 3957
+          trance: 0
+          extends: 4
+        - stage: 6
+          score: 3614778200
+          power: null
+          piv: null
+          lives: null
+          life_pieces: null
+          bombs: null
+          bomb_pieces: null
+          graze: null
+          trance: null
+          extends: null
+      parser_version: 1
+  th13_14_st3_prac:
+    replay_file: th13_14_st3_prac.rpy
+    exact: true
+    expect:
+      game_id: th13
+      game_version: 1.00c
+      name: "WEF     "
+      shot_type: Sanae
+      difficulty: 3
+      total_score: 5979820
+      timestamp: "2021-06-13T19:04:03+00:00"
+      replay_type: stage_practice
+      slowdown: 0.0
+      spell_card_id: 4294967295
+      stage_details:
+        - stage: 3
+          score: 5979820
+          power: null
+          piv: null
+          lives: null
+          life_pieces: null
+          bombs: null
+          bomb_pieces: null
+          graze: null
+          trance: null
+          extends: null
+      parser_version: 1
+  th13_15_extra:
+    replay_file: th13_15_extra.rpy
+    exact: true
+    expect:
+      game_id: th13
+      game_version: 1.00c
+      name: "WEF     "
+      shot_type: Reimu
+      difficulty: 4
+      total_score: 324809500
+      timestamp: "2017-11-11T14:18:55+00:00"
+      replay_type: full_game
+      slowdown: 0.0
+      spell_card_id: 4294967295
+      stage_details:
+        - stage: 7
+          score: 324809500
+          power: null
+          piv: null
+          lives: null
+          life_pieces: null
+          bombs: null
+          bomb_pieces: null
+          graze: null
+          trance: null
+          extends: null
+      parser_version: 1
+  th13_24_spell_card:
+    replay_file: th13_24_spell_card.rpy
+    exact: true
+    expect:
+      game_id: th13
+      game_version: 1.00c
+      name: "WEF     "
+      shot_type: Reimu
+      difficulty: 4
+      total_score: 8959770
+      timestamp: "2025-05-14T18:53:58+00:00"
+      replay_type: spell_card
+      slowdown: 0.0
+      spell_card_id: 106
+      stage_details: []
+      parser_version: 1
+  th14_01_full_game:
+    replay_file: th14_01_full_game.rpy
+    exact: true
+    expect:
+      game_id: th14
+      game_version: 1.00b
+      name: "WEF     "
+      shot_type: SakuyaA
+      difficulty: 3
+      total_score: 696462240
+      timestamp: "2020-03-09T18:23:16+00:00"
+      replay_type: full_game
+      slowdown: 0.0
+      spell_card_id: 4294967295
+      stage_details:
+        - stage: 1
+          score: 25950330
+          power: 281
+          piv: 17040
+          lives: 3
+          life_pieces: 0
+          bombs: 4
+          bomb_pieces: 7
+          graze: 1722
+        - stage: 2
+          score: 88635800
+          power: 400
+          piv: 26550
+          lives: 4
+          life_pieces: 2
+          bombs: 7
+          bomb_pieces: 2
+          graze: 3027
+        - stage: 3
+          score: 173291130
+          power: 400
+          piv: 36960
+          lives: 6
+          life_pieces: 2
+          bombs: 8
+          bomb_pieces: 0
+          graze: 3585
+        - stage: 4
+          score: 257818710
+          power: 400
+          piv: 50050
+          lives: 8
+          life_pieces: 0
+          bombs: 8
+          bomb_pieces: 0
+          graze: 4713
+        - stage: 5
+          score: 401998490
+          power: 400
+          piv: 62310
+          lives: 8
+          life_pieces: 0
+          bombs: 8
+          bomb_pieces: 0
+          graze: 5621
+        - stage: 6
+          score: 696462240
+          power: null
+          piv: null
+          lives: null
+          life_pieces: null
+          bombs: null
+          bomb_pieces: null
+          graze: null
+      parser_version: 1
+  th14_04_spell_card:
+    replay_file: th14_04_spell_card.rpy
+    exact: true
+    expect:
+      game_id: th14
+      game_version: 1.00b
+      name: "WEF     "
+      shot_type: ReimuA
+      difficulty: 1
+      total_score: 15149920
+      timestamp: "2020-05-30T20:52:01+00:00"
+      replay_type: spell_card
+      slowdown: 0.0
+      spell_card_id: 89
+      stage_details: []
+      parser_version: 1
+  th14_07_st4_prac:
+    replay_file: th14_07_st4_prac.rpy
+    exact: true
+    expect:
+      game_id: th14
+      game_version: 1.00b
+      name: "WEF     "
+      shot_type: ReimuA
+      difficulty: 1
+      total_score: 18117470
+      timestamp: "2020-06-07T11:35:20+00:00"
+      replay_type: stage_practice
+      slowdown: 0.02925872802734375
+      spell_card_id: 4294967295
+      stage_details:
+        - stage: 4
+          score: 18117470
+          power: null
+          piv: null
+          lives: null
+          life_pieces: null
+          bombs: null
+          bomb_pieces: null
+          graze: null
+      parser_version: 1
+  th14_14_extra:
+    replay_file: th14_14_extra.rpy
+    exact: true
+    expect:
+      game_id: th14
+      game_version: 1.00b
+      name: "WEF     "
+      shot_type: ReimuA
+      difficulty: 4
+      total_score: 239164750
+      timestamp: "2017-10-21T12:03:53+00:00"
+      replay_type: full_game
+      slowdown: 0.44065093994140625
+      spell_card_id: 4294967295
+      stage_details:
+        - stage: 7
+          score: 239164750
+          power: null
+          piv: null
+          lives: null
+          life_pieces: null
+          bombs: null
+          bomb_pieces: null
+          graze: null
+      parser_version: 1
+  th15_05_st5_prac:
+    replay_file: th15_05_st5_prac.rpy
+    exact: true
+    expect:
+      game_id: th15
+      game_version: 1.00b
+      name: "WEF     "
+      shot_type: Sanae
+      difficulty: 3
+      total_score: 1882347020
+      timestamp: "2020-08-28T15:09:59+00:00"
+      replay_type: full_game
+      slowdown: 0.011962890625
+      stage_details:
+        - stage: 1
+          score: 112963020
+          power: 182
+          piv: 56690
+          lives: 2
+          life_pieces: 2
+          bombs: 3
+          bomb_pieces: 0
+          graze: 21390
+        - stage: 2
+          score: 358136030
+          power: 365
+          piv: 136770
+          lives: 2
+          life_pieces: 2
+          bombs: 0
+          bomb_pieces: 0
+          graze: 64070
+        - stage: 3
+          score: 622377270
+          power: 383
+          piv: 197960
+          lives: 1
+          life_pieces: 1
+          bombs: 3
+          bomb_pieces: 0
+          graze: 88387
+        - stage: 4
+          score: 947556380
+          power: 394
+          piv: 251370
+          lives: 1
+          life_pieces: 1
+          bombs: 3
+          bomb_pieces: 0
+          graze: 110108
+        - stage: 5
+          score: 1522087000
+          power: 357
+          piv: 284330
+          lives: 1
+          life_pieces: 2
+          bombs: 3
+          bomb_pieces: 0
+          graze: 118673
+        - stage: 6
+          score: 1882347020
+          power: null
+          piv: null
+          lives: null
+          life_pieces: null
+          bombs: null
+          bomb_pieces: null
+          graze: null
+      parser_version: 1
+  th15_08_extra:
+    replay_file: th15_08_extra.rpy
+    exact: true
+    expect:
+      game_id: th15
+      game_version: 1.00b
+      name: "ExNNFS8 "
+      shot_type: Sanae
+      difficulty: 4
+      total_score: 639399970
+      timestamp: "2016-05-21T10:47:15+00:00"
+      replay_type: full_game
+      slowdown: 0.3419189453125
+      stage_details:
+        - stage: 7
+          score: 639399970
+          power: null
+          piv: null
+          lives: null
+          life_pieces: null
+          bombs: null
+          bomb_pieces: null
+          graze: null
+      parser_version: 1
+  th15_21_full_game:
+    replay_file: th15_21_full_game.rpy
+    exact: true
+    expect:
+      game_id: th15
+      game_version: 1.00b
+      name: "WEF     "
+      shot_type: Sanae
+      difficulty: 3
+      total_score: 2444666530
+      timestamp: "2020-09-24T03:12:33+00:00"
+      replay_type: full_game
+      slowdown: 0.0
+      stage_details:
+        - stage: 1
+          score: 145189060
+          power: 237
+          piv: 70610
+          lives: 3
+          life_pieces: 2
+          bombs: 0
+          bomb_pieces: 0
+          graze: 27482
+        - stage: 2
+          score: 447404790
+          power: 336
+          piv: 172150
+          lives: 1
+          life_pieces: 2
+          bombs: 2
+          bomb_pieces: 0
+          graze: 80917
+        - stage: 3
+          score: 778740030
+          power: 400
+          piv: 244350
+          lives: 2
+          life_pieces: 1
+          bombs: 0
+          bomb_pieces: 0
+          graze: 111831
+        - stage: 4
+          score: 1185165910
+          power: 394
+          piv: 308930
+          lives: 1
+          life_pieces: 2
+          bombs: 3
+          bomb_pieces: 0
+          graze: 139030
+        - stage: 5
+          score: 1946334970
+          power: 400
+          piv: 354590
+          lives: 3
+          life_pieces: 1
+          bombs: 0
+          bomb_pieces: 0
+          graze: 154902
+        - stage: 6
+          score: 2444666530
+          power: null
+          piv: null
+          lives: null
+          life_pieces: null
+          bombs: null
+          bomb_pieces: null
+          graze: null
+      parser_version: 1
+  th16_02_extra:
+    replay_file: th16_02_extra.rpy
+    exact: true
+    expect:
+      game_id: th16
+      game_version: 1.00a
+      name: "WEF     "
+      shot_type: Aya
+      difficulty: 4
+      total_score: 108341700
+      timestamp: "2017-08-11T16:36:59+00:00"
+      replay_type: full_game
+      slowdown: 0.0
+      spell_card_id: 4294967295
+      stage_details:
+        - stage: 7
+          score: 108341700
+          power: null
+          piv: null
+          lives: null
+          life_pieces: null
+          bombs: null
+          bomb_pieces: null
+          graze: null
+          season_power: null
+      parser_version: 1
+  th16_03_full_game:
+    replay_file: th16_03_full_game.rpy
+    exact: true
+    expect:
+      game_id: th16
+      game_version: 1.00a
+      name: "WEF     "
+      shot_type: AyaAutumn
+      difficulty: 3
+      total_score: 623577010
+      timestamp: "2017-08-12T02:08:03+00:00"
+      replay_type: full_game
+      slowdown: 0.0
+      spell_card_id: 4294967295
+      stage_details:
+        - stage: 1
+          score: 18418850
+          power: 345
+          piv: 47290
+          lives: 4
+          life_pieces: 0
+          bombs: 4
+          bomb_pieces: 0
+          graze: 2153
+          season_power: 181
+        - stage: 2
+          score: 49152070
+          power: 400
+          piv: 60320
+          lives: 6
+          life_pieces: 0
+          bombs: 1
+          bomb_pieces: 3
+          graze: 3301
+          season_power: 772
+        - stage: 3
+          score: 125668430
+          power: 400
+          piv: 102690
+          lives: 6
+          life_pieces: 0
+          bombs: 1
+          bomb_pieces: 0
+          graze: 5352
+          season_power: 369
+        - stage: 4
+          score: 218489930
+          power: 400
+          piv: 122420
+          lives: 6
+          life_pieces: 0
+          bombs: 1
+          bomb_pieces: 3
+          graze: 6802
+          season_power: 138
+        - stage: 5
+          score: 394531690
+          power: 400
+          piv: 156640
+          lives: 5
+          life_pieces: 0
+          bombs: 2
+          bomb_pieces: 2
+          graze: 8523
+          season_power: 486
+        - stage: 6
+          score: 623577010
+          power: null
+          piv: null
+          lives: null
+          life_pieces: null
+          bombs: null
+          bomb_pieces: null
+          graze: null
+          season_power: null
+      parser_version: 1
+  th16_19_spell_card:
+    replay_file: th16_19_spell_card.rpy
+    exact: true
+    expect:
+      game_id: th16
+      game_version: 1.00a
+      name: "WEF     "
+      shot_type: Reimu
+      difficulty: 4
+      total_score: 1035080
+      timestamp: "2018-04-28T11:49:21+00:00"
+      replay_type: spell_card
+      slowdown: 0.0
+      spell_card_id: 115
+      stage_details: []
+      parser_version: 1
+  th17_04_st5_prac:
+    replay_file: th17_04_st5_prac.rpy
+    exact: true
+    expect:
+      game_id: th17
+      game_version: 1.00b
+      name: "WEF     "
+      shot_type: MarisaOtter
+      difficulty: 3
+      total_score: 1519230650
+      timestamp: "2020-06-07T20:34:18+00:00"
+      replay_type: stage_practice
+      slowdown: 0.05057525634765625
+      spell_card_id: 4294967295
+      stage_details:
+        - stage: 5
+          score: 1519230650
+          power: null
+          piv: null
+          lives: null
+          life_pieces: null
+          bombs: null
+          bomb_pieces: null
+          graze: null
+      parser_version: 1
+  th17_15_spell_card:
+    replay_file: th17_15_spell_card.rpy
+    exact: true
+    expect:
+      game_id: th17
+      game_version: 1.00b
+      name: "WEF     "
+      shot_type: MarisaWolf
+      difficulty: 3
+      total_score: 7985770
+      timestamp: "2025-05-15T23:14:25+00:00"
+      replay_type: spell_card
+      slowdown: 0.0
+      spell_card_id: 35
+      stage_details: []
+      parser_version: 1
+  th17_17_full_game:
+    replay_file: th17_17_full_game.rpy
+    exact: true
+    expect:
+      game_id: th17
+      game_version: 1.00b
+      name: "WEF     "
+      shot_type: MarisaOtter
+      difficulty: 3
+      total_score: 9384707930
+      timestamp: "2020-06-16T05:14:01+00:00"
+      replay_type: full_game
+      slowdown: 0.7462692260742188
+      spell_card_id: 4294967295
+      stage_details:
+        - stage: 1
+          score: 25345360
+          power: 400
+          piv: 44270
+          lives: 3
+          life_pieces: 1
+          bombs: 0
+          bomb_pieces: 2
+          graze: 269
+        - stage: 2
+          score: 132829830
+          power: 400
+          piv: 94330
+          lives: 3
+          life_pieces: 2
+          bombs: 5
+          bomb_pieces: 0
+          graze: 557
+        - stage: 3
+          score: 492878130
+          power: 400
+          piv: 184880
+          lives: 5
+          life_pieces: 0
+          bombs: 5
+          bomb_pieces: 2
+          graze: 1830
+        - stage: 4
+          score: 2538117120
+          power: 394
+          piv: 467840
+          lives: 4
+          life_pieces: 0
+          bombs: 3
+          bomb_pieces: 1
+          graze: 4348
+        - stage: 5
+          score: 3921080330
+          power: 400
+          piv: 500000
+          lives: 3
+          life_pieces: 1
+          bombs: 3
+          bomb_pieces: 2
+          graze: 8291
+        - stage: 6
+          score: 9384707930
+          power: null
+          piv: null
+          lives: null
+          life_pieces: null
+          bombs: null
+          bomb_pieces: null
+          graze: null
+      parser_version: 1
+  th17_25_extra:
+    replay_file: th17_25_extra.rpy
+    exact: true
+    expect:
+      game_id: th17
+      game_version: 1.00b
+      name: "WEF     "
+      shot_type: MarisaWolf
+      difficulty: 4
+      total_score: 224588030
+      timestamp: "2019-09-11T03:27:29+00:00"
+      replay_type: full_game
+      slowdown: 0.23986053466796875
+      spell_card_id: 4294967295
+      stage_details:
+        - stage: 7
+          score: 224588030
+          power: null
+          piv: null
+          lives: null
+          life_pieces: null
+          bombs: null
+          bomb_pieces: null
+          graze: null
+      parser_version: 1
+  th18_04_extra:
+    replay_file: th18_04_extra.rpy
+    exact: true
+    expect:
+      game_id: th18
+      game_version: 1.00a
+      name: "WEF     "
+      shot_type: Sanae
+      difficulty: 4
+      total_score: 452342050
+      timestamp: "2021-05-03T19:40:13+00:00"
+      replay_type: full_game
+      slowdown: 0.0781097412109375
+      spell_card_id: 4294967295
+      stage_details:
+        - stage: 7
+          score: 452342050
+          power: 400
+          piv: 500000
+          lives: 5
+          life_pieces: 2
+          bombs: 3
+          bomb_pieces: 2
+          graze: 1493
+      parser_version: 1
+  th18_18_full_game:
+    replay_file: th18_18_full_game.rpy
+    exact: true
+    expect:
+      game_id: th18
+      game_version: 1.00a
+      name: "WEF     "
+      shot_type: Sakuya
+      difficulty: 3
+      total_score: 9627089580
+      timestamp: "2021-07-31T11:15:45+00:00"
+      replay_type: full_game
+      slowdown: 0.18801116943359375
+      spell_card_id: 4294967295
+      stage_details:
+        - stage: 1
+          score: 1365196940
+          power: 400
+          piv: 1000000
+          lives: 4
+          life_pieces: 2
+          bombs: 3
+          bomb_pieces: 2
+          graze: 1143
+        - stage: 2
+          score: 2805629830
+          power: 327
+          piv: 1000000
+          lives: 4
+          life_pieces: 0
+          bombs: 3
+          bomb_pieces: 0
+          graze: 2991
+        - stage: 3
+          score: 5061408620
+          power: 337
+          piv: 1000000
+          lives: 4
+          life_pieces: 0
+          bombs: 1
+          bomb_pieces: 2
+          graze: 5926
+        - stage: 4
+          score: 6079528350
+          power: 386
+          piv: 1000000
+          lives: 3
+          life_pieces: 1
+          bombs: 3
+          bomb_pieces: 2
+          graze: 7730
+        - stage: 5
+          score: 7409554490
+          power: 400
+          piv: 1000000
+          lives: 3
+          life_pieces: 1
+          bombs: 0
+          bomb_pieces: 2
+          graze: 10865
+        - stage: 6
+          score: 9627089580
+          power: 0
+          piv: 0
+          lives: 0
+          life_pieces: 0
+          bombs: 0
+          bomb_pieces: 0
+          graze: 0
+      parser_version: 1
+  th18_24_st4_prac:
+    replay_file: th18_24_st4_prac.rpy
+    exact: true
+    expect:
+      game_id: th18
+      game_version: 1.00a
+      name: "WEF     "
+      shot_type: Sakuya
+      difficulty: 3
+      total_score: 98045410
+      timestamp: "2021-07-28T07:45:20+00:00"
+      replay_type: stage_practice
+      slowdown: 0.0
+      spell_card_id: 4294967295
+      stage_details:
+        - stage: 4
+          score: 98045410
+          power: 400
+          piv: 254000
+          lives: 0
+          life_pieces: 1
+          bombs: 0
+          bomb_pieces: 1
+          graze: 309
+      parser_version: 1
+  th18_25_spell_card:
+    replay_file: th18_25_spell_card.rpy
+    exact: true
+    expect:
+      game_id: th18
+      game_version: 1.00a
+      name: "WEF     "
+      shot_type: Marisa
+      difficulty: 3
+      total_score: 5584680
+      timestamp: "2021-05-28T09:22:45+00:00"
+      replay_type: spell_card
+      slowdown: 0.0
+      spell_card_id: 35
+      stage_details: []
+      parser_version: 1
+  th128_01_extra:
+    replay_file: th128_01_extra.rpy
+    exact: true
+    expect:
+      game_id: th128
+      game_version: 1.00a
+      name: "WEF     "
+      difficulty: 4
+      route: extra
+      total_score: 34539290
+      timestamp: "2016-08-04T11:01:30+00:00"
+      replay_type: full_game
+      slowdown: 0.1022186279296875
+      stage_details:
+        - stage: 16
+          score: 34539290
+          graze: null
+          motivation: null
+          perfect_freeze: null
+          frozen_area: null
+      parser_version: 1
+  th128_02_b1:
+    replay_file: th128_02_b1.rpy
+    exact: true
+    expect:
+      game_id: th128
+      game_version: 1.00a
+      name: "WEF     "
+      difficulty: 3
+      route: B-1
+      total_score: 37323220
+      timestamp: "2018-10-10T14:10:34+00:00"
+      replay_type: full_game
+      slowdown: 0.06316375732421875
+      stage_details:
+        - stage: 1
+          score: 5626410
+          graze: 1362
+          motivation: 45982
+          perfect_freeze: 13688
+          frozen_area: 846.9029541015625
+        - stage: 4
+          score: 13678340
+          graze: 2642
+          motivation: 44524
+          perfect_freeze: 22337
+          frozen_area: 2060.480712890625
+        - stage: 5
+          score: 37323220
+          graze: null
+          motivation: null
+          perfect_freeze: null
+          frozen_area: null
+      parser_version: 1
