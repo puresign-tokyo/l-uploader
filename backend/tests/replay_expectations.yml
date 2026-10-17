@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=./replay_expectations.schema.json
 # Full regression baselines for every replay fixture, captured from the current parser.
 # Not independently verified against in-game displays; review intentional changes.
 # exact: true checks all keys and stage numbers, including nulls and empty lists.
