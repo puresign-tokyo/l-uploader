@@ -1,5 +1,6 @@
 import { createServer } from "node:http";
 import { BASE_URL, POSTS_PER_PAGE, UPLOADED_REPLAY_ID } from "./settings.mjs";
+import { replayFilename } from "./replay-filename.mjs";
 
 // SSRとブラウザの両方が利用する、外部依存のないインメモリAPI。
 // 本物のリプレイparserや認証の動作は保証しない。
@@ -91,7 +92,7 @@ const server = createServer(async (request, response) => {
         upload_comment: fields.upload_comment,
         optional_tag: fields.optional_tag,
         category: fields.category,
-        filename: file.name,
+        filename: replayFilename("th6", UPLOADED_REPLAY_ID),
         uploaded_at: "2026-01-01T00:00:00Z",
         replay_meta: {
           name: "E2E Player", shot_type: "ReimuA", difficulty: "1",

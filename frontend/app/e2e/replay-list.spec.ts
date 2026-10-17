@@ -1,5 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import { API, POSTS_PER_PAGE } from "./settings.mjs";
+import { replayFilename } from "./replay-filename.mjs";
 import { blockExternalRequests, waitForHydration } from "./support";
 
 const TARGET_TAG = "list-target";
@@ -8,9 +9,8 @@ const OTHER_GAME_NAME = "東方妖々夢";
 const CATEGORY_NAME = "クリア";
 
 function replay(id: number, overrides = {}) {
-  return {
+  const entry = {
     replay_id: id,
-    filename: `replay-${id}.rpy`,
     game_id: "th6",
     user_name: `User ${id}`,
     uploaded_at: "2025-01-01T00:00:00Z",
@@ -24,6 +24,7 @@ function replay(id: number, overrides = {}) {
     },
     ...overrides,
   };
+  return { ...entry, filename: replayFilename(entry.game_id, id) };
 }
 
 // 上限+1件で必ず2ページになる。先頭ページは新しい投稿から表示する。
