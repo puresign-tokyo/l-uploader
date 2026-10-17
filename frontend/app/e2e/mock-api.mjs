@@ -62,10 +62,16 @@ const server = createServer(async (request, response) => {
         return send(422, { detail: "Invalid page" });
       }
       const matching = filterReplays(url.searchParams).sort((a, b) => {
-        const difference = Date.parse(a.uploaded_at) - Date.parse(b.uploaded_at);
-        return url.searchParams.get("order") === "asc" ? difference : -difference;
+        const difference =
+          Date.parse(a.uploaded_at) - Date.parse(b.uploaded_at);
+        return url.searchParams.get("order") === "asc"
+          ? difference
+          : -difference;
       });
-      return send(200, matching.slice(page * POSTS_PER_PAGE, (page + 1) * POSTS_PER_PAGE));
+      return send(
+        200,
+        matching.slice(page * POSTS_PER_PAGE, (page + 1) * POSTS_PER_PAGE),
+      );
     }
     if (request.method === "POST" && path === "/replays") {
       uploadCount++;
@@ -95,16 +101,23 @@ const server = createServer(async (request, response) => {
         filename: replayFilename("th6", UPLOADED_REPLAY_ID),
         uploaded_at: "2026-01-01T00:00:00Z",
         replay_meta: {
-          name: "E2E Player", shot_type: "ReimuA", difficulty: "1",
-          total_score: "12345678", timestamp: "2026-01-01",
-          slowdown: "0.1", replay_type: "full_game", stage_details: [],
+          name: "E2E Player",
+          shot_type: "ReimuA",
+          difficulty: "1",
+          total_score: "12345678",
+          timestamp: "2026-01-01",
+          slowdown: "0.1",
+          replay_type: "full_game",
+          stage_details: [],
         },
       };
       replays.push(replay);
       return send(201, { replay_id: replay.replay_id });
     }
     if (request.method === "GET" && path.startsWith("/replays/")) {
-      const replay = replays.find((item) => path === `/replays/${item.replay_id}`);
+      const replay = replays.find(
+        (item) => path === `/replays/${item.replay_id}`,
+      );
       return replay ? send(200, replay) : send(404, { detail: "Not found" });
     }
     return send(404, { detail: "Unexpected mock endpoint" });
@@ -119,9 +132,11 @@ function filterReplays(params) {
     const game = params.get("game_id");
     const category = params.get("category");
     const tag = params.get("optional_tag");
-    return (!game || game === "all" || replay.game_id === game)
-      && (!category || category === "all" || replay.category === category)
-      && (!tag || replay.optional_tag === tag);
+    return (
+      (!game || game === "all" || replay.game_id === game) &&
+      (!category || category === "all" || replay.category === category) &&
+      (!tag || replay.optional_tag === tag)
+    );
   });
 }
 

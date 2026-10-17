@@ -10,8 +10,12 @@ export async function blockExternalRequests(context: BrowserContext) {
 export async function waitForHydration(page: Page) {
   await page.waitForFunction(() => {
     const root = document.querySelector("#__nuxt") as HTMLElement & {
-      __vue_app__?: { config: { globalProperties: { $nuxt?: { isHydrating: boolean } } } };
+      __vue_app__?: {
+        config: { globalProperties: { $nuxt?: { isHydrating: boolean } } };
+      };
     };
-    return root?.__vue_app__?.config.globalProperties.$nuxt?.isHydrating === false;
+    return (
+      root?.__vue_app__?.config.globalProperties.$nuxt?.isHydrating === false
+    );
   });
 }

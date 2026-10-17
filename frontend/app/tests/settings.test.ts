@@ -2,7 +2,13 @@ import { describe, expect, it } from "vitest";
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { useBackendUrl } from "../composables/Settings";
 
-const config = { public: { httpProtocol: "http", backendHost: "api.example.test", backendPort: "80" } };
+const config = {
+  public: {
+    httpProtocol: "http",
+    backendHost: "api.example.test",
+    backendPort: "80",
+  },
+};
 mockNuxtImport("useRuntimeConfig", () => () => config);
 
 describe("バックエンドURL", () => {
