@@ -33,9 +33,9 @@
     "@nuxt/test-utils": "^3.23.0",
     "@nuxtjs/i18n": "^10.6.0",
     "@playwright/test": "^1.64.1",
-    "@vitest/coverage-v8": "^3.2.7",
+    "@vitest/coverage-v8": "^4.1.11",
     "@vue/test-utils": "2.4.6",
     "happy-dom": "^20.14.6",
-    "vitest": "^4.1.11"
+    "vitest": "4.1.11"
   }
 }
