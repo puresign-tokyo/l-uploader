@@ -12,7 +12,7 @@ from backend.tests.expectation_checks import assert_matches
 
 TEST_DIR = Path(__file__).resolve().parent
 REPLAY_DIR = TEST_DIR / "replays"
-EXPECTATIONS_FILE = TEST_DIR / "replay_expectations.yaml"
+EXPECTATIONS_FILE = TEST_DIR / "replay_expectations.yml"
 
 
 class TestReplayExpectations(unittest.TestCase):
