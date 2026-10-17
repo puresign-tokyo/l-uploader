@@ -1,5 +1,5 @@
 import { createServer } from "node:http";
-import { BASE_URL, POSTS_PER_PAGE } from "./settings.mjs";
+import { BASE_URL, POSTS_PER_PAGE, UPLOADED_REPLAY_ID } from "./settings.mjs";
 
 // SSRとブラウザの両方が利用する、外部依存のないインメモリAPI。
 // 本物のリプレイparserや認証の動作は保証しない。
@@ -85,7 +85,7 @@ const server = createServer(async (request, response) => {
         fileContent: await file.text(),
       };
       const replay = {
-        replay_id: "e2e-replay",
+        replay_id: UPLOADED_REPLAY_ID,
         game_id: "th6",
         user_name: fields.user_name,
         upload_comment: fields.upload_comment,

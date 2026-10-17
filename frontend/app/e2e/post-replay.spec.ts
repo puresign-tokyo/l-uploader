@@ -1,6 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 
-import { API } from "./settings.mjs";
+import { API, UPLOADED_REPLAY_ID } from "./settings.mjs";
 import { blockExternalRequests, waitForHydration } from "./support";
 const INPUT = {
   username: "E2E霊夢",
@@ -78,7 +78,7 @@ for (const labels of locales) {
       });
       // 成功ダイアログを閉じると、既存のwatch処理が詳細画面へ遷移する。
       await page.keyboard.press("Escape");
-      await expect(page).toHaveURL(`${labels.prefix}/replays/e2e-replay`);
+      await expect(page).toHaveURL(`${labels.prefix}/replays/${UPLOADED_REPLAY_ID}`);
       await expect(page.getByText(INPUT.filename, { exact: true })).toBeVisible();
       await expect(page.getByText(INPUT.username, { exact: true })).toBeVisible();
       await expect(page.getByText(INPUT.comment, { exact: true })).toBeVisible();

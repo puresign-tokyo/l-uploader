@@ -7,10 +7,10 @@ const GAME_NAME = "東方紅魔郷";
 const OTHER_GAME_NAME = "東方妖々夢";
 const CATEGORY_NAME = "クリア";
 
-function replay(id: string, overrides = {}) {
+function replay(id: number, overrides = {}) {
   return {
     replay_id: id,
-    filename: `${id}.rpy`,
+    filename: `replay-${id}.rpy`,
     game_id: "th6",
     user_name: `User ${id}`,
     uploaded_at: "2025-01-01T00:00:00Z",
@@ -28,13 +28,13 @@ function replay(id: string, overrides = {}) {
 
 // 上限+1件で必ず2ページになる。先頭ページは新しい投稿から表示する。
 const targets = Array.from({ length: POSTS_PER_PAGE + 1 }, (_, index) =>
-  replay(`target-${index + 1}`, {
+  replay(index + 1, {
     uploaded_at: new Date(Date.UTC(2026, 0, 1, 0, index)).toISOString(),
   }),
 ).reverse();
-const otherGame = replay("other-game", { game_id: "th7" });
-const otherCategory = replay("other-category", { category: "others" });
-const otherTag = replay("other-tag", { optional_tag: "different-tag" });
+const otherGame = replay(101, { game_id: "th7" });
+const otherCategory = replay(102, { category: "others" });
+const otherTag = replay(103, { optional_tag: "different-tag" });
 const seed = [...targets, otherGame, otherCategory, otherTag];
 const firstPage = targets.slice(0, POSTS_PER_PAGE);
 const secondPage = targets.slice(POSTS_PER_PAGE);
