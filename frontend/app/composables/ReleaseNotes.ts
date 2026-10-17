@@ -2,6 +2,11 @@ export function Releases() {
   // 要素番号が小さいものほど最新であるようにすること
   const releases = [
     {
+      version: "1.3.0",
+      date: "2026-10-17",
+      changes: ["テストの整備<-いまさら？？"],
+    },
+    {
       version: "1.2.9",
       date: "2026-09-27",
       changes: ["紅魔郷NCのスペカ名を定義"],

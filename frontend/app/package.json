@@ -4,6 +4,10 @@
   "type": "module",
   "packageManager": "pnpm@10.30.3",
   "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
@@ -26,6 +30,12 @@
     "vuetify": "^3.13.6"
   },
   "devDependencies": {
-    "@nuxtjs/i18n": "^10.6.0"
+    "@nuxt/test-utils": "^3.23.0",
+    "@nuxtjs/i18n": "^10.6.0",
+    "@playwright/test": "^1.64.1",
+    "@vitest/coverage-v8": "^3.2.7",
+    "@vue/test-utils": "2.4.6",
+    "happy-dom": "^20.14.6",
+    "vitest": "^3.2.7"
   }
 }

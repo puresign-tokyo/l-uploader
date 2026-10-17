@@ -1,0 +1,104 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Replay parser expectations",
+  "description": "全ゲーム共通のリプレイ解析テストの期待値。ファイルの存在や解析結果との一致はPythonテストで検証する。",
+  "type": "object",
+  "required": ["test_replay_parse"],
+  "additionalProperties": false,
+  "properties": {
+    "test_replay_parse": {
+      "description": "任意のケース名をキーに期待値を登録する。",
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "minLength": 1 },
+      "additionalProperties": { "$ref": "#/definitions/case" }
+    }
+  },
+  "definitions": {
+    "case": {
+      "type": "object",
+      "required": ["replay_file", "expect"],
+      "additionalProperties": false,
+      "properties": {
+        "replay_file": {
+          "description": "backend/tests/replays内のファイル名。ディレクトリは指定しない。",
+          "type": "string",
+          "pattern": "^[^/\\\\]+\\.rpy$"
+        },
+        "exact": {
+          "description": "trueなら全キーと全ステージを比較する。falseまたは省略時は指定項目のみ比較する。",
+          "type": "boolean",
+          "default": false
+        },
+        "expect": {
+          "description": "総合項目は辞書形式で指定する。リスト形式はstage_detailsの省略記法。",
+          "anyOf": [
+            {
+              "allOf": [{ "$ref": "#/definitions/fields" }],
+              "minProperties": 1
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/definitions/stage" }
+            }
+          ]
+        }
+      }
+    },
+    "fields": {
+      "description": "任意の出力キーを指定できる。既知の総合項目には型と補完候補を定義する。",
+      "type": "object",
+      "properties": {
+        "game_id": { "type": "string" },
+        "name": { "type": "string" },
+        "shot_type": { "type": "string" },
+        "difficulty": { "type": "integer" },
+        "total_score": { "type": "integer" },
+        "timestamp": { "type": "string" },
+        "slowdown": { "type": "number" },
+        "replay_type": { "type": "string" },
+        "parser_version": { "type": "integer" },
+        "game_version": { "type": "string" },
+        "route": { "type": "string" },
+        "spell_card_id": { "type": ["integer", "null"] },
+        "stage_details": {
+          "description": "stage番号で照合する。空リストはステージ情報がないことを表す。",
+          "type": "array",
+          "items": { "$ref": "#/definitions/stage" }
+        }
+      },
+      "additionalProperties": { "$ref": "#/definitions/value" }
+    },
+    "stage": {
+      "description": "stageは照合用の必須番号。score以外のゲーム固有項目も自由に指定できる。",
+      "type": "object",
+      "required": ["stage"],
+      "properties": {
+        "stage": { "type": "integer" },
+        "score": { "type": ["integer", "null"] }
+      },
+      "additionalProperties": { "$ref": "#/definitions/value" }
+    },
+    "value": {
+      "description": "任意のゲーム固有値。ネストした辞書・配列、null、真偽値にも対応する。",
+      "anyOf": [
+        { "type": ["string", "number", "boolean", "null"] },
+        {
+          "type": "object",
+          "properties": {
+            "stage_details": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/stage" }
+            }
+          },
+          "additionalProperties": { "$ref": "#/definitions/value" }
+        },
+        {
+          "type": "array",
+          "items": { "$ref": "#/definitions/value" }
+        }
+      ]
+    }
+  }
+}

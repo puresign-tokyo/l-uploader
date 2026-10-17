@@ -1,0 +1,25 @@
+# Dependencies are installed inside the build stage.
+app/node_modules
+
+# Local build outputs and caches
+app/.nuxt
+app/.output
+app/.nitro
+app/.data
+app/.cache
+app/dist
+app/*.log
+app/.nuxtrc
+
+# Tests and reports are only used by the development environment and test CI.
+app/tests
+app/vitest.config.ts
+app/coverage
+app/e2e
+app/playwright.config.ts
+app/playwright-report
+app/test-results
+
+# Local environment settings
+app/.env
+app/.env.*

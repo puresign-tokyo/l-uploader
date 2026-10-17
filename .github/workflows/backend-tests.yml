@@ -2,7 +2,11 @@ name: Backend tests
 
 on:
   push:
+    branches:
+      - main
   pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -18,7 +22,17 @@ jobs:
           submodules: recursive
 
       - name: Build backend test image
+        id: build
         run: docker build -f backend/Dockerfile.test -t l-uploader-backend-tests backend
 
-      - name: Run all backend tests
-        run: docker run --rm l-uploader-backend-tests
+      - name: Test expectation comparison logic
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: >-
+          docker run --rm l-uploader-backend-tests
+          python -m unittest backend.tests.test_expectation_checks -v
+
+      - name: Test replay parsing against YAML expectations
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: >-
+          docker run --rm l-uploader-backend-tests
+          python -m unittest backend.tests.test_replay_expectations -v

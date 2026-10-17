@@ -1,0 +1,87 @@
+name: Frontend tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  frontend-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: frontend/app
+    env:
+      NUXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: frontend/app/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.13.0"
+          cache: pnpm
+          cache-dependency-path: frontend/app/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Prepare Nuxt
+        run: pnpm nuxt:prepare
+      - name: Run tests with coverage
+        run: pnpm test:coverage
+      - name: Upload coverage report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: frontend/app/coverage
+          if-no-files-found: ignore
+          retention-days: 14
+
+  frontend-e2e:
+    needs: frontend-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: frontend/app
+    env:
+      NUXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: frontend/app/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.13.0"
+          cache: pnpm
+          cache-dependency-path: frontend/app/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Chromium headless shell
+        run: pnpm exec playwright install --with-deps --only-shell chromium
+      - name: Prepare Nuxt
+        run: pnpm nuxt:prepare
+      - name: Build frontend before starting browsers
+        run: pnpm build
+      - name: Run browser tests sequentially
+        run: pnpm test:e2e
+      - name: Upload Playwright report and failure traces
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-e2e-report
+          path: |
+            frontend/app/playwright-report
+            frontend/app/test-results
+          if-no-files-found: ignore
+          retention-days: 7

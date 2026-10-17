@@ -251,7 +251,7 @@
                 i18nT('pages.new_post.template.dialog.contents.return_home')
               "
               variant="plain"
-              @click="router.push('/')"
+              @click="router.push(localePath('/'))"
             />
           </v-card-actions>
         </v-card>
@@ -278,6 +278,7 @@ import { useBackendUrl } from "~/composables/Settings";
 import { useRuntimeConfig } from "#imports";
 
 const router = useRouter();
+const localePath = useLocalePath();
 
 const userName = ref("");
 const replayFile = ref(null);
@@ -513,7 +514,7 @@ watch(dialogSuccessPost, (val) => {
   if (val) {
     wasOpened = true;
   } else if (wasOpened && postedReplayId !== "") {
-    router.push("/replays/" + postedReplayId);
+    router.push(localePath("/replays/" + postedReplayId));
   }
 });
 
@@ -521,7 +522,7 @@ const shareToTweet = () => {
   const text = encodeURIComponent(pendingTweetText.value);
   window.open(`https://twitter.com/intent/tweet?text=${text}`);
   dialogSuccessPost.value = false;
-  router.push("/");
+  router.push(localePath("/"));
 };
 
 useHead({

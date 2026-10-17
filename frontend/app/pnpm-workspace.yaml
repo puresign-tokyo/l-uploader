@@ -4,9 +4,9 @@ overrides:
   '@tiptap/core@>=2.0.0-alpha.0 <3.30.4': '>=3.30.4'
   '@tiptap/core@>=3.7.0 <3.30.5': '>=3.30.5'
   '@vue/server-renderer@<3.5.42': '>=3.5.42'
-  brace-expansion@>=2.0.0 <2.1.5: '>=2.1.5'
-  brace-expansion@>=2.0.0 <2.1.6: '>=2.1.6'
-  brace-expansion@>=2.0.0 <2.1.7: '>=2.1.7'
+  # minimatch 5/9 require the CommonJS function API from brace-expansion 2.x.
+  # Keep the patched version without crossing its incompatible major boundary.
+  brace-expansion@>=2.0.0 <2.1.7: '>=2.1.7 <3.0.0'
   brace-expansion@>=3.0.0 <5.0.7: '>=5.0.7'
   brace-expansion@>=4.0.0 <5.0.10: '>=5.0.10'
   brace-expansion@>=4.0.0 <5.0.11: '>=5.0.11'
