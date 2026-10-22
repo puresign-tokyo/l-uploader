@@ -22,7 +22,7 @@ RUN --network=none pnpm nuxt:prepare && \
     rm -rf .output/server/node_modules/unhead && \
     cp -aL node_modules/unhead .output/server/node_modules/unhead
 
-FROM node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d
+FROM gcr.io/distroless/nodejs24-debian13:nonroot@sha256:78f07ef1b5ea71ad7c055df15d0dd8997f2d288f9158623c4d4ae3d765b7d50d
 
 WORKDIR /app
 
@@ -36,4 +36,4 @@ ENV NODE_ENV=production
 
 USER 65532:65532
 
-CMD ["node", ".output/server/index.mjs"]
+CMD [".output/server/index.mjs"]
