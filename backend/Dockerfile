@@ -14,25 +14,25 @@ ENV JAVA_HOME=/opt/java/openjdk \
 RUN mkdir -p /app/parsers/py_code && \
     find /app/parsers/threp-ksy -name "*.ksy" -exec kaitai-struct-compiler -t python --outdir /app/parsers/py_code {} \;
 
-FROM python:3.13-trixie@sha256:71d866ed79158f6ff25b096687f90ca706684937ea2032b86e479a060d9eaa7d AS python-dependencies
+FROM python:3.13.17-bookworm@sha256:a3799099b64fd333f262768c7a64733f6e4edb7bc569813710a100214bdcf278 AS python-dependencies
 
 WORKDIR /build
 COPY ./requirements.txt ./
 RUN python -m pip install --no-compile --require-hashes --target /opt/site-packages -r requirements.txt
 RUN mkdir -p /home/app/replays && chown -R 10001:10001 /home/app
 
-FROM gcr.io/distroless/python3-debian13:nonroot@sha256:774595d652a294b54c9bd575b2d9fdd1a4b47547dc17b8bfa4c0e953c64855b3
+FROM  python:3.13.17-slim-bookworm@sha256:e32be0e55814a08977501ca863271d9bd02443710db8f2afaf8372e2c4508530
 
 WORKDIR /app
 
 COPY --chown=10001:10001 ./__init__.py /app/backend/__init__.py
 COPY --chown=10001:10001 ./src /app/backend/src
 COPY --chown=10001:10001 --from=parser-builder /app/parsers/py_code /app/backend/src/parsers/py_code
-COPY --chown=10001:10001 --from=python-dependencies /opt/site-packages /usr/lib/python3/dist-packages
+COPY --chown=10001:10001 --from=python-dependencies /opt/site-packages /usr/local/lib/python3.13/site-packages
 COPY --from=python-dependencies /home/app /home/app
 
 USER 10001:10001
 
 ENV PYTHONUNBUFFERED=1
 
-CMD ["-m", "backend.src.container_entrypoint"]
+CMD ["python", "-m", "backend.src.container_entrypoint"]
