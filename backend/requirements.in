@@ -8,4 +8,4 @@ tsadecode==0.6
 setuptools==84.1.0
 pymongo==4.18.3
 requests==2.33.0
-redis==6.2.0
+valkey==6.2.0
