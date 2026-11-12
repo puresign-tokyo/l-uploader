@@ -1,4 +1,4 @@
-FROM node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d AS build-stage
+FROM node:24.22.3-bookworm-slim@sha256:dc26ae92c9fb15cf6b1d63e20f0944b2efe0f115b20e00be48fb23fceb061c54 AS build-stage
 
 WORKDIR /app
 ENV LANG=C.UTF-8 \
@@ -22,7 +22,7 @@ RUN --network=none pnpm nuxt:prepare && \
     rm -rf .output/server/node_modules/unhead && \
     cp -aL node_modules/unhead .output/server/node_modules/unhead
 
-FROM gcr.io/distroless/nodejs24-debian13:nonroot@sha256:78f07ef1b5ea71ad7c055df15d0dd8997f2d288f9158623c4d4ae3d765b7d50d
+FROM gcr.io/distroless/nodejs24-debian13:nonroot@sha256:9fc11f6ee65993285c0fe3c4c9bbc4fd275fd4470572f58834ce490df91056e3
 
 WORKDIR /app
 
