@@ -112,7 +112,7 @@ services:
       - private_postgres
 
   mongodb:
-    image: mongo:8.0.17@sha256:9814652e33f0cf8b9fddea8b46dfc9d8e19b130dcfdd7b510ca58bb0d40c8b71
+    image: mongo:8.0.38@sha256:d97fea17ccb8d004cd137be8dab54d70d0df11be69c9f422aefe4484c8414ab7
     container_name: ${MONGO_HOST:-mongodb}
     volumes:
       - mongodb_table:/data/db
