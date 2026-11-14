@@ -37,7 +37,7 @@
    MONGO_APP_USER={アプリ用ユーザ}
    MONGO_APP_PASS={アプリ用パスワード}
 
-   # Redis
+   # Valkey（互換性のため環境変数名は REDIS_*）
    REDIS_HOST=redis
    REDIS_USER={ユーザ名}
    REDIS_PASS={パスワード}
@@ -87,6 +87,14 @@
      - `sudo docker compose up --build`
    - loki 環境がある場合
      - `sudo docker compose -f docker-compose.yml -f docker-override-loki.yml up --build`
+
+## Valkey への切り替え
+
+キャッシュとレート制限には Valkey 8.1.11 を使用します。既存の接続設定を使えるよう、Compose のサービス名 `redis`、`REDIS_*` 環境変数、ビルドディレクトリ `redis/` は維持しています。Python クライアントには `valkey-py`（PyPI パッケージ名 `valkey`）を使用します。
+
+キャッシュ用途のため、Redis の保存データは移行せず、Valkey は新しい `valkey_data` volume で開始します。切り替え直後はキャッシュが再生成され、レート制限カウンターはリセットされます。旧 `redis_data` volume は Compose 定義から外していますが、実際の volume は自動削除されません。切り替え後に不要になった旧 volume は個別に削除できます。
+
+反映には `docker compose up -d --build redis backend` を実行してください。Loki を使う場合は起動時と同じ `-f docker-compose.yml -f docker-override-loki.yml` を指定します。`docker compose down -v` は PostgreSQL・MongoDB・リプレイ保存用の volume も削除するため、旧キャッシュの削除には使わないでください。
 
 ## 注意事項
 - このソフトウェアは `/internal` 配下に管理者用APIがありますが、ソフトウェアとして接続制限をかけているわけではないです。リバースプロキシを挟んで `/internal` 配下を全て403を返すことを想定しています。

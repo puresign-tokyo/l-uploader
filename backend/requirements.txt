@@ -542,10 +542,6 @@ python-multipart==0.0.31 \
     --hash=sha256:8408153d68a9773291fc1da39a8b85a50044bddbabd2dd72e9229776b7b15e28 \
     --hash=sha256:fc631183bb13e56db3158a4909908dfb2e23565286744e798241e63750e5d680
     # via -r requirements.in
-redis==6.2.0 \
-    --hash=sha256:c8ddf316ee0aab65f04a11229e94a64b2618451dab7a67cb2f77eb799d872d5e \
-    --hash=sha256:e821f129b75dde6cb99dd35e5c76e8c49512a5a0d8dfdc560b2fbd44b85ca977
-    # via -r requirements.in
 requests==2.33.0 \
     --hash=sha256:3324635456fa185245e24865e810cecec7b4caf933d7eb133dcde67d48cee69b \
     --hash=sha256:c7ebc5e8b0f21837386ad0e1c8fe8b829fa5f544d8df3b2253bff14ef29d7652
@@ -578,6 +574,10 @@ urllib3==2.8.0 \
 uvicorn==0.34.2 \
     --hash=sha256:0e929828f6186353a80b58ea719861d2629d766293b6d19baf086ba31d4f3328 \
     --hash=sha256:deb49af569084536d269fe0a6d67e3754f104cf03aba7c11c40f01aadf33c403
+    # via -r requirements.in
+valkey==6.2.0 \
+    --hash=sha256:7337c493ce55d7fe58ab44c93c37f56552dad75f9512e97c5808374ab5af4939 \
+    --hash=sha256:94a12c87cd070e356b2c89e2946fa582d9f65ec2e003ab1867e987220e2beae8
     # via -r requirements.in
 
 # The following packages are considered to be unsafe in a requirements file:

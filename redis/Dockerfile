@@ -1,4 +1,4 @@
-FROM redis:8.6.6-trixie@sha256:51d21cdd406d5cee4e4b2c002310dd413b2c5a87b0f4c36d30fcbb7684a00541
+FROM valkey/valkey:8.1.11-trixie@sha256:8f836008e0986c36adf50da714c7060cf689dbb335f61fe077939d90fa650809
 WORKDIR /app
-COPY ./config/redis-conf.sh /app/redis-conf.sh
-CMD ["/bin/bash", "-c", "/bin/bash /app/redis-conf.sh && redis-server /tmp/redis.conf"]
+COPY ./config/valkey-conf.sh /app/valkey-conf.sh
+CMD ["/bin/bash", "-c", "/bin/bash /app/valkey-conf.sh && exec valkey-server /tmp/valkey.conf"]
