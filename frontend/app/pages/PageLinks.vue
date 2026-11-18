@@ -43,7 +43,7 @@ const externalLinks = [
     label: i18nT("pages.page_links.scripts.links.puresign"),
   },
   {
-    path: "http://silentselene.net",
+    path: "https://silentselene.net",
     label: i18nT("pages.page_links.scripts.links.silentselene"),
   },
 ];
